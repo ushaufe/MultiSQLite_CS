@@ -11,9 +11,11 @@ using System.Data.SQLite;
 using System.Threading;
 
 
+// This is a C# project to demonstrage how well SQLite can handle Multithreading
+// The documentation for this project and the accompanying C++ projects can be found here:
+// (the location may be moved by the webmaster of the wiki)
+// https://mywiki.grp.haufemg.com/pages/viewpage.action?pageId=156088657
 
-// This project is is supposed to demonstrate what SQlite can do
-// in Multi-Threded environements
 
 // Two different approaches should be shown:
 // Pooling: Using different connections for different threads and
@@ -25,8 +27,17 @@ namespace SQLiteTest
     public partial class Form1 : Form
     {
         SQLiteConnection con = null;
-        Thread thr1, thr2;
+       
         CThreads threads;
+        
+
+        // These threads are used for simultaneous writing...
+        Thread thr1, thr2;
+
+        // This thread is used for reading
+        // ( Constantly polling the data in 
+        //   the database and refreshing them )
+        // Can be run simultanously to writing threads
         ViewThread viewThread;
 
         private delegate void AddListDelegate(List<String> list);
@@ -75,6 +86,7 @@ namespace SQLiteTest
                 cmd = new SQLiteCommand(strDeleteFrom, con);
                 cmd.ExecuteNonQuery();
 
+                // Create a table that can hold text-data along with the thread-id of the thread that created the data
                 strInsert = String.Format("insert into testtable (threadid,text) values (0,'{0}')", dt.ToString());
                 cmd = new SQLiteCommand(strInsert, con);
                 cmd.ExecuteNonQuery();
@@ -163,6 +175,10 @@ namespace SQLiteTest
 
     }
 
+    // This class contains a thread that is constantly polling the database
+    // And refreshing GUI-elements
+    // The threads uses it's own database-object (pooling) and can be
+    // executed in parallell to writing-threads
     public class ViewThread
     {
         SQLiteConnection con = null;
