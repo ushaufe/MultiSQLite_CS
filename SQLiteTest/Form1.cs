@@ -12,10 +12,16 @@ using System.Threading;
 
 
 
+// This project is is supposed to demonstrate what SQlite can do
+// in Multi-Threded environements
+
+// Two different approaches should be shown:
+// Pooling: Using different connections for different threads and
+// Using the same connection with multiple threads simultaneously
+
 namespace SQLiteTest
 {
 
-    
     public partial class Form1 : Form
     {
         SQLiteConnection con = null;
@@ -141,9 +147,15 @@ namespace SQLiteTest
 
         private void buttonStartThreads_Click(object sender, EventArgs e)
         {            
+            // Two different threads are created for simultaneous writing
+            // each thread creates it's own instance of a database object (pooling)
             thr1 = new Thread(threads.m1);
             thr2 = new Thread(threads.m2);
+            
+            // The threads are set to state running, so that the infinite loop can be interrupted
             threads.running = true;
+            
+            // Both threads are started
             thr1.Start();            
             thr2.Start();
         }
@@ -213,6 +225,10 @@ namespace SQLiteTest
         public void m1()
         {
             SQLiteCommand cmd = null;
+            
+            // The first thread is writing to the database in an infinite loop
+            // using it's own instance of the DB-connection
+            // writing can be stopped when setting running = false
             while (running)
             {
                 DateTime dt = DateTime.Now;
@@ -226,6 +242,10 @@ namespace SQLiteTest
         public void m2()
         {
             SQLiteCommand cmd = null;
+
+            // The second thread is writing to the database in an infinite loop
+            // using it's own instance of the DB-connection
+            // writing can be stopped when setting running = false
             while (running)
             {
                 DateTime dt = DateTime.Now;
