@@ -28,17 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.btnShowContent = new System.Windows.Forms.Button();
             this.lb = new System.Windows.Forms.ListBox();
             this.btnStartThreads = new System.Windows.Forms.Button();
             this.btnStopThreads = new System.Windows.Forms.Button();
             this.btnShowStatus = new System.Windows.Forms.Button();
             this.btnViewThread = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.SuspendLayout();
             // 
             // btnShowContent
             // 
             this.btnShowContent.Location = new System.Drawing.Point(23, 12);
+            this.btnShowContent.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnShowContent.Name = "btnShowContent";
             this.btnShowContent.Size = new System.Drawing.Size(201, 53);
             this.btnShowContent.TabIndex = 0;
@@ -48,16 +59,21 @@
             // 
             // lb
             // 
+            this.lb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lb.FormattingEnabled = true;
             this.lb.ItemHeight = 16;
-            this.lb.Location = new System.Drawing.Point(307, 26);
+            this.lb.Location = new System.Drawing.Point(243, 206);
+            this.lb.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lb.Name = "lb";
-            this.lb.Size = new System.Drawing.Size(449, 404);
+            this.lb.Size = new System.Drawing.Size(708, 244);
             this.lb.TabIndex = 1;
             // 
             // btnStartThreads
             // 
             this.btnStartThreads.Location = new System.Drawing.Point(23, 108);
+            this.btnStartThreads.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnStartThreads.Name = "btnStartThreads";
             this.btnStartThreads.Size = new System.Drawing.Size(201, 58);
             this.btnStartThreads.TabIndex = 2;
@@ -67,7 +83,8 @@
             // 
             // btnStopThreads
             // 
-            this.btnStopThreads.Location = new System.Drawing.Point(23, 205);
+            this.btnStopThreads.Location = new System.Drawing.Point(23, 206);
+            this.btnStopThreads.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnStopThreads.Name = "btnStopThreads";
             this.btnStopThreads.Size = new System.Drawing.Size(201, 60);
             this.btnStopThreads.TabIndex = 3;
@@ -78,6 +95,7 @@
             // btnShowStatus
             // 
             this.btnShowStatus.Location = new System.Drawing.Point(23, 305);
+            this.btnShowStatus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnShowStatus.Name = "btnShowStatus";
             this.btnShowStatus.Size = new System.Drawing.Size(201, 57);
             this.btnShowStatus.TabIndex = 4;
@@ -88,6 +106,7 @@
             // btnViewThread
             // 
             this.btnViewThread.Location = new System.Drawing.Point(23, 388);
+            this.btnViewThread.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnViewThread.Name = "btnViewThread";
             this.btnViewThread.Size = new System.Drawing.Size(201, 50);
             this.btnViewThread.TabIndex = 5;
@@ -95,21 +114,101 @@
             this.btnViewThread.UseVisualStyleBackColor = true;
             this.btnViewThread.Click += new System.EventHandler(this.btnViewThread_Click);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.BackgroundImage = global::SQLiteTest.Properties.Resources.Haufe_Transparent;
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox1.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.InitialImage")));
+            this.pictureBox1.Location = new System.Drawing.Point(1255, 38);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(427, 50);
+            this.pictureBox1.TabIndex = 6;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox2.BackgroundImage = global::SQLiteTest.Properties.Resources.CS;
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox2.Location = new System.Drawing.Point(836, 87);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(115, 95);
+            this.pictureBox2.TabIndex = 7;
+            this.pictureBox2.TabStop = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(247, 105);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(323, 62);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Multithread Connection \r\nTester for SQLite + C#";
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox3.BackgroundImage = global::SQLiteTest.Properties.Resources._1920px_SQLite370_svg;
+            this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox3.Location = new System.Drawing.Point(619, 87);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(197, 95);
+            this.pictureBox3.TabIndex = 9;
+            this.pictureBox3.TabStop = false;
+            // 
+            // pictureBox4
+            // 
+            this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox4.BackgroundImage = global::SQLiteTest.Properties.Resources.Haufe_Transparent;
+            this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox4.Location = new System.Drawing.Point(619, 20);
+            this.pictureBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(332, 46);
+            this.pictureBox4.TabIndex = 10;
+            this.pictureBox4.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.BackColor = System.Drawing.Color.White;
+            this.BackgroundImage = global::SQLiteTest.Properties.Resources.Connection2_Light2;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ClientSize = new System.Drawing.Size(975, 567);
+            this.Controls.Add(this.pictureBox4);
+            this.Controls.Add(this.pictureBox3);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnViewThread);
             this.Controls.Add(this.btnShowStatus);
             this.Controls.Add(this.btnStopThreads);
             this.Controls.Add(this.btnStartThreads);
             this.Controls.Add(this.lb);
             this.Controls.Add(this.btnShowContent);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MinimumSize = new System.Drawing.Size(990, 481);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Haufe Multi-SQLite for C#";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -121,6 +220,11 @@
         private System.Windows.Forms.Button btnStopThreads;
         private System.Windows.Forms.Button btnShowStatus;
         private System.Windows.Forms.Button btnViewThread;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox pictureBox4;
     }
 }
 

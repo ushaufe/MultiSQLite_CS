@@ -40,6 +40,8 @@ namespace SQLiteTest
         // Can be run simultanously to writing threads
         ViewThread viewThread;
 
+        String strDatabaseFile = "";
+
         private delegate void AddListDelegate(List<String> list);
 
         public void AddListSafe(List<String> list)
@@ -62,21 +64,34 @@ namespace SQLiteTest
 
         public Form1()
         {
+            String strCurrentDir = System.IO.Directory.GetCurrentDirectory();
+            if (strCurrentDir.Length == 0)
+                strCurrentDir = "C:";
+            if (strCurrentDir[strCurrentDir.Length - 1] != '\\')
+                strCurrentDir += '\\';
+            strDatabaseFile = strCurrentDir + "demo.db";
+
+            System.IO.FileAttributes databaseAttributes = System.IO.File.GetAttributes(strDatabaseFile);
+
+            
             InitializeComponent();
             DateTime dt = DateTime.Now;
-            string cs = "Data Source=demo.db;Version=3;Pooling=True;Max Pool Size=100;";
+            string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
             SQLiteCommand cmd = null;
             threads = new CThreads();
             
 
-
+            
             con = new SQLiteConnection(cs);
             con.Open();
-                       
 
 
+            String strConnected = "";
             if (con.State == ConnectionState.Open)
-            {                
+            {
+                lb.Items.Add("Database opened: " + strDatabaseFile);              
+                lb.Items.Add( "Database accessible for " + ( (databaseAttributes == System.IO.FileAttributes.ReadOnly) ? " Read only" : "Read + Write") );
+
                 cmd = new SQLiteCommand("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadid INTEGER) ", con);
                 cmd.ExecuteNonQuery();
                 String strDeleteFrom = "";
@@ -89,7 +104,11 @@ namespace SQLiteTest
                 // Create a table that can hold text-data along with the thread-id of the thread that created the data
                 strInsert = String.Format("insert into testtable (threadid,text) values (0,'{0}')", dt.ToString());
                 cmd = new SQLiteCommand(strInsert, con);
-                cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();            
+            }
+            else
+            {
+                lb.Items.Add("Error: Could not opened database: " + strDatabaseFile);
             }            
         }
 
@@ -98,7 +117,7 @@ namespace SQLiteTest
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Form1 frm1 = this;
+           Form1 frm1 = this;
             viewThread = new ViewThread(frm1);
         }
 

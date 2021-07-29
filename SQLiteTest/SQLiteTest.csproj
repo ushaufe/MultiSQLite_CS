@@ -7,7 +7,7 @@
     <ProjectGuid>{220E2F96-002F-454D-9939-F8BB85D8E5A1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>SQLiteTest</RootNamespace>
-    <AssemblyName>SQLiteTest</AssemblyName>
+    <AssemblyName>MultiSQlite_CS</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,6 +34,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ConnectionIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SQLite.Designer">
@@ -89,6 +92,36 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Haufe.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Connection2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Connection2_Light1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Connection2_Light2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Haufe_Transparent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CS_Transparent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1920px-SQLite370.svg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Connections.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ConnectionIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.114.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
