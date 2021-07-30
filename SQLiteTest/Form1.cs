@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SQLite;
 using System.Threading;
+using System.IO;
 
 
 // This is a C# project to demonstrage how well SQLite can handle Multithreading
@@ -64,14 +65,23 @@ namespace SQLiteTest
 
         public Form1()
         {
-            String strCurrentDir = System.IO.Directory.GetCurrentDirectory();
-            if (strCurrentDir.Length == 0)
-                strCurrentDir = "C:";
-            if (strCurrentDir[strCurrentDir.Length - 1] != '\\')
-                strCurrentDir += '\\';
-            strDatabaseFile = strCurrentDir + "demo.db";
+            String strDatabaseDir = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.ApplicationData));
+            if (strDatabaseDir.Length == 0)
+                strDatabaseDir = "C:";
+            if (strDatabaseDir[strDatabaseDir.Length - 1] != '\\')
+                strDatabaseDir += '\\';
+            strDatabaseDir += "MultiSQLite\\";
+            if (!System.IO.Directory.Exists(strDatabaseDir)) 
+                System.IO.Directory.CreateDirectory(strDatabaseDir);
+            strDatabaseFile = strDatabaseDir + "demo.db";            
 
-            System.IO.FileAttributes databaseAttributes = System.IO.File.GetAttributes(strDatabaseFile);
+            System.IO.FileAttributes databaseAttributes = 0;
+
+            if (File.Exists(strDatabaseFile))
+                databaseAttributes = System.IO.File.GetAttributes(strDatabaseFile);
+            else
+                databaseAttributes = System.IO.FileAttributes.Offline;
 
             
             InitializeComponent();
@@ -89,7 +99,15 @@ namespace SQLiteTest
             String strConnected = "";
             if (con.State == ConnectionState.Open)
             {
-                lb.Items.Add("Database opened: " + strDatabaseFile);              
+                if (databaseAttributes == System.IO.FileAttributes.Offline)
+                {
+                    databaseAttributes = System.IO.File.GetAttributes(strDatabaseFile);
+                    lb.Items.Add("Database created: " + strDatabaseFile);
+                }
+                else
+                {
+                    lb.Items.Add("Database opened: " + strDatabaseFile);
+                }
                 lb.Items.Add( "Database accessible for " + ( (databaseAttributes == System.IO.FileAttributes.ReadOnly) ? " Read only" : "Read + Write") );
 
                 cmd = new SQLiteCommand("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadid INTEGER) ", con);
