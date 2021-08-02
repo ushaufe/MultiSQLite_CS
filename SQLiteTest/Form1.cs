@@ -47,7 +47,7 @@ namespace SQLiteTest
         String strDatabaseFile = "";
         String strVersion = "";
         String strSQLiteVersion = "";
-        const String DB_FILE = "demo.db";   //
+        const String DB_FILE = "Multisqlite.db";   //
 
         private int appID = -1;
 
@@ -112,6 +112,17 @@ namespace SQLiteTest
             String strConnected = "";
             if (con.State == ConnectionState.Open)
             {
+                int nRevision = getRevision();
+                if (nRevision < 1)
+                {
+                    lbGeneral.Items.Add("Error: Old database...." );
+                    lbGeneral.Items.Add("       Deleting tables" );
+                    lbGeneral.Items.Add("");
+                    execQuery("drop table if exists version");
+                    execQuery("drop table if exists testtable");
+                    execQuery("drop table if exists apps");
+                }
+
                 setSQLiteVersion();
                 if (databaseAttributes == System.IO.FileAttributes.Offline)
                 {
@@ -130,41 +141,19 @@ namespace SQLiteTest
                 String strInsert = "";
 
 
-                cmd = new SQLiteCommand("Create Table if NOT Exists version (id INTEGER PRIMARY KEY AUTOINCREMENT, revision INTEGER) ", con);
-                cmd.ExecuteNonQuery();
-                strDeleteFrom = "";
-                strInsert = "";
-
-                cmd = new SQLiteCommand("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER) ", con);
-                cmd.ExecuteNonQuery();
-                strDeleteFrom = "";
-                strInsert = "";
-
-
-                cmd = new SQLiteCommand("Create Table if NOT Exists apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT) ", con);
-                cmd.ExecuteNonQuery();
-                strDeleteFrom = "";
-                strInsert = "";
-
-
-                strInsert = String.Format("insert into apps (name) values ('" + appName + "')");
-                cmd = new SQLiteCommand(strInsert, con);
-                cmd.ExecuteNonQuery();
-
+                execQuery("Create Table if NOT Exists version (id INTEGER PRIMARY KEY AUTOINCREMENT, revision INTEGER) ");
+                execQuery("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER) ");
+                execQuery("Create Table if NOT Exists apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT) ");
+                execQuery("insert into apps (name) values ('" + appName + "')");                
                 setAppID();
+                
 
                 // Create a table that can hold text-data along with the thread-id of the thread that created the data
                 strInsert = String.Format("insert into testtable (appID,threadid,text) values ({0},0,'{1}')", appID, dt.ToString());
-                cmd = new SQLiteCommand(strInsert, con);
-                cmd.ExecuteNonQuery();
-
-                strDeleteFrom = String.Format("Delete from version");
-                cmd = new SQLiteCommand(strDeleteFrom, con);
-                cmd.ExecuteNonQuery();
-
-                strInsert = String.Format("insert into version (id,revision) values (0,1)");
-                cmd = new SQLiteCommand(strInsert, con);
-                cmd.ExecuteNonQuery();
+                execQuery(strInsert);
+                execQuery("Delete from version");
+                execQuery("insert into version (id,revision) values (0,1)");
+                
 
                 lbGeneral.Items.Add("SQLite Version: " + strSQLiteVersion);
             }
@@ -176,7 +165,14 @@ namespace SQLiteTest
             threads = new CThreads(appID,strDatabaseFile);
             tiUpdateApps.Enabled = true;
             tiPollApps.Enabled = true;
-}
+        }
+
+        protected void execQuery(String strQuery)
+        {
+            SQLiteCommand cmd = null;            
+            cmd = new SQLiteCommand(strQuery, con);
+            cmd.ExecuteNonQuery();            
+        }
 
 
         public void setSQLiteVersion()
@@ -185,6 +181,29 @@ namespace SQLiteTest
             string stm = "SELECT SQLITE_VERSION()";
             cmd = new SQLiteCommand(stm, con);
             strSQLiteVersion = cmd.ExecuteScalar().ToString();           
+        }
+
+
+        public int getRevision()
+        {
+            string stm = "SELECT SQLITE_VERSION()";
+            int nRevision = -1;
+
+            SQLiteCommand cmd = null;
+            cmd = new SQLiteCommand(stm, con);
+            string strVersion = cmd.ExecuteScalar().ToString();
+
+
+            cmd = new SQLiteCommand("SELECT * FROM version order by id DESC LIMIT 1", con);
+            SQLiteDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                String strID = reader["revision"].ToString();
+                nRevision = Convert.ToInt32(strID);
+                this.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";
+                //this.Text = strID;
+            }
+            return nRevision;
         }
 
         public void setAppID()
