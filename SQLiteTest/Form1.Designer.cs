@@ -45,6 +45,8 @@
             this.lbGeneral = new System.Windows.Forms.ListBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.lbActiveApps = new System.Windows.Forms.ListBox();
+            this.tsApps = new System.Windows.Forms.TabPage();
+            this.treeApps = new System.Windows.Forms.TreeView();
             this.tiPollApps = new System.Windows.Forms.Timer(this.components);
             this.tiUpdateApps = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -54,6 +56,7 @@
             this.tcTabs.SuspendLayout();
             this.tsGeneral.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tsApps.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnShowContent
@@ -145,7 +148,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(247, 105);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(323, 62);
+            this.label1.Size = new System.Drawing.Size(264, 52);
             this.label1.TabIndex = 8;
             this.label1.Text = "Multithread Connection \r\nTester for SQLite + C#";
             // 
@@ -182,6 +185,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tcTabs.Controls.Add(this.tsGeneral);
             this.tcTabs.Controls.Add(this.tabPage2);
+            this.tcTabs.Controls.Add(this.tsApps);
             this.tcTabs.Location = new System.Drawing.Point(253, 187);
             this.tcTabs.Name = "tcTabs";
             this.tcTabs.SelectedIndex = 0;
@@ -230,6 +234,26 @@
             this.lbActiveApps.Size = new System.Drawing.Size(684, 337);
             this.lbActiveApps.TabIndex = 0;
             // 
+            // tsApps
+            // 
+            this.tsApps.Controls.Add(this.treeApps);
+            this.tsApps.Location = new System.Drawing.Point(4, 25);
+            this.tsApps.Name = "tsApps";
+            this.tsApps.Padding = new System.Windows.Forms.Padding(3);
+            this.tsApps.Size = new System.Drawing.Size(690, 343);
+            this.tsApps.TabIndex = 2;
+            this.tsApps.Text = "Apps";
+            this.tsApps.UseVisualStyleBackColor = true;
+            // 
+            // treeApps
+            // 
+            this.treeApps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeApps.Location = new System.Drawing.Point(3, 3);
+            this.treeApps.Name = "treeApps";
+            this.treeApps.Size = new System.Drawing.Size(684, 337);
+            this.treeApps.TabIndex = 0;
+            this.treeApps.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeApps_BeforeExpand_1);
+            // 
             // tiPollApps
             // 
             this.tiPollApps.Interval = 10000;
@@ -272,6 +296,7 @@
             this.tcTabs.ResumeLayout(false);
             this.tsGeneral.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.tsApps.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -296,6 +321,8 @@
         private System.Windows.Forms.Timer tiPollApps;
         private System.Windows.Forms.Timer tiUpdateApps;
         private System.Windows.Forms.ListBox lbActiveApps;
+        private System.Windows.Forms.TabPage tsApps;
+        private System.Windows.Forms.TreeView treeApps;
     }
 }
 
