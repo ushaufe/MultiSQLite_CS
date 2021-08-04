@@ -99,6 +99,7 @@ namespace SQLiteTest
             var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
             strVersion = versionInfo.FileVersion;
             lbGeneral.Items.Add(appName + " version: " + strVersion);
+            lblVersion.Text = "Version: " + strVersion;
 
 
             DateTime dt = DateTime.Now;
@@ -265,7 +266,7 @@ namespace SQLiteTest
 
         private void btnStopThreads_Click(object sender, EventArgs e)
         {
-            tcTabs.SelectedIndex = 0;
+            tcTabs.SelectedTab = tsApps;
             threads.running = false;
             btnStartThreads.Enabled = !threads.running;
             btnStopThreads.Enabled = threads.running;
@@ -331,10 +332,29 @@ namespace SQLiteTest
             }
             else if (tcTabs.SelectedTab == tsApps)
             {
+                List<TreeNode> activeNodes = new List<TreeNode>();
+                bool bFound = false;
+                /*
+                List<TreeNode> activeNodes = new List<TreeNode>();                
+                NodeDefinition ndAppHeadline = new NodeDefinition();
+                ndAppHeadline.nodeType = NodeDefinition.NodeType.ntApp;
+                TreeNode nodeAppHeadline = new TreeNode("Apps");
+                nodeAppHeadline.Tag = ndAppHeadline;                
+                foreach(TreeNode node in treeApps.Nodes)
+                {
+                    if (node.Text.Equals(nodeAppHeadline.Text))
+                        bFound = true;
+                }
+                if (!bFound)
+                {
+                    treeApps.Nodes.Add(nodeAppHeadline);
+                }
+                activeNodes.Add(nodeAppHeadline);
+                */
+
                 SQLiteCommand cmd = null;
                 cmd = new SQLiteCommand("Select distinct apps.id as AppID,apps.name as AppName from apps where strftime('%s', 'now') -strftime('%s', tsLastPoll)  < 30", con);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                List<TreeNode> activeNodes = new List<TreeNode>();
+                SQLiteDataReader reader = cmd.ExecuteReader();                
                 while (reader.Read())
                 {
                     string strID = (string)reader["AppID"].ToString();
@@ -346,9 +366,7 @@ namespace SQLiteTest
                     insertNode.Tag = nd;
                     string strInsertText = strName + " <ID: " + strID + ">";
 
-
-
-                    bool bFound = false;
+                    bFound = false;
                     foreach (TreeNode node in treeApps.Nodes)
                     {
                         if (node.Text.Equals(strInsertText))
@@ -364,7 +382,7 @@ namespace SQLiteTest
                 }
                 for (int x = treeApps.Nodes.Count - 1; x >= 0; x--)
                 {
-                    bool bFound = false;
+                    bFound = false;
 
                     if (treeApps.Nodes[x].Nodes.Count == 0)
                         treeApps.Nodes[x].Nodes.Add("");
@@ -376,7 +394,7 @@ namespace SQLiteTest
                     }
                     if (!bFound)
                         treeApps.Nodes.RemoveAt(x);
-                }
+                }                
             }
         }
 
@@ -385,103 +403,13 @@ namespace SQLiteTest
 
         }        
 
-        private void treeApps_BeforeExpand_1(object sender, TreeViewCancelEventArgs e)
-        {
-            TreeNode node = e.Node;
-            node.Nodes.Clear();
 
-            NodeDefinition nd = (NodeDefinition)node.Tag;
-            
-            
-            if (nd.nodeType == NodeDefinition.NodeType.ntApp)
-            {
-                NodeDefinition ndThreadCountHeadline = new NodeDefinition();
-                ndThreadCountHeadline.nodeType = NodeDefinition.NodeType.ntThreadCountHeadline;
-                ndThreadCountHeadline.strAppID = nd.strAppID;
-                TreeNode treeNodeThreadCountHeadline = new TreeNode("Count:");
-                treeNodeThreadCountHeadline.Nodes.Add("");
-                treeNodeThreadCountHeadline.Tag = ndThreadCountHeadline;
-                node.Nodes.Add(treeNodeThreadCountHeadline);
-
-                NodeDefinition ndThreadHeadline = new NodeDefinition();
-                ndThreadHeadline.nodeType = NodeDefinition.NodeType.ntThreadHeadline;
-                ndThreadHeadline.strAppID = nd.strAppID;
-                TreeNode treeNodeThreadHeadline = new TreeNode("Threads:");
-                treeNodeThreadHeadline.Nodes.Add("");
-                treeNodeThreadHeadline.Tag = ndThreadHeadline;
-                node.Nodes.Add(treeNodeThreadHeadline);
-            }
-
-            else if (nd.nodeType == NodeDefinition.NodeType.ntThreadCountHeadline)
-            {
-                NodeDefinition ndThreadCount = new NodeDefinition();
-                ndThreadCount.nodeType = NodeDefinition.NodeType.ntThreadCount;
-                ndThreadCount.strAppID = nd.strAppID;
-                SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(distinct threadid) as CNT from testtable where appID=" + nd.strAppID, con);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    string strCNT = (string)reader["CNT"].ToString();
-                    TreeNode treeNodeThreadCount = new TreeNode(strCNT);
-                    treeNodeThreadCount.Tag = ndThreadCount;
-                    node.Nodes.Add(treeNodeThreadCount);
-                }
-            }
-
-            else if (nd.nodeType == NodeDefinition.NodeType.ntThreadHeadline)
-            {
-
-                SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select distinct threadid from testtable where appID=" + nd.strAppID, con);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    NodeDefinition ndThread = new NodeDefinition();
-                    ndThread.nodeType = NodeDefinition.NodeType.ntThread;
-                    ndThread.strAppID = nd.strAppID;
-                    string strThreadID = (string)reader["ThreadID"].ToString();                    
-                    TreeNode treeNodeThread = new TreeNode("Thread: " + strThreadID);                    
-                    ndThread.strThreadID = strThreadID;
-                    treeNodeThread.Tag = ndThread;
-                    treeNodeThread.Nodes.Add("");
-                    node.Nodes.Add(treeNodeThread);
-                }
-            }
-
-            else if (nd.nodeType == NodeDefinition.NodeType.ntThread)
-            {
-                NodeDefinition ndEntry = new NodeDefinition();
-                ndEntry.nodeType = NodeDefinition.NodeType.ntEntry;
-                ndEntry.strAppID = nd.strAppID;
-                ndEntry.strThreadID = nd.strThreadID;
-                SQLiteCommand cmd = null;                
-                cmd = new SQLiteCommand("select id,text,appid,threadid,tsCreated from testtable where appID=" + nd.strAppID + " and threadID=" +nd.strThreadID, con);                
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    string strID = (string)reader["ID"].ToString();
-                    string strText = (string)reader["Text"].ToString();
-                    string strThreadID = (string)reader["ThreadID"].ToString();
-                    string strAppID = (string)reader["AppID"].ToString();
-                    string strTSCreated = (string)reader["tsCreated"].ToString();
-                    string str = "ID: " + strID + ", AppID: " + strAppID + ", ThreadID: " + strThreadID + ", Created: " + strTSCreated + " " + strText;
-                    TreeNode treeNodeEntry = new TreeNode(str);
-                    treeNodeEntry.Tag = ndEntry;
-                    treeNodeEntry.Nodes.Add("");
-                    node.Nodes.Add(treeNodeEntry);
-                }
-            }
-
-            if (node.Nodes.Count == 0)
-            node.Nodes.Add("");                
-        }
 
         private void buttonStartThreads_Click(object sender, EventArgs e)
         {
             listThreads.Clear();
 
-            tcTabs.SelectedIndex = 0;
+            tcTabs.SelectedTab = tsApps;
 
             for (int i = 0;i<numThreads.Value;i++)
             {
@@ -511,12 +439,174 @@ namespace SQLiteTest
             */
         }
 
+        private void treeApps_BeforeExpand_1(object sender, TreeViewCancelEventArgs e)
+        {
+            TreeNode node = e.Node;
+            node.Nodes.Clear();
+
+            NodeDefinition nd = (NodeDefinition)node.Tag;
+
+
+            if (nd.nodeType == NodeDefinition.NodeType.ntApp)
+            {
+                NodeDefinition ndCountThreadHeadline = new NodeDefinition();
+                ndCountThreadHeadline.nodeType = NodeDefinition.NodeType.ntCountThreadHeadline;
+                ndCountThreadHeadline.strAppID = nd.strAppID;
+                TreeNode treeNodeCountThreadHeadline = new TreeNode("Threads Count:");
+                treeNodeCountThreadHeadline.Nodes.Add("");
+                treeNodeCountThreadHeadline.Tag = ndCountThreadHeadline;
+                node.Nodes.Add(treeNodeCountThreadHeadline);
+
+                NodeDefinition ndCountAppEntriesHeadline = new NodeDefinition();
+                ndCountAppEntriesHeadline.nodeType = NodeDefinition.NodeType.ntCountAppEntriesHeadline;
+                ndCountAppEntriesHeadline.strAppID = nd.strAppID;
+                TreeNode treeNodeCountAppEntriesHeadline = new TreeNode("Entries Count:");
+                treeNodeCountAppEntriesHeadline.Nodes.Add("");
+                treeNodeCountAppEntriesHeadline.Tag = ndCountAppEntriesHeadline;
+                node.Nodes.Add(treeNodeCountAppEntriesHeadline);
+
+                NodeDefinition ndThreadHeadline = new NodeDefinition();
+                ndThreadHeadline.nodeType = NodeDefinition.NodeType.ntThreadHeadline;
+                ndThreadHeadline.strAppID = nd.strAppID;
+                TreeNode treeNodeThreadHeadline = new TreeNode("Threads:");
+                treeNodeThreadHeadline.Nodes.Add("");
+                treeNodeThreadHeadline.Tag = ndThreadHeadline;
+                node.Nodes.Add(treeNodeThreadHeadline);
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntCountThreadHeadline)
+            {
+                NodeDefinition ndTotalThreadCount = new NodeDefinition();
+                ndTotalThreadCount.nodeType = NodeDefinition.NodeType.ntTotalThreadCount;
+                ndTotalThreadCount.strAppID = nd.strAppID;
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand("select count(distinct threadid) as CNT from testtable where appID=" + nd.strAppID, con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string strCNT = (string)reader["CNT"].ToString();
+                    TreeNode treeNodeTotalThreadCount = new TreeNode(strCNT);
+                    treeNodeTotalThreadCount.Tag = ndTotalThreadCount;
+                    node.Nodes.Add(treeNodeTotalThreadCount);
+                }
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntThreadHeadline)
+            {
+
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand("select distinct threadid from testtable where appID=" + nd.strAppID, con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    NodeDefinition ndThread = new NodeDefinition();
+                    ndThread.nodeType = NodeDefinition.NodeType.ntThread;
+                    ndThread.strAppID = nd.strAppID;
+                    string strThreadID = (string)reader["ThreadID"].ToString();
+                    TreeNode treeNodeThread = new TreeNode("Thread: " + strThreadID);
+                    ndThread.strThreadID = strThreadID;
+                    treeNodeThread.Tag = ndThread;
+                    treeNodeThread.Nodes.Add("");
+                    node.Nodes.Add(treeNodeThread);
+                }
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntThread)
+            {
+                NodeDefinition ndEntry = new NodeDefinition();
+                ndEntry.nodeType = NodeDefinition.NodeType.ntEntryHeadline;
+                ndEntry.strAppID = nd.strAppID;
+                ndEntry.strThreadID = nd.strThreadID;
+                TreeNode treeNodeEntryHeadline = new TreeNode("Entries:");
+                treeNodeEntryHeadline.Tag = ndEntry;
+                treeNodeEntryHeadline.Nodes.Add("");
+                node.Nodes.Add(treeNodeEntryHeadline);
+
+                NodeDefinition ndCountThreadEntry = new NodeDefinition();
+                ndCountThreadEntry.nodeType = NodeDefinition.NodeType.ntCountThreadEntriesHeadline;
+                ndCountThreadEntry.strAppID = nd.strAppID;
+                ndCountThreadEntry.strThreadID = nd.strThreadID;
+                TreeNode treeNodeCountThreadEntry = new TreeNode("Count Thread Entries:");
+                treeNodeCountThreadEntry.Tag = ndCountThreadEntry;
+                treeNodeCountThreadEntry.Nodes.Add("");
+                node.Nodes.Add(treeNodeCountThreadEntry);
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntEntryHeadline)
+            {
+                NodeDefinition ndEntry = new NodeDefinition();
+                ndEntry.nodeType = NodeDefinition.NodeType.ntEntry;
+                ndEntry.strAppID = nd.strAppID;
+                ndEntry.strThreadID = nd.strThreadID;
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand("select id,text,appid,threadid,tsCreated from testtable where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string strID = (string)reader["ID"].ToString();
+                    string strText = (string)reader["Text"].ToString();
+                    string strThreadID = (string)reader["ThreadID"].ToString();
+                    string strAppID = (string)reader["AppID"].ToString();
+                    string strTSCreated = (string)reader["tsCreated"].ToString();
+                    string str = "ID: " + strID + ", AppID: " + strAppID + ", ThreadID: " + strThreadID + ", Created: " + strTSCreated + " " + strText;
+                    TreeNode treeNodeEntry = new TreeNode(str);
+                    treeNodeEntry.Tag = ndEntry;
+                    treeNodeEntry.Nodes.Add("");
+                    node.Nodes.Add(treeNodeEntry);
+                }
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntCountAppEntriesHeadline)
+            {
+                NodeDefinition ndCountAppEntries = new NodeDefinition();
+                ndCountAppEntries.nodeType = NodeDefinition.NodeType.ntCountAppEntries;
+                ndCountAppEntries.strAppID = nd.strAppID;
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand("select count(id) as CNT from testtable where appID=" + nd.strAppID, con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string strCNT = (string)reader["CNT"].ToString();
+                    TreeNode treeNodeAppEntries = new TreeNode(strCNT);
+                    treeNodeAppEntries.Tag = ndCountAppEntries;
+                    treeNodeAppEntries.Nodes.Add("");
+                    node.Nodes.Add(treeNodeAppEntries);
+                }
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntCountThreadEntriesHeadline)
+            {
+                NodeDefinition ndCountThreadEntries = new NodeDefinition();
+                ndCountThreadEntries.nodeType = NodeDefinition.NodeType.ntCountThreadEntries;
+                ndCountThreadEntries.strAppID = nd.strAppID;
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand("select count(id) as CNT from testtable where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string strCNT = (string)reader["CNT"].ToString();
+                    TreeNode treeNodeThreadEntries = new TreeNode(strCNT);
+                    treeNodeThreadEntries.Tag = ndCountThreadEntries;
+                    treeNodeThreadEntries.Nodes.Add("");
+                    node.Nodes.Add(treeNodeThreadEntries);
+                }
+            }
+
+            if (node.Nodes.Count == 0)
+                node.Nodes.Add("");
+        }
+
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             threads.running = false;
             if (con == null)
                 return;
             execQuery("update apps set tsLastPoll = NULL where id = " + appID);
+        }
+
+        private void tcTabs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tiPollApps_Tick(null, null);
         }
     }
 
@@ -624,9 +714,22 @@ namespace SQLiteTest
 
     class NodeDefinition
     {
-        public enum NodeType { ntApp, ntThread, ntThreadHeadline, ntThreadCountHeadline, ntThreadCount, ntEntry };
+        public enum NodeType {      ntAppHeadline,
+                                    ntApp, 
+                                    ntThread, 
+                                    ntThreadHeadline, 
+                                    ntCountThreadHeadline, 
+                                    ntTotalThreadCount,
+                                    ntEntryHeadline,
+                                    ntEntry,    
+                                    ntCountAppEntriesHeadline, 
+                                    ntCountAppEntries,
+                                    ntCountThreadEntriesHeadline,
+                                    ntCountThreadEntries,                                    
+        };
+
         public NodeType nodeType;
         public string strAppID = "";
-        public string strThreadID = "";
+        public string strThreadID = "";                
     }
 }

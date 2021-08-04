@@ -51,6 +51,7 @@
             this.tiUpdateApps = new System.Windows.Forms.Timer(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.numThreads = new System.Windows.Forms.NumericUpDown();
+            this.lblVersion = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -64,10 +65,10 @@
             // 
             // btnShowContent
             // 
-            this.btnShowContent.Location = new System.Drawing.Point(23, 12);
-            this.btnShowContent.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnShowContent.Location = new System.Drawing.Point(17, 10);
+            this.btnShowContent.Margin = new System.Windows.Forms.Padding(2);
             this.btnShowContent.Name = "btnShowContent";
-            this.btnShowContent.Size = new System.Drawing.Size(201, 53);
+            this.btnShowContent.Size = new System.Drawing.Size(151, 43);
             this.btnShowContent.TabIndex = 0;
             this.btnShowContent.Text = "Show Content";
             this.btnShowContent.UseVisualStyleBackColor = true;
@@ -75,10 +76,10 @@
             // 
             // btnStartThreads
             // 
-            this.btnStartThreads.Location = new System.Drawing.Point(23, 108);
-            this.btnStartThreads.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnStartThreads.Location = new System.Drawing.Point(17, 88);
+            this.btnStartThreads.Margin = new System.Windows.Forms.Padding(2);
             this.btnStartThreads.Name = "btnStartThreads";
-            this.btnStartThreads.Size = new System.Drawing.Size(201, 58);
+            this.btnStartThreads.Size = new System.Drawing.Size(151, 47);
             this.btnStartThreads.TabIndex = 2;
             this.btnStartThreads.Text = "Start Threads";
             this.btnStartThreads.UseVisualStyleBackColor = true;
@@ -86,10 +87,10 @@
             // 
             // btnStopThreads
             // 
-            this.btnStopThreads.Location = new System.Drawing.Point(23, 206);
-            this.btnStopThreads.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnStopThreads.Location = new System.Drawing.Point(17, 167);
+            this.btnStopThreads.Margin = new System.Windows.Forms.Padding(2);
             this.btnStopThreads.Name = "btnStopThreads";
-            this.btnStopThreads.Size = new System.Drawing.Size(201, 60);
+            this.btnStopThreads.Size = new System.Drawing.Size(151, 49);
             this.btnStopThreads.TabIndex = 3;
             this.btnStopThreads.Text = "Stop Threads";
             this.btnStopThreads.UseVisualStyleBackColor = true;
@@ -98,10 +99,10 @@
             // btnShowStatus
             // 
             this.btnShowStatus.Enabled = false;
-            this.btnShowStatus.Location = new System.Drawing.Point(23, 305);
-            this.btnShowStatus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnShowStatus.Location = new System.Drawing.Point(17, 248);
+            this.btnShowStatus.Margin = new System.Windows.Forms.Padding(2);
             this.btnShowStatus.Name = "btnShowStatus";
-            this.btnShowStatus.Size = new System.Drawing.Size(201, 57);
+            this.btnShowStatus.Size = new System.Drawing.Size(151, 46);
             this.btnShowStatus.TabIndex = 4;
             this.btnShowStatus.Text = "Show Status";
             this.btnShowStatus.UseVisualStyleBackColor = true;
@@ -109,10 +110,10 @@
             // 
             // btnViewThread
             // 
-            this.btnViewThread.Location = new System.Drawing.Point(23, 388);
-            this.btnViewThread.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnViewThread.Location = new System.Drawing.Point(17, 315);
+            this.btnViewThread.Margin = new System.Windows.Forms.Padding(2);
             this.btnViewThread.Name = "btnViewThread";
-            this.btnViewThread.Size = new System.Drawing.Size(201, 50);
+            this.btnViewThread.Size = new System.Drawing.Size(151, 41);
             this.btnViewThread.TabIndex = 5;
             this.btnViewThread.Text = "View Thread";
             this.btnViewThread.UseVisualStyleBackColor = true;
@@ -125,10 +126,10 @@
             this.pictureBox1.BackgroundImage = global::SQLiteTest.Properties.Resources.Haufe_Transparent;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox1.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.InitialImage")));
-            this.pictureBox1.Location = new System.Drawing.Point(1255, 38);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBox1.Location = new System.Drawing.Point(941, 31);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(427, 50);
+            this.pictureBox1.Size = new System.Drawing.Size(320, 41);
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
@@ -138,10 +139,10 @@
             this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox2.BackgroundImage = global::SQLiteTest.Properties.Resources.CS;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox2.Location = new System.Drawing.Point(836, 87);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBox2.Location = new System.Drawing.Point(627, 71);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(115, 95);
+            this.pictureBox2.Size = new System.Drawing.Size(86, 77);
             this.pictureBox2.TabIndex = 7;
             this.pictureBox2.TabStop = false;
             // 
@@ -150,9 +151,10 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(247, 105);
+            this.label1.Location = new System.Drawing.Point(185, 85);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(323, 62);
+            this.label1.Size = new System.Drawing.Size(264, 52);
             this.label1.TabIndex = 8;
             this.label1.Text = "Multithread Connection \r\nTester for SQLite + C#";
             // 
@@ -162,10 +164,10 @@
             this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox3.BackgroundImage = global::SQLiteTest.Properties.Resources._1920px_SQLite370_svg;
             this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox3.Location = new System.Drawing.Point(619, 87);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBox3.Location = new System.Drawing.Point(464, 71);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(197, 95);
+            this.pictureBox3.Size = new System.Drawing.Size(148, 77);
             this.pictureBox3.TabIndex = 9;
             this.pictureBox3.TabStop = false;
             // 
@@ -175,10 +177,9 @@
             this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox4.BackgroundImage = global::SQLiteTest.Properties.Resources.Haufe_Transparent;
             this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox4.Location = new System.Drawing.Point(619, 20);
-            this.pictureBox4.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox4.Location = new System.Drawing.Point(464, 16);
             this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(332, 46);
+            this.pictureBox4.Size = new System.Drawing.Size(249, 37);
             this.pictureBox4.TabIndex = 10;
             this.pictureBox4.TabStop = false;
             // 
@@ -190,19 +191,22 @@
             this.tcTabs.Controls.Add(this.tsGeneral);
             this.tcTabs.Controls.Add(this.tabPage2);
             this.tcTabs.Controls.Add(this.tsApps);
-            this.tcTabs.Location = new System.Drawing.Point(253, 187);
+            this.tcTabs.Location = new System.Drawing.Point(190, 152);
+            this.tcTabs.Margin = new System.Windows.Forms.Padding(2);
             this.tcTabs.Name = "tcTabs";
             this.tcTabs.SelectedIndex = 0;
-            this.tcTabs.Size = new System.Drawing.Size(698, 372);
+            this.tcTabs.Size = new System.Drawing.Size(524, 302);
             this.tcTabs.TabIndex = 11;
+            this.tcTabs.SelectedIndexChanged += new System.EventHandler(this.tcTabs_SelectedIndexChanged);
             // 
             // tsGeneral
             // 
             this.tsGeneral.Controls.Add(this.lbGeneral);
-            this.tsGeneral.Location = new System.Drawing.Point(4, 25);
+            this.tsGeneral.Location = new System.Drawing.Point(4, 22);
+            this.tsGeneral.Margin = new System.Windows.Forms.Padding(2);
             this.tsGeneral.Name = "tsGeneral";
-            this.tsGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tsGeneral.Size = new System.Drawing.Size(690, 343);
+            this.tsGeneral.Padding = new System.Windows.Forms.Padding(2);
+            this.tsGeneral.Size = new System.Drawing.Size(516, 276);
             this.tsGeneral.TabIndex = 0;
             this.tsGeneral.Text = "General";
             this.tsGeneral.UseVisualStyleBackColor = true;
@@ -211,19 +215,20 @@
             // 
             this.lbGeneral.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lbGeneral.FormattingEnabled = true;
-            this.lbGeneral.ItemHeight = 16;
-            this.lbGeneral.Location = new System.Drawing.Point(3, 3);
+            this.lbGeneral.Location = new System.Drawing.Point(2, 2);
+            this.lbGeneral.Margin = new System.Windows.Forms.Padding(2);
             this.lbGeneral.Name = "lbGeneral";
-            this.lbGeneral.Size = new System.Drawing.Size(684, 337);
+            this.lbGeneral.Size = new System.Drawing.Size(512, 272);
             this.lbGeneral.TabIndex = 0;
             // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.lbActiveApps);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(690, 343);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage2.Size = new System.Drawing.Size(516, 276);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Active Apps";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -232,19 +237,20 @@
             // 
             this.lbActiveApps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lbActiveApps.FormattingEnabled = true;
-            this.lbActiveApps.ItemHeight = 16;
-            this.lbActiveApps.Location = new System.Drawing.Point(3, 3);
+            this.lbActiveApps.Location = new System.Drawing.Point(2, 2);
+            this.lbActiveApps.Margin = new System.Windows.Forms.Padding(2);
             this.lbActiveApps.Name = "lbActiveApps";
-            this.lbActiveApps.Size = new System.Drawing.Size(684, 337);
+            this.lbActiveApps.Size = new System.Drawing.Size(512, 272);
             this.lbActiveApps.TabIndex = 0;
             // 
             // tsApps
             // 
             this.tsApps.Controls.Add(this.treeApps);
-            this.tsApps.Location = new System.Drawing.Point(4, 25);
+            this.tsApps.Location = new System.Drawing.Point(4, 22);
+            this.tsApps.Margin = new System.Windows.Forms.Padding(2);
             this.tsApps.Name = "tsApps";
-            this.tsApps.Padding = new System.Windows.Forms.Padding(3);
-            this.tsApps.Size = new System.Drawing.Size(690, 343);
+            this.tsApps.Padding = new System.Windows.Forms.Padding(2);
+            this.tsApps.Size = new System.Drawing.Size(516, 276);
             this.tsApps.TabIndex = 2;
             this.tsApps.Text = "Apps";
             this.tsApps.UseVisualStyleBackColor = true;
@@ -252,9 +258,10 @@
             // treeApps
             // 
             this.treeApps.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeApps.Location = new System.Drawing.Point(3, 3);
+            this.treeApps.Location = new System.Drawing.Point(2, 2);
+            this.treeApps.Margin = new System.Windows.Forms.Padding(2);
             this.treeApps.Name = "treeApps";
-            this.treeApps.Size = new System.Drawing.Size(684, 337);
+            this.treeApps.Size = new System.Drawing.Size(512, 272);
             this.treeApps.TabIndex = 0;
             this.treeApps.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeApps_BeforeExpand_1);
             // 
@@ -271,22 +278,24 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(29, 87);
+            this.label2.Location = new System.Drawing.Point(22, 71);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(126, 16);
+            this.label2.Size = new System.Drawing.Size(101, 13);
             this.label2.TabIndex = 12;
             this.label2.Text = "Number of Threads:";
             // 
             // numThreads
             // 
-            this.numThreads.Location = new System.Drawing.Point(167, 83);
+            this.numThreads.Location = new System.Drawing.Point(125, 67);
+            this.numThreads.Margin = new System.Windows.Forms.Padding(2);
             this.numThreads.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.numThreads.Name = "numThreads";
-            this.numThreads.Size = new System.Drawing.Size(57, 22);
+            this.numThreads.Size = new System.Drawing.Size(43, 20);
             this.numThreads.TabIndex = 13;
             this.numThreads.Value = new decimal(new int[] {
             1,
@@ -294,14 +303,28 @@
             0,
             0});
             // 
+            // lblVersion
+            // 
+            this.lblVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.BackColor = System.Drawing.Color.Transparent;
+            this.lblVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVersion.ForeColor = System.Drawing.Color.Red;
+            this.lblVersion.Location = new System.Drawing.Point(14, 434);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(53, 13);
+            this.lblVersion.TabIndex = 14;
+            this.lblVersion.Text = "Version:";
+            // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = global::SQLiteTest.Properties.Resources.Connection2_Light2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(975, 567);
+            this.ClientSize = new System.Drawing.Size(731, 461);
+            this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.numThreads);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.tcTabs);
@@ -316,8 +339,8 @@
             this.Controls.Add(this.btnStartThreads);
             this.Controls.Add(this.btnShowContent);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.MinimumSize = new System.Drawing.Size(990, 481);
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.MinimumSize = new System.Drawing.Size(746, 398);
             this.Name = "frmMain";
             this.Text = "Haufe Multi-SQLite for C#";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
@@ -359,6 +382,7 @@
         private System.Windows.Forms.TreeView treeApps;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown numThreads;
+        private System.Windows.Forms.Label lblVersion;
     }
 }
 
