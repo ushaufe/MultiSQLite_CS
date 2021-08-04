@@ -29,9 +29,7 @@ using System.Runtime.InteropServices;
 namespace SQLiteTest
 {
 
-
-
-    public partial class Form1 : Form
+    public partial class frmMain : Form
     {
         SQLiteConnection con = null;
 
@@ -39,7 +37,7 @@ namespace SQLiteTest
 
 
         // These threads are used for simultaneous writing...
-        Thread thr1, thr2;
+        List<Thread> listThreads = new List<Thread>();
 
         // This thread is used for reading
         // ( Constantly polling the data in 
@@ -74,7 +72,7 @@ namespace SQLiteTest
             }
         }
 
-        public Form1()
+        public frmMain()
         {
             InitializeComponent();
 
@@ -107,23 +105,25 @@ namespace SQLiteTest
             string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
             SQLiteCommand cmd = null;
 
-
+            bool bDatabaseExisted = File.Exists(strDatabaseFile);
             con = new SQLiteConnection(cs);
             con.Open();
-
-
+          
             String strConnected = "";
             if (con.State == ConnectionState.Open)
             {
-                int nRevision = getRevision();
-                if (nRevision < 1)
+                if (bDatabaseExisted)
                 {
-                    lbGeneral.Items.Add("Error: Old database....");
-                    lbGeneral.Items.Add("       Deleting tables");
-                    lbGeneral.Items.Add("");
-                    execQuery("drop table if exists version");
-                    execQuery("drop table if exists testtable");
-                    execQuery("drop table if exists apps");
+                    int nRevision = getRevision();
+                    if (nRevision < 2)
+                    {
+                        lbGeneral.Items.Add("Error: Old database....");
+                        lbGeneral.Items.Add("       Deleting tables");
+                        lbGeneral.Items.Add("");
+                        execQuery("drop table if exists version");
+                        execQuery("drop table if exists testtable");
+                        execQuery("drop table if exists apps");
+                    }
                 }
 
                 setSQLiteVersion();
@@ -145,7 +145,7 @@ namespace SQLiteTest
 
 
                 execQuery("Create Table if NOT Exists version (id INTEGER PRIMARY KEY AUTOINCREMENT, revision INTEGER) ");
-                execQuery("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER) ");
+                execQuery("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ");
                 execQuery("Create Table if NOT Exists apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT) ");
                 execQuery("insert into apps (name) values ('" + appName + "')");
                 setAppID();
@@ -155,7 +155,7 @@ namespace SQLiteTest
                 strInsert = String.Format("insert into testtable (appID,threadid,text) values ({0},0,'{1}')", appID, dt.ToString());
                 execQuery(strInsert);
                 execQuery("Delete from version");
-                execQuery("insert into version (id,revision) values (0,1)");
+                execQuery("insert into version (id,revision) values (0,2)");
 
 
                 lbGeneral.Items.Add("SQLite Version: " + strSQLiteVersion);
@@ -192,19 +192,26 @@ namespace SQLiteTest
             string stm = "SELECT SQLITE_VERSION()";
             int nRevision = -1;
 
-            SQLiteCommand cmd = null;
-            cmd = new SQLiteCommand(stm, con);
-            string strVersion = cmd.ExecuteScalar().ToString();
-
-
-            cmd = new SQLiteCommand("SELECT * FROM version order by id DESC LIMIT 1", con);
-            SQLiteDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                String strID = reader["revision"].ToString();
-                nRevision = Convert.ToInt32(strID);
-                this.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";
-                //this.Text = strID;
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand(stm, con);
+                string strVersion = cmd.ExecuteScalar().ToString();
+
+
+                cmd = new SQLiteCommand("SELECT * FROM version order by id DESC LIMIT 1", con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    String strID = reader["revision"].ToString();
+                    nRevision = Convert.ToInt32(strID);
+                    this.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";
+                    //this.Text = strID;
+                }
+            }
+            catch(Exception e)
+            {
+
             }
             return nRevision;
         }
@@ -232,7 +239,7 @@ namespace SQLiteTest
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Form1 frm1 = this;
+            frmMain frm1 = this;
             viewThread = new ViewThread(frm1, appID, strDatabaseFile);
         }
 
@@ -260,6 +267,8 @@ namespace SQLiteTest
         {
             tcTabs.SelectedIndex = 0;
             threads.running = false;
+            btnStartThreads.Enabled = !threads.running;
+            btnStopThreads.Enabled = threads.running;
         }
 
         private void btnShowStatus_Click(object sender, EventArgs e)
@@ -304,8 +313,7 @@ namespace SQLiteTest
             if (tcTabs.SelectedTab == tabPage2)
             {
                 lbActiveApps.Items.Clear();
-
-                // SELECT strftime('%s','now') -strftime('%s', Timestamp) from test where strftime('%s', 'now') - strftime('%s', Timestamp) > 930
+                
                 string stm = "SELECT * from apps";
 
                 SQLiteCommand cmd = null;
@@ -375,14 +383,16 @@ namespace SQLiteTest
         private void treeApps_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
 
-        }
+        }        
 
         private void treeApps_BeforeExpand_1(object sender, TreeViewCancelEventArgs e)
         {
             TreeNode node = e.Node;
             node.Nodes.Clear();
 
-            NodeDefinition nd = (NodeDefinition)e.Node.Tag;
+            NodeDefinition nd = (NodeDefinition)node.Tag;
+            
+            
             if (nd.nodeType == NodeDefinition.NodeType.ntApp)
             {
                 NodeDefinition ndThreadCountHeadline = new NodeDefinition();
@@ -421,21 +431,21 @@ namespace SQLiteTest
 
             else if (nd.nodeType == NodeDefinition.NodeType.ntThreadHeadline)
             {
-                NodeDefinition ndThread = new NodeDefinition();
-                ndThread.nodeType = NodeDefinition.NodeType.ntThread;
-                ndThread.strAppID = nd.strAppID;
+
                 SQLiteCommand cmd = null;
                 cmd = new SQLiteCommand("select distinct threadid from testtable where appID=" + nd.strAppID, con);
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    string strThreadID = (string)reader["ThreadID"].ToString();
+                    NodeDefinition ndThread = new NodeDefinition();
+                    ndThread.nodeType = NodeDefinition.NodeType.ntThread;
+                    ndThread.strAppID = nd.strAppID;
+                    string strThreadID = (string)reader["ThreadID"].ToString();                    
+                    TreeNode treeNodeThread = new TreeNode("Thread: " + strThreadID);                    
                     ndThread.strThreadID = strThreadID;
-                    TreeNode treeNodeThread = new TreeNode(strThreadID);
                     treeNodeThread.Tag = ndThread;
                     treeNodeThread.Nodes.Add("");
                     node.Nodes.Add(treeNodeThread);
-
                 }
             }
 
@@ -445,8 +455,8 @@ namespace SQLiteTest
                 ndEntry.nodeType = NodeDefinition.NodeType.ntEntry;
                 ndEntry.strAppID = nd.strAppID;
                 ndEntry.strThreadID = nd.strThreadID;
-                SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select id,text,appid,threadid from testtable where appID=" + nd.strAppID + " and threadID="+nd.strThreadID, con);
+                SQLiteCommand cmd = null;                
+                cmd = new SQLiteCommand("select id,text,appid,threadid,tsCreated from testtable where appID=" + nd.strAppID + " and threadID=" +nd.strThreadID, con);                
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -454,7 +464,8 @@ namespace SQLiteTest
                     string strText = (string)reader["Text"].ToString();
                     string strThreadID = (string)reader["ThreadID"].ToString();
                     string strAppID = (string)reader["AppID"].ToString();
-                    string str = strID + " " + strText + " " + strThreadID + " " + strAppID;
+                    string strTSCreated = (string)reader["tsCreated"].ToString();
+                    string str = "ID: " + strID + ", AppID: " + strAppID + ", ThreadID: " + strThreadID + ", Created: " + strTSCreated + " " + strText;
                     TreeNode treeNodeEntry = new TreeNode(str);
                     treeNodeEntry.Tag = ndEntry;
                     treeNodeEntry.Nodes.Add("");
@@ -468,7 +479,24 @@ namespace SQLiteTest
 
         private void buttonStartThreads_Click(object sender, EventArgs e)
         {
+            listThreads.Clear();
+
             tcTabs.SelectedIndex = 0;
+
+            for (int i = 0;i<numThreads.Value;i++)
+            {
+                listThreads.Add(new Thread(threads.insert_thread_function));
+            }
+            threads.running = true;
+            
+            foreach(Thread thread in listThreads) {
+                thread.Start();
+            }
+
+            btnStartThreads.Enabled = !threads.running;
+            btnStopThreads.Enabled = threads.running;
+
+            /*
             // Two different threads are created for simultaneous writing
             // each thread creates it's own instance of a database object (pooling)
             thr1 = new Thread(threads.m1);
@@ -480,9 +508,16 @@ namespace SQLiteTest
             // Both threads are started
             thr1.Start();
             thr2.Start();
+            */
         }
 
-
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            threads.running = false;
+            if (con == null)
+                return;
+            execQuery("update apps set tsLastPoll = NULL where id = " + appID);
+        }
     }
 
     // This class contains a thread that is constantly polling the database
@@ -493,9 +528,9 @@ namespace SQLiteTest
     {
         SQLiteConnection con = null;
         public Boolean running = false;
-        Form1 frm;
+        frmMain frm;
         private int appID;
-        public ViewThread(Form1 frm, int appID, String strDatabaseFile)
+        public ViewThread(frmMain frm, int appID, String strDatabaseFile)
         {
             string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
             con = new SQLiteConnection(cs);
@@ -534,6 +569,8 @@ namespace SQLiteTest
         SQLiteConnection con1 = null;
         SQLiteConnection con2 = null;
 
+        static int maxThreadID;
+
         private int appID;
 
         // Control-Variable if thread is running
@@ -543,6 +580,7 @@ namespace SQLiteTest
         public CThreads(int appID, String strDatabaseFile)
         {
             this.appID = appID;
+            maxThreadID = 0;
 
             // First connection is opened, note Max Pool Size=100
             string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
@@ -556,8 +594,11 @@ namespace SQLiteTest
             SQLiteCommand cmd = null;
         }
 
-        public void m1()
+
+        public void insert_thread_function()
         {
+            int threadID = ++maxThreadID;
+            
             SQLiteCommand cmd = null;
 
             // The first thread is writing to the database in an infinite loop
@@ -566,25 +607,16 @@ namespace SQLiteTest
             while (running)
             {
                 DateTime dt = DateTime.Now;
-                String strInsert = String.Format("insert into testtable (threadid,text,appid) values (1,'T1: {0}', {1})", dt.ToString(), appID);
+                String str = "";
+                int nNow = (int)(DateTime.Now.Ticks % Int32.MaxValue);
+                Random rand = new Random(nNow);
+                do
+                {
+                    str = str + (char)rand.Next(65, 65 + 32);
+                } while (rand.Next(1, 255) != 100);
+                
+                String strInsert = String.Format("insert into testtable (threadid,text,appid) values ({0},'{1}', {2})", threadID, str,  appID);
                 cmd = new SQLiteCommand(strInsert, con1);
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-
-        public void m2()
-        {
-            SQLiteCommand cmd = null;
-
-            // The second thread is writing to the database in an infinite loop
-            // using it's own instance of the DB-connection
-            // writing can be stopped when setting running = false
-            while (running)
-            {
-                DateTime dt = DateTime.Now;
-                String strInsert = String.Format("insert into testtable (threadid,text,appid) values (2,'T2: {0}', {1})", dt.ToString(), appID);
-                cmd = new SQLiteCommand(strInsert, con2);
                 cmd.ExecuteNonQuery();
             }
         }
