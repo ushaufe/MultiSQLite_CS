@@ -17,6 +17,8 @@ using System.Runtime.InteropServices;
 using System.Xml.Linq;
 
 
+
+
 // This is a C# project to demonstrage how well SQLite can handle Multithreading
 // The documentation for this project and the accompanying C++ projects can be found here:
 // (the location may be moved by the webmaster of the wiki)
@@ -49,7 +51,8 @@ namespace SQLiteTest
         String strDatabaseFile = "";
         String strVersion = "";
         String strSQLiteVersion = "";
-        const String DB_FILE = "Multisqlite.db";   //
+        const String DB_FILE = "Multisqlite.db";
+        const int DB_REVISION = 3;
 
         private int appID = -1;
 
@@ -117,7 +120,7 @@ namespace SQLiteTest
                 if (bDatabaseExisted)
                 {
                     int nRevision = getRevision();
-                    if (nRevision < 2)
+                    if (nRevision < DB_REVISION )
                     {
                         lbGeneral.Items.Add("Error: Old database....");
                         lbGeneral.Items.Add("       Deleting tables");
@@ -148,8 +151,11 @@ namespace SQLiteTest
 
                 execQuery("Create Table if NOT Exists version (id INTEGER PRIMARY KEY AUTOINCREMENT, revision INTEGER) ");
                 execQuery("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ");
-                execQuery("Create Table if NOT Exists apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT) ");
-                execQuery("insert into apps (name) values ('" + appName + "')");
+                execQuery("Create Table if NOT Exists apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT, isActive INTEGER DEFAULT FALSE) ");
+                execQuery("Create Table if NOT Exists threads ( id INTEGER PRIMARY KEY AUTOINCREMENT, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isActive INTEGER DEFAULT FALSE ) ");
+                cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, con);
+                execQuery("update apps set isActive=0 where tsLastPoll is null ");
+                execQuery("insert into apps (name, isActive) values ('" + appName + "', true)");
                 setAppID();
 
 
@@ -157,7 +163,7 @@ namespace SQLiteTest
                 strInsert = String.Format("insert into testtable (appID,threadid,text) values ({0},0,'{1}')", appID, dt.ToString());
                 execQuery(strInsert);
                 execQuery("Delete from version");
-                execQuery("insert into version (id,revision) values (0,2)");
+                execQuery("insert into version (id,revision) values (0," + DB_REVISION + ")");
 
 
                 lbGeneral.Items.Add("SQLite Version: " + strSQLiteVersion);
@@ -305,33 +311,18 @@ namespace SQLiteTest
 
         private void tiUpdateApps_Tick(object sender, EventArgs e)
         {
+            lblVersion.ForeColor = Color.Red;
             SQLiteCommand cmd = null;
             cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, con);
             cmd.ExecuteNonQuery();
+            cmd = new SQLiteCommand("update apps set isActive=0 where strftime('%s', 'now') -strftime('%s', tsLastPoll)  > 30 ", con);
+            cmd.ExecuteNonQuery();
+            tiConnectionQuery.Enabled = true;
         }
 
         private void tiPollApps_Tick(object sender, EventArgs e)
         {
-            if (tcTabs.SelectedTab == tabPage2)
-            {
-                lbActiveApps.Items.Clear();
-
-                string stm = "SELECT * from apps";
-
-                SQLiteCommand cmd = null;
-
-
-                cmd = new SQLiteCommand("Select id,name from apps where strftime('%s', 'now') - strftime('%s', tsLastPoll) < 30", con);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    string strID = (string)reader["id"].ToString();
-                    string strName = (string)reader["name"].ToString();
-
-                    lbActiveApps.Items.Add(strName + " " + strID);
-                }
-            }
-            else if (tcTabs.SelectedTab == tsApps)
+            if (tcTabs.SelectedTab == tsApps)
             {
                 List<TreeNode> activeNodes = new List<TreeNode>();
                 bool bFound = false;
@@ -399,6 +390,28 @@ namespace SQLiteTest
                 }
                 activeNodes.Add(nodeCountTotalThreadsActiveHeadline);
 
+                //ntTotalThroughputHeadline
+                NodeDefinition ndTotalThroughputHeadlineHeadline = new NodeDefinition();
+                ndTotalThroughputHeadlineHeadline.nodeType = NodeDefinition.NodeType.ntTotalThroughputHeadline;
+                TreeNode nodeTotalThroughputHeadlineHeadline = new TreeNode("Total Throughput:");
+                nodeTotalThroughputHeadlineHeadline.Nodes.Add("");
+                nodeTotalThroughputHeadlineHeadline.Tag = ndTotalThroughputHeadlineHeadline;
+                foreach (TreeNode node3 in nodeTotalThroughputHeadlineHeadline.Nodes)
+                {
+                    if (node3.Text.Equals(nodeTotalThroughputHeadlineHeadline.Text))
+                    {
+                        bFound = true;
+                        nodeTotalThroughputHeadlineHeadline = node3;
+                        break;
+                    }
+                }
+                if (!bFound)
+                {
+                    treeApps.Nodes.Add(nodeTotalThroughputHeadlineHeadline);
+                }
+                activeNodes.Add(nodeTotalThroughputHeadlineHeadline);
+
+
                 treeApps_BeforeExpand_1(sender, new TreeViewCancelEventArgs(nodeAppHeadline, false, new TreeViewAction()));
             }
             
@@ -429,20 +442,6 @@ namespace SQLiteTest
 
             btnStartThreads.Enabled = !threads.running;
             btnStopThreads.Enabled = threads.running;
-
-            /*
-            // Two different threads are created for simultaneous writing
-            // each thread creates it's own instance of a database object (pooling)
-            thr1 = new Thread(threads.m1);
-            thr2 = new Thread(threads.m2);
-
-            // The threads are set to state running, so that the infinite loop can be interrupted
-            threads.running = true;
-
-            // Both threads are started
-            thr1.Start();
-            thr2.Start();
-            */
         }
 
         private void treeApps_BeforeExpand_1(object sender, TreeViewCancelEventArgs e)
@@ -456,7 +455,7 @@ namespace SQLiteTest
                 bool bFound = false;
                 List<TreeNode> activeNodes = new List<TreeNode>();
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("Select distinct apps.id as AppID,apps.name as AppName from apps where strftime('%s', 'now') -strftime('%s', tsLastPoll)  < 30", con);
+                cmd = new SQLiteCommand("Select distinct apps.id as AppID,apps.name as AppName from apps where isActive=1 ", con);
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -528,6 +527,14 @@ namespace SQLiteTest
                 treeNodeThreadHeadline.Nodes.Add("");
                 treeNodeThreadHeadline.Tag = ndThreadHeadline;
                 node.Nodes.Add(treeNodeThreadHeadline);
+
+                NodeDefinition ndAppThroughputHeadline = new NodeDefinition();
+                ndAppThroughputHeadline.nodeType = NodeDefinition.NodeType.ntAppThroughputHeadline;
+                ndAppThroughputHeadline.strAppID = nd.strAppID;
+                TreeNode treeNodeThroughputHeadline = new TreeNode("Throughput:");
+                treeNodeThroughputHeadline.Nodes.Add("");
+                treeNodeThroughputHeadline.Tag = ndAppThroughputHeadline;
+                node.Nodes.Add(treeNodeThroughputHeadline);
             }
 
             else if (nd.nodeType == NodeDefinition.NodeType.ntCountThreadHeadline)
@@ -551,16 +558,39 @@ namespace SQLiteTest
             else if (nd.nodeType == NodeDefinition.NodeType.ntThreadHeadline)
             {
                 node.Nodes.Clear();
-                SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select distinct threadid from testtable where appID=" + nd.strAppID, con);
+                NodeDefinition ndThread = new NodeDefinition();
+                ndThread.nodeType = NodeDefinition.NodeType.ntThread;
+                TreeNode treeNodeThread = new TreeNode("GUI-Thread");
+                treeNodeThread.ForeColor = Color.Black;
+                treeNodeThread.Nodes.Add("");
+                ndThread.strThreadID = "0";
+                ndThread.strAppID = nd.strAppID;
+                ndThread.parentColor = Color.Black;
+                treeNodeThread.Tag = ndThread;
+                node.Nodes.Add(treeNodeThread);
+               
+                SQLiteCommand cmd = null;                
+                cmd = new SQLiteCommand("select distinct threadid, isActive from threads where appID=" + nd.strAppID, con);
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    NodeDefinition ndThread = new NodeDefinition();
+                    ndThread = new NodeDefinition();
                     ndThread.nodeType = NodeDefinition.NodeType.ntThread;
                     ndThread.strAppID = nd.strAppID;
                     string strThreadID = (string)reader["ThreadID"].ToString();
-                    TreeNode treeNodeThread = new TreeNode("Thread: " + strThreadID);
+                    string strIsActive = (string)reader["isActive"].ToString();
+                    treeNodeThread = new TreeNode("");                                        
+                    if (strIsActive.Equals("0"))
+                    {                        
+                        treeNodeThread.ForeColor = Color.Red;
+                        ndThread.parentColor = Color.Red;
+                    }
+                    else
+                    {                        
+                        treeNodeThread.ForeColor = Color.Green;
+                        ndThread.parentColor = Color.Green;
+                    }                    
+                    treeNodeThread.Text = "Thread #" + strThreadID;
                     ndThread.strThreadID = strThreadID;
                     treeNodeThread.Tag = ndThread;
                     treeNodeThread.Nodes.Add("");
@@ -571,12 +601,14 @@ namespace SQLiteTest
             else if (nd.nodeType == NodeDefinition.NodeType.ntThread)
             {
                 node.Nodes.Clear();
-                NodeDefinition ndEntry = new NodeDefinition();
-                ndEntry.nodeType = NodeDefinition.NodeType.ntEntryHeadline;
-                ndEntry.strAppID = nd.strAppID;
-                ndEntry.strThreadID = nd.strThreadID;
+                NodeDefinition ndEntryHeadline = new NodeDefinition();
+                ndEntryHeadline.nodeType = NodeDefinition.NodeType.ntEntryHeadline;
+                ndEntryHeadline.strAppID = nd.strAppID;
+                ndEntryHeadline.strThreadID = nd.strThreadID;
+                ndEntryHeadline.parentColor = nd.parentColor;
                 TreeNode treeNodeEntryHeadline = new TreeNode("Entries:");
-                treeNodeEntryHeadline.Tag = ndEntry;
+                treeNodeEntryHeadline.ForeColor = nd.parentColor;
+                treeNodeEntryHeadline.Tag = ndEntryHeadline;
                 treeNodeEntryHeadline.Nodes.Add("");
                 node.Nodes.Add(treeNodeEntryHeadline);
 
@@ -584,10 +616,23 @@ namespace SQLiteTest
                 ndCountThreadEntry.nodeType = NodeDefinition.NodeType.ntCountThreadEntriesHeadline;
                 ndCountThreadEntry.strAppID = nd.strAppID;
                 ndCountThreadEntry.strThreadID = nd.strThreadID;
+                ndCountThreadEntry.parentColor = nd.parentColor;
                 TreeNode treeNodeCountThreadEntry = new TreeNode("Count Thread Entries:");
+                treeNodeCountThreadEntry.ForeColor = nd.parentColor;
                 treeNodeCountThreadEntry.Tag = ndCountThreadEntry;
                 treeNodeCountThreadEntry.Nodes.Add("");
                 node.Nodes.Add(treeNodeCountThreadEntry);
+
+                NodeDefinition ndThreadThroughputHeadline = new NodeDefinition();
+                ndThreadThroughputHeadline.nodeType = NodeDefinition.NodeType.ntThreadThroughputHeadline;
+                ndThreadThroughputHeadline.strAppID = nd.strAppID;
+                ndThreadThroughputHeadline.strThreadID = nd.strThreadID;
+                ndThreadThroughputHeadline.parentColor = nd.parentColor;
+                TreeNode treeThreadThroughputHeadline = new TreeNode("Throughput:");
+                treeThreadThroughputHeadline.ForeColor = nd.parentColor;
+                treeThreadThroughputHeadline.Tag = ndThreadThroughputHeadline;
+                treeThreadThroughputHeadline.Nodes.Add("");
+                node.Nodes.Add(treeThreadThroughputHeadline);                                    
             }
 
             else if (nd.nodeType == NodeDefinition.NodeType.ntEntryHeadline)
@@ -597,6 +642,7 @@ namespace SQLiteTest
                 ndEntry.nodeType = NodeDefinition.NodeType.ntEntry;
                 ndEntry.strAppID = nd.strAppID;
                 ndEntry.strThreadID = nd.strThreadID;
+                ndEntry.parentColor = nd.parentColor;
                 SQLiteCommand cmd = null;
                 cmd = new SQLiteCommand("select id,text,appid,threadid,tsCreated from testtable where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, con);
                 SQLiteDataReader reader = cmd.ExecuteReader();
@@ -609,6 +655,7 @@ namespace SQLiteTest
                     string strTSCreated = (string)reader["tsCreated"].ToString();
                     string str = "ID: " + strID + ", AppID: " + strAppID + ", ThreadID: " + strThreadID + ", Created: " + strTSCreated + " " + strText;
                     TreeNode treeNodeEntry = new TreeNode(str);
+                    treeNodeEntry.ForeColor = nd.parentColor;
                     treeNodeEntry.Tag = ndEntry;
                     treeNodeEntry.Nodes.Add("");
                     node.Nodes.Add(treeNodeEntry);
@@ -628,6 +675,7 @@ namespace SQLiteTest
                 {
                     string strCNT = (string)reader["CNT"].ToString();
                     TreeNode treeNodeAppEntries = new TreeNode(strCNT);
+                    treeNodeAppEntries.ForeColor = nd.parentColor;
                     treeNodeAppEntries.Tag = ndCountAppEntries;
                     treeNodeAppEntries.Nodes.Add("");
                     node.Nodes.Add(treeNodeAppEntries);
@@ -647,6 +695,7 @@ namespace SQLiteTest
                 {
                     string strCNT = (string)reader["CNT"].ToString();
                     TreeNode treeNodeThreadEntries = new TreeNode(strCNT);
+                    treeNodeThreadEntries.ForeColor = nd.parentColor;
                     treeNodeThreadEntries.Tag = ndCountThreadEntries;
                     treeNodeThreadEntries.Nodes.Add("");
                     node.Nodes.Add(treeNodeThreadEntries);
@@ -679,7 +728,8 @@ namespace SQLiteTest
                 ndCountTotalThreadsActive.nodeType = NodeDefinition.NodeType.ntCountTotalThreadsActive;
                 ndCountTotalThreadsActive.strAppID = nd.strAppID;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(distinct appID||','||threadid) as CNT from testtable where appID in (select id from apps where strftime('%s', 'now') -strftime('%s', tsLastPoll)  < 30) and threadid>0 ", con);
+                //cmd = new SQLiteCommand("select count(distinct appID||','||threadid) as CNT from testtable where threadid in (select th.threadid from threads th,apps ap where th.isActive=1 and ap.id=th.appID and  strftime('%s', 'now') -strftime('%s', ap.tsLastPoll)  < 30) ", con);
+                cmd = new SQLiteCommand("select count(distinct th.appID|| ',' || th.threadid) as CNT from testtable tt,apps ap, threads th where tt.appID = th.appID and tt.threadID = th.threadID and th.isActive = 1 and ap.id = th.appID and ap.isActive=1", con);
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -689,7 +739,69 @@ namespace SQLiteTest
                     node.Nodes.Add(treeNodeCountTotalThreadsActive);
                 }
             }
-            
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntThreadThroughputHeadline)
+            {
+                node.Nodes.Clear();
+                NodeDefinition ndThreadThroughput = new NodeDefinition();
+                ndThreadThroughput.nodeType = NodeDefinition.NodeType.ntThreadThroughput;
+                ndThreadThroughput.strAppID = nd.strAppID;
+                ndThreadThroughput.strThreadID = nd.strThreadID;
+                SQLiteCommand cmd = null;
+                String strThroughput = String.Format("select count(tt.id)/60 as CNT from testtable tt, apps ap, threads th where tt.appID={0} and tt.threadID={1} and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1", nd.strAppID, nd.strThreadID);
+                cmd = new SQLiteCommand(strThroughput, con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string strCNT = (string)reader["CNT"].ToString();
+                    TreeNode treeThreadThroughput = new TreeNode(strCNT + " Inserts / sec.");
+                    treeThreadThroughput.ForeColor = nd.parentColor;
+                    treeThreadThroughput.Tag = ndThreadThroughput;
+                    node.Nodes.Add(treeThreadThroughput);
+                }
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntAppThroughputHeadline)
+            {
+                node.Nodes.Clear();
+                NodeDefinition ndThreadThroughput = new NodeDefinition();
+                ndThreadThroughput.nodeType = NodeDefinition.NodeType.ntAppThroughput;
+                ndThreadThroughput.strAppID = nd.strAppID;
+                SQLiteCommand cmd = null;
+                String strThroughput = String.Format("select count(tt.id)/60 as CNT from testtable tt, apps ap, threads th where tt.appID={0} and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1", nd.strAppID);
+                cmd = new SQLiteCommand(strThroughput, con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string strCNT = (string)reader["CNT"].ToString();
+                    TreeNode treeAppThroughput = new TreeNode(strCNT + " Inserts / sec.");                    
+                    treeAppThroughput.Tag = ndThreadThroughput;
+                    node.Nodes.Add(treeAppThroughput);
+                }
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntTotalThroughputHeadline)
+            {
+                node.Nodes.Clear();
+                NodeDefinition ndTotalThroughput = new NodeDefinition();
+                ndTotalThroughput.nodeType = NodeDefinition.NodeType.ntTotalThroughput;
+                ndTotalThroughput.strAppID = nd.strAppID;
+                SQLiteCommand cmd = null;
+                String strThroughput = String.Format("select count(tt.id)/60 as CNT from testtable tt, apps ap, threads th where tt.appID in (select id from apps where isActive=1) and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1");
+                cmd = new SQLiteCommand(strThroughput, con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string strCNT = (string)reader["CNT"].ToString();
+                    TreeNode treeTotalThroughput = new TreeNode(strCNT + " Inserts / sec.");
+                    treeTotalThroughput.Tag = ndTotalThroughput;
+                    node.Nodes.Add(treeTotalThroughput);
+                }
+            }
+            //ROUND((JULIANDAY(arrival) - JULIANDAY(departure)) * 86400) AS difference
+            // select ROUND((JULIANDAY(tt.tsCreated) - JULIANDAY(ap.tsCreated)) * 86400) AS difference from testtable tt, apps ap where ap.ID=1
+            //select ROUND((JULIANDAY('now') -JULIANDAY(ap.tsCreated)) *86400) AS difference from testtable tt, apps ap where ap.ID = 1
+
 
 
             if (node.Nodes.Count == 0)
@@ -701,12 +813,18 @@ namespace SQLiteTest
             threads.running = false;
             if (con == null)
                 return;
-            execQuery("update apps set tsLastPoll = NULL where id = " + appID);
+            execQuery("update apps set isActive=0 where id = " + appID);
         }
 
         private void tcTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
             tiPollApps_Tick(null, null);
+        }
+
+        private void tiConnectionQuery_Tick(object sender, EventArgs e)
+        {
+            lblVersion.ForeColor = Color.Green;
+            tiConnectionQuery.Enabled = false;
         }
     }
 
@@ -791,6 +909,10 @@ namespace SQLiteTest
             
             SQLiteCommand cmd = null;
 
+            String strStartThread = String.Format("insert into threads (threadid,appID,isActive) values ({0},'{1}',1)", threadID, appID);
+            cmd = new SQLiteCommand(strStartThread, con1);
+            cmd.ExecuteNonQuery();
+            
             // The first thread is writing to the database in an infinite loop
             // using it's own instance of the DB-connection
             // writing can be stopped when setting running = false
@@ -809,6 +931,10 @@ namespace SQLiteTest
                 cmd = new SQLiteCommand(strInsert, con1);
                 cmd.ExecuteNonQuery();
             }
+
+            String strStopThread = String.Format("update threads set isActive=0 where threadID={0} and appID={1} ", threadID, appID);
+            cmd = new SQLiteCommand(strStopThread, con1);
+            cmd.ExecuteNonQuery();
         }
     }
 
@@ -829,11 +955,18 @@ namespace SQLiteTest
                                     ntCountAppEntriesHeadline, 
                                     ntCountAppEntries,
                                     ntCountThreadEntriesHeadline,
-                                    ntCountThreadEntries,                                    
+                                    ntCountThreadEntries,  
+                                    ntThreadThroughputHeadline,
+                                    ntThreadThroughput,
+                                    ntAppThroughputHeadline,
+                                    ntAppThroughput,
+                                    ntTotalThroughputHeadline,
+                                    ntTotalThroughput
         };
 
         public NodeType nodeType;
         public string strAppID = "";
-        public string strThreadID = "";                
+        public string strThreadID = "";
+        public Color parentColor = Color.Black;
     }
 }

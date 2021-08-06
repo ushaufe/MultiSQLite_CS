@@ -43,8 +43,6 @@
             this.tcTabs = new System.Windows.Forms.TabControl();
             this.tsGeneral = new System.Windows.Forms.TabPage();
             this.lbGeneral = new System.Windows.Forms.ListBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.lbActiveApps = new System.Windows.Forms.ListBox();
             this.tsApps = new System.Windows.Forms.TabPage();
             this.treeApps = new System.Windows.Forms.TreeView();
             this.tiPollApps = new System.Windows.Forms.Timer(this.components);
@@ -52,13 +50,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.numThreads = new System.Windows.Forms.NumericUpDown();
             this.lblVersion = new System.Windows.Forms.Label();
+            this.tiConnectionQuery = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.tcTabs.SuspendLayout();
             this.tsGeneral.SuspendLayout();
-            this.tabPage2.SuspendLayout();
             this.tsApps.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numThreads)).BeginInit();
             this.SuspendLayout();
@@ -189,7 +187,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tcTabs.Controls.Add(this.tsGeneral);
-            this.tcTabs.Controls.Add(this.tabPage2);
             this.tcTabs.Controls.Add(this.tsApps);
             this.tcTabs.Location = new System.Drawing.Point(190, 152);
             this.tcTabs.Margin = new System.Windows.Forms.Padding(2);
@@ -220,28 +217,6 @@
             this.lbGeneral.Name = "lbGeneral";
             this.lbGeneral.Size = new System.Drawing.Size(512, 272);
             this.lbGeneral.TabIndex = 0;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.lbActiveApps);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage2.Size = new System.Drawing.Size(516, 276);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Active Apps";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // lbActiveApps
-            // 
-            this.lbActiveApps.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbActiveApps.FormattingEnabled = true;
-            this.lbActiveApps.Location = new System.Drawing.Point(2, 2);
-            this.lbActiveApps.Margin = new System.Windows.Forms.Padding(2);
-            this.lbActiveApps.Name = "lbActiveApps";
-            this.lbActiveApps.Size = new System.Drawing.Size(512, 272);
-            this.lbActiveApps.TabIndex = 0;
             // 
             // tsApps
             // 
@@ -309,12 +284,17 @@
             this.lblVersion.AutoSize = true;
             this.lblVersion.BackColor = System.Drawing.Color.Transparent;
             this.lblVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVersion.ForeColor = System.Drawing.Color.Red;
+            this.lblVersion.ForeColor = System.Drawing.Color.Green;
             this.lblVersion.Location = new System.Drawing.Point(14, 434);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(53, 13);
             this.lblVersion.TabIndex = 14;
             this.lblVersion.Text = "Version:";
+            // 
+            // tiConnectionQuery
+            // 
+            this.tiConnectionQuery.Interval = 500;
+            this.tiConnectionQuery.Tick += new System.EventHandler(this.tiConnectionQuery_Tick);
             // 
             // frmMain
             // 
@@ -351,7 +331,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             this.tcTabs.ResumeLayout(false);
             this.tsGeneral.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
             this.tsApps.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numThreads)).EndInit();
             this.ResumeLayout(false);
@@ -373,16 +352,15 @@
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.TabControl tcTabs;
         private System.Windows.Forms.TabPage tsGeneral;
-        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.ListBox lbGeneral;
         private System.Windows.Forms.Timer tiPollApps;
         private System.Windows.Forms.Timer tiUpdateApps;
-        private System.Windows.Forms.ListBox lbActiveApps;
         private System.Windows.Forms.TabPage tsApps;
         private System.Windows.Forms.TreeView treeApps;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown numThreads;
         private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Timer tiConnectionQuery;
     }
 }
 
