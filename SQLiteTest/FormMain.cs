@@ -60,17 +60,17 @@ namespace SQLiteTest
 
         public void AddListSafe(List<String> list)
         {
-            if (lbGeneral.InvokeRequired)
+            if (rePrompt.InvokeRequired)
             {
                 var d = new AddListDelegate(AddListSafe);
-                lbGeneral.Invoke(d, new object[] { list });
+                rePrompt.Invoke(d, new object[] { list });
             }
             else
             {
-                lbGeneral.Items.Clear();
+                rePrompt.Clear();
                 foreach (string str in list)
                 {
-                    lbGeneral.Items.Add(str);
+                    promptOut(str);
                 }
 
             }
@@ -102,7 +102,7 @@ namespace SQLiteTest
 
             var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
             strVersion = versionInfo.FileVersion;
-            lbGeneral.Items.Add(appName + " version: " + strVersion);
+            promptOut(appName + " version: " + strVersion);
             lblVersion.Text = "Version: " + strVersion;
 
 
@@ -122,9 +122,9 @@ namespace SQLiteTest
                     int nRevision = getRevision();
                     if (nRevision < DB_REVISION )
                     {
-                        lbGeneral.Items.Add("Error: Old database....");
-                        lbGeneral.Items.Add("       Deleting tables");
-                        lbGeneral.Items.Add("");
+                        promptOut("Error: Old database....");
+                        promptOut("       Deleting tables");
+                        promptOut("");
                         execQuery("drop table if exists version");
                         execQuery("drop table if exists testtable");
                         execQuery("drop table if exists apps");
@@ -135,13 +135,13 @@ namespace SQLiteTest
                 if (databaseAttributes == System.IO.FileAttributes.Offline)
                 {
                     databaseAttributes = System.IO.File.GetAttributes(strDatabaseFile);
-                    lbGeneral.Items.Add("Database created: " + strDatabaseFile);
+                   promptOut("Database created: " + strDatabaseFile);
                 }
                 else
                 {
-                    lbGeneral.Items.Add("Database opened: " + strDatabaseFile);
+                    promptOut("Database opened: " + strDatabaseFile);
                 }
-                lbGeneral.Items.Add("Database accessible for " + ((databaseAttributes == System.IO.FileAttributes.ReadOnly) ? " Read only" : "Read + Write"));
+                promptOut("Database accessible for " + ((databaseAttributes == System.IO.FileAttributes.ReadOnly) ? " Read only" : "Read + Write"));
 
 
 
@@ -166,16 +166,23 @@ namespace SQLiteTest
                 execQuery("insert into version (id,revision) values (0," + DB_REVISION + ")");
 
 
-                lbGeneral.Items.Add("SQLite Version: " + strSQLiteVersion);
+                promptOut("SQLite Version: " + strSQLiteVersion);                
             }
             else
             {
-                lbGeneral.Items.Add("Error: Could not opened database: " + strDatabaseFile);
+                promptOut("Error: Could not opened database: " + strDatabaseFile);
             }
 
             threads = new CThreads(appID, strDatabaseFile);
             tiUpdateApps.Enabled = true;
             tiPollApps.Enabled = true;
+            promptOut("");
+            promptOut("Type in an SQL command that will be applied directly on the database.", Color.Lime);
+            promptOut("", Color.Lime);
+            promptOut("Type \"SELECT name FROM sqlite_master\" to show the structure of the database.", Color.Lime);
+            promptOut("", Color.Lime);
+            promptOut("Note: The commands will be executed on the GUI-thread.", Color.Lime);           
+            prompt();
         }
 
         protected void execQuery(String strQuery)
@@ -239,8 +246,7 @@ namespace SQLiteTest
             {
                 String strID = reader["id"].ToString();
                 appID = Convert.ToInt32(strID);
-                this.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";
-                //this.Text = strID;
+                this.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";                
             }
         }
 
@@ -251,24 +257,48 @@ namespace SQLiteTest
             viewThread = new ViewThread(frm1, appID, strDatabaseFile);
         }
 
+        bool getParentDirectoryContains(ref String strPath, String strSearch)
+        {
+            string str = strPath;
+            if (str.Length == 0)
+                return false;
+            if (!str[str.Length - 1].Equals("\\"))
+                str = strPath + "\\";
+
+            string[] searchArr = strSearch.Split('/');
+
+            if (searchArr.Length == 0)
+                return false;
+
+            while (Directory.Exists(str = System.IO.Path.Combine(str, @"..\")))
+            {
+                DirectoryInfo di = System.IO.Directory.GetParent(str);
+                if (di == null)
+                    return false;                
+                str = di.FullName;
+                if (str[str.Length - 1] != '\\')
+                    str = str + "\\";
+
+                string strDoc = str;
+                for (int i = 0; i < searchArr.Length - 1; i++)
+                    strDoc = strDoc + searchArr[i] + "\\";
+
+                if (Directory.Exists(str))
+                {                    
+                    strDoc = strDoc  + searchArr[searchArr.Length-1];
+                    if (File.Exists(strDoc))
+                    {
+                        strPath = strDoc;
+                        return true;
+                    }
+                }              
+            }
+            return false;
+        }
+
         private void btnShowContent_Click(object sender, EventArgs e)
         {
-            tcTabs.SelectedIndex = 0;
-            lbGeneral.Items.Clear();
 
-            SQLiteCommand cmd = null;
-
-
-            cmd = new SQLiteCommand("Select * from testtable", con);
-            SQLiteDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                String strAppID = reader["appID"].ToString();
-                String strThreadID = reader["threadID"].ToString();
-                String strText = (string)reader["text"];
-
-                lbGeneral.Items.Add("AppID: " + strAppID + ", ThreadID: " + strThreadID + "   -    " + strText);
-            }
         }
 
         private void btnStopThreads_Click(object sender, EventArgs e)
@@ -279,16 +309,49 @@ namespace SQLiteTest
             btnStopThreads.Enabled = threads.running;
         }
 
+        void promptOut(String str, Color color)
+        {
+            int selStart = rePrompt.TextLength;
+            rePrompt.AppendText(str + "\r\n" );
+            int selEnd = rePrompt.TextLength;
+            rePrompt.SelectionStart = selStart;
+            rePrompt.SelectionLength = selEnd - selStart;
+            rePrompt.SelectionColor = color;
+            rePrompt.ScrollToCaret();
+        }
+
+        void promptOut(String str)
+        {
+            promptOut(str, Color.White);
+        }
+
+        void prompt()
+        {
+            rePrompt.AppendText("\r\n" + "$:> ");
+            rePrompt.ScrollToCaret();
+        }
+
+        String unprompt(String str)
+        {
+            str.Trim();
+            if (str.Length < 3)
+                return str;
+            if (str.ToUpper().Substring(0, 3).Equals("$:>"))
+                str= str.Substring(3, str.Length - 3).Trim();
+            return str;
+        }
+
         private void btnShowStatus_Click(object sender, EventArgs e)
         {
             tcTabs.SelectedIndex = 0;
-            lbGeneral.Items.Clear();
+            rePrompt.Clear();          
 
             String strRunning = "NO";
             if (threads.running)
                 strRunning = "YES";
 
-            lbGeneral.Items.Add("Running: " + strRunning);
+            rePrompt.Clear();
+            promptOut("Running: " + strRunning);           
 
             SQLiteCommand cmd = null;
             cmd = new SQLiteCommand("Select count(text) as cnt from testtable", con);
@@ -297,7 +360,7 @@ namespace SQLiteTest
             {
                 string str = "Count=" + reader["cnt"];
 
-                lbGeneral.Items.Add(str);
+                promptOut(str);
             }
         }
 
@@ -306,6 +369,7 @@ namespace SQLiteTest
             tcTabs.SelectedIndex = 0;
             Thread vt = new Thread(viewThread.view);
             viewThread.running = !viewThread.running;
+            btnViewThread.Enabled = viewThread.running;
             vt.Start();
         }
 
@@ -772,7 +836,7 @@ namespace SQLiteTest
                 cmd = new SQLiteCommand(strThroughput, con);
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
-                {
+                {                    
                     string strCNT = (string)reader["CNT"].ToString();
                     TreeNode treeAppThroughput = new TreeNode(strCNT + " Inserts / sec.");                    
                     treeAppThroughput.Tag = ndThreadThroughput;
@@ -798,11 +862,7 @@ namespace SQLiteTest
                     node.Nodes.Add(treeTotalThroughput);
                 }
             }
-            //ROUND((JULIANDAY(arrival) - JULIANDAY(departure)) * 86400) AS difference
-            // select ROUND((JULIANDAY(tt.tsCreated) - JULIANDAY(ap.tsCreated)) * 86400) AS difference from testtable tt, apps ap where ap.ID=1
-            //select ROUND((JULIANDAY('now') -JULIANDAY(ap.tsCreated)) *86400) AS difference from testtable tt, apps ap where ap.ID = 1
-
-
+            
 
             if (node.Nodes.Count == 0)
                 node.Nodes.Add("");
@@ -825,6 +885,115 @@ namespace SQLiteTest
         {
             lblVersion.ForeColor = Color.Green;
             tiConnectionQuery.Enabled = false;
+        }
+
+        private void btnShowManual_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            string strPath = System.AppDomain.CurrentDomain.BaseDirectory;
+            string strViewer = strPath;
+            string strManual = strPath;
+
+            if (!getParentDirectoryContains(ref strViewer, "Tools/Viewer.exe"))
+            {
+                MessageBox.Show("Error: The viwer for the user's manual was not found.");
+                return;
+            }
+
+            if (!getParentDirectoryContains(ref strManual, "Doc/Haufe_MultiSQLite_CS_Manual.pdf"))
+            {
+                MessageBox.Show("Error: The user's manual was not found.");
+                return;
+            }
+            proc.StartInfo.FileName = strViewer;
+            proc.StartInfo.Arguments = strManual;
+            proc.Start();
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        void printTable(List<List<string>> table)
+        {
+            int selStart = rePrompt.TextLength;                     
+            String str = "";
+            foreach (List<string> column in table)
+            {
+                string strCol = "";
+                foreach(string strField in column)
+                {                    
+                    if (strCol.Length > 0)
+                        strCol += ";";
+                    strCol = strCol + strField;
+                }
+                str += strCol + "\n";                           
+            }
+            int selEnd = rePrompt.TextLength;
+            rePrompt.SelectionStart = selStart;
+            rePrompt.SelectionLength = selEnd - selStart;
+            rePrompt.SelectionColor= Color.White;           
+            rePrompt.SelectedText = str;
+
+        }
+
+        private void rePrompt_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                rePrompt.SelectionStart = rePrompt.Text.Length;
+                int cursorPosition = rePrompt.SelectionStart;
+                int cmdIndex = rePrompt.GetLineFromCharIndex(cursorPosition)-2;
+                if (cmdIndex < 0)
+                    return;
+                String strCMD = unprompt(rePrompt.Lines[cmdIndex]);                
+                if (strCMD.Trim().Length == 0)
+                    return;
+                SQLiteCommand cmd = null;
+                if (con==null)
+                {
+                    promptOut("");
+                    promptOut("Error: No Database Connection", Color.OrangeRed);
+                    prompt();
+                    return;
+                }                
+                cmd = new SQLiteCommand(strCMD, con);                
+                try
+                {
+                    List<List<string>> table = new List<List<string>>();
+                    List<string> columns = new List<string>();                    
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string strColumn = reader.GetName(i);
+                        columns.Add(strColumn);
+                    }
+                    table.Add(columns.GetRange(0, columns.Count));                    
+                    while ((reader != null) && (reader.Read()))
+                    {
+                        columns.Clear();
+                        foreach(String strCol in table[0])
+                        {
+                            string str = (string)reader[strCol].ToString();
+                            columns.Add(str);
+                        }
+                        table.Add(columns.GetRange(0, columns.Count));
+                    }
+                    printTable(table);
+                    prompt();
+                }
+                catch (Exception ex)
+                {
+
+                    promptOut("");
+                    promptOut("Error: The SQLite-database throws the following error:\n" + ex.Message + "\n", Color.OrangeRed);
+                    prompt();
+                    return;                    
+                }
+
+                
+            }
         }
     }
 

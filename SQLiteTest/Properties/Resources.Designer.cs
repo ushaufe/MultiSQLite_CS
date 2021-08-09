@@ -73,6 +73,16 @@ namespace SQLiteTest.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap APP_TITLE {
+            get {
+                object obj = ResourceManager.GetObject("APP_TITLE", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Connection2 {
             get {
                 object obj = ResourceManager.GetObject("Connection2", resourceCulture);
@@ -106,6 +116,26 @@ namespace SQLiteTest.Properties {
         internal static System.Drawing.Bitmap Connections {
             get {
                 object obj = ResourceManager.GetObject("Connections", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Connections2 {
+            get {
+                object obj = ResourceManager.GetObject("Connections2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Connections2_Light {
+            get {
+                object obj = ResourceManager.GetObject("Connections2_Light", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

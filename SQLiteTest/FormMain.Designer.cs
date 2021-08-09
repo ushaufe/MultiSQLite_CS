@@ -30,10 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-            this.btnShowContent = new System.Windows.Forms.Button();
+            this.btnShowManual = new System.Windows.Forms.Button();
             this.btnStartThreads = new System.Windows.Forms.Button();
             this.btnStopThreads = new System.Windows.Forms.Button();
-            this.btnShowStatus = new System.Windows.Forms.Button();
             this.btnViewThread = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -42,7 +41,7 @@
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.tcTabs = new System.Windows.Forms.TabControl();
             this.tsGeneral = new System.Windows.Forms.TabPage();
-            this.lbGeneral = new System.Windows.Forms.ListBox();
+            this.rePrompt = new System.Windows.Forms.RichTextBox();
             this.tsApps = new System.Windows.Forms.TabPage();
             this.treeApps = new System.Windows.Forms.TreeView();
             this.tiPollApps = new System.Windows.Forms.Timer(this.components);
@@ -61,20 +60,21 @@
             ((System.ComponentModel.ISupportInitialize)(this.numThreads)).BeginInit();
             this.SuspendLayout();
             // 
-            // btnShowContent
+            // btnShowManual
             // 
-            this.btnShowContent.Location = new System.Drawing.Point(17, 10);
-            this.btnShowContent.Margin = new System.Windows.Forms.Padding(2);
-            this.btnShowContent.Name = "btnShowContent";
-            this.btnShowContent.Size = new System.Drawing.Size(151, 43);
-            this.btnShowContent.TabIndex = 0;
-            this.btnShowContent.Text = "Show Content";
-            this.btnShowContent.UseVisualStyleBackColor = true;
-            this.btnShowContent.Click += new System.EventHandler(this.btnShowContent_Click);
+            this.btnShowManual.Enabled = false;
+            this.btnShowManual.Location = new System.Drawing.Point(17, 378);
+            this.btnShowManual.Margin = new System.Windows.Forms.Padding(2);
+            this.btnShowManual.Name = "btnShowManual";
+            this.btnShowManual.Size = new System.Drawing.Size(151, 43);
+            this.btnShowManual.TabIndex = 0;
+            this.btnShowManual.Text = "User\'s Manual";
+            this.btnShowManual.UseVisualStyleBackColor = true;
+            this.btnShowManual.Click += new System.EventHandler(this.btnShowManual_Click);
             // 
             // btnStartThreads
             // 
-            this.btnStartThreads.Location = new System.Drawing.Point(17, 88);
+            this.btnStartThreads.Location = new System.Drawing.Point(17, 174);
             this.btnStartThreads.Margin = new System.Windows.Forms.Padding(2);
             this.btnStartThreads.Name = "btnStartThreads";
             this.btnStartThreads.Size = new System.Drawing.Size(151, 47);
@@ -85,7 +85,7 @@
             // 
             // btnStopThreads
             // 
-            this.btnStopThreads.Location = new System.Drawing.Point(17, 167);
+            this.btnStopThreads.Location = new System.Drawing.Point(17, 243);
             this.btnStopThreads.Margin = new System.Windows.Forms.Padding(2);
             this.btnStopThreads.Name = "btnStopThreads";
             this.btnStopThreads.Size = new System.Drawing.Size(151, 49);
@@ -94,20 +94,9 @@
             this.btnStopThreads.UseVisualStyleBackColor = true;
             this.btnStopThreads.Click += new System.EventHandler(this.btnStopThreads_Click);
             // 
-            // btnShowStatus
-            // 
-            this.btnShowStatus.Enabled = false;
-            this.btnShowStatus.Location = new System.Drawing.Point(17, 248);
-            this.btnShowStatus.Margin = new System.Windows.Forms.Padding(2);
-            this.btnShowStatus.Name = "btnShowStatus";
-            this.btnShowStatus.Size = new System.Drawing.Size(151, 46);
-            this.btnShowStatus.TabIndex = 4;
-            this.btnShowStatus.Text = "Show Status";
-            this.btnShowStatus.UseVisualStyleBackColor = true;
-            this.btnShowStatus.Click += new System.EventHandler(this.btnShowStatus_Click);
-            // 
             // btnViewThread
             // 
+            this.btnViewThread.Enabled = false;
             this.btnViewThread.Location = new System.Drawing.Point(17, 315);
             this.btnViewThread.Margin = new System.Windows.Forms.Padding(2);
             this.btnViewThread.Name = "btnViewThread";
@@ -198,25 +187,28 @@
             // 
             // tsGeneral
             // 
-            this.tsGeneral.Controls.Add(this.lbGeneral);
+            this.tsGeneral.Controls.Add(this.rePrompt);
             this.tsGeneral.Location = new System.Drawing.Point(4, 22);
             this.tsGeneral.Margin = new System.Windows.Forms.Padding(2);
             this.tsGeneral.Name = "tsGeneral";
             this.tsGeneral.Padding = new System.Windows.Forms.Padding(2);
             this.tsGeneral.Size = new System.Drawing.Size(516, 276);
             this.tsGeneral.TabIndex = 0;
-            this.tsGeneral.Text = "General";
+            this.tsGeneral.Text = "Prompt";
             this.tsGeneral.UseVisualStyleBackColor = true;
             // 
-            // lbGeneral
+            // rePrompt
             // 
-            this.lbGeneral.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbGeneral.FormattingEnabled = true;
-            this.lbGeneral.Location = new System.Drawing.Point(2, 2);
-            this.lbGeneral.Margin = new System.Windows.Forms.Padding(2);
-            this.lbGeneral.Name = "lbGeneral";
-            this.lbGeneral.Size = new System.Drawing.Size(512, 272);
-            this.lbGeneral.TabIndex = 0;
+            this.rePrompt.BackColor = System.Drawing.Color.Black;
+            this.rePrompt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rePrompt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rePrompt.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.rePrompt.Location = new System.Drawing.Point(2, 2);
+            this.rePrompt.Name = "rePrompt";
+            this.rePrompt.Size = new System.Drawing.Size(512, 272);
+            this.rePrompt.TabIndex = 0;
+            this.rePrompt.Text = "";
+            this.rePrompt.KeyUp += new System.Windows.Forms.KeyEventHandler(this.rePrompt_KeyUp);
             // 
             // tsApps
             // 
@@ -227,12 +219,13 @@
             this.tsApps.Padding = new System.Windows.Forms.Padding(2);
             this.tsApps.Size = new System.Drawing.Size(516, 276);
             this.tsApps.TabIndex = 2;
-            this.tsApps.Text = "Apps";
+            this.tsApps.Text = "Analyzation Tree";
             this.tsApps.UseVisualStyleBackColor = true;
             // 
             // treeApps
             // 
             this.treeApps.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeApps.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.treeApps.Location = new System.Drawing.Point(2, 2);
             this.treeApps.Margin = new System.Windows.Forms.Padding(2);
             this.treeApps.Name = "treeApps";
@@ -253,16 +246,17 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(22, 71);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(22, 157);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(101, 13);
+            this.label2.Size = new System.Drawing.Size(119, 13);
             this.label2.TabIndex = 12;
             this.label2.Text = "Number of Threads:";
             // 
             // numThreads
             // 
-            this.numThreads.Location = new System.Drawing.Point(125, 67);
+            this.numThreads.Location = new System.Drawing.Point(125, 153);
             this.numThreads.Margin = new System.Windows.Forms.Padding(2);
             this.numThreads.Minimum = new decimal(new int[] {
             1,
@@ -301,7 +295,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.BackgroundImage = global::SQLiteTest.Properties.Resources.Connection2_Light2;
+            this.BackgroundImage = global::SQLiteTest.Properties.Resources.Connections2_Light;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(731, 461);
             this.Controls.Add(this.lblVersion);
@@ -314,10 +308,9 @@
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnViewThread);
-            this.Controls.Add(this.btnShowStatus);
             this.Controls.Add(this.btnStopThreads);
             this.Controls.Add(this.btnStartThreads);
-            this.Controls.Add(this.btnShowContent);
+            this.Controls.Add(this.btnShowManual);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MinimumSize = new System.Drawing.Size(746, 398);
@@ -340,10 +333,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnShowContent;
+        private System.Windows.Forms.Button btnShowManual;
         private System.Windows.Forms.Button btnStartThreads;
         private System.Windows.Forms.Button btnStopThreads;
-        private System.Windows.Forms.Button btnShowStatus;
         private System.Windows.Forms.Button btnViewThread;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
@@ -352,7 +344,6 @@
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.TabControl tcTabs;
         private System.Windows.Forms.TabPage tsGeneral;
-        private System.Windows.Forms.ListBox lbGeneral;
         private System.Windows.Forms.Timer tiPollApps;
         private System.Windows.Forms.Timer tiUpdateApps;
         private System.Windows.Forms.TabPage tsApps;
@@ -361,6 +352,7 @@
         private System.Windows.Forms.NumericUpDown numThreads;
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Timer tiConnectionQuery;
+        private System.Windows.Forms.RichTextBox rePrompt;
     }
 }
 

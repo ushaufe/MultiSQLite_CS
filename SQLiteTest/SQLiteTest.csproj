@@ -137,6 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConnectionIcon.ico" />
+    <None Include="Resources\Connections2_Light.jpg" />
+    <None Include="Resources\Connections2.jpg" />
+    <None Include="Resources\APP_TITLE.bmp" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6">
