@@ -85,6 +85,7 @@
             // 
             // btnStopThreads
             // 
+            this.btnStopThreads.Enabled = false;
             this.btnStopThreads.Location = new System.Drawing.Point(17, 243);
             this.btnStopThreads.Margin = new System.Windows.Forms.Padding(2);
             this.btnStopThreads.Name = "btnStopThreads";
@@ -141,7 +142,7 @@
             this.label1.Location = new System.Drawing.Point(185, 85);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(264, 52);
+            this.label1.Size = new System.Drawing.Size(323, 62);
             this.label1.TabIndex = 8;
             this.label1.Text = "Multithread Connection \r\nTester for SQLite + C#";
             // 
@@ -250,7 +251,7 @@
             this.label2.Location = new System.Drawing.Point(22, 157);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(119, 13);
+            this.label2.Size = new System.Drawing.Size(153, 17);
             this.label2.TabIndex = 12;
             this.label2.Text = "Number of Threads:";
             // 
@@ -281,7 +282,7 @@
             this.lblVersion.ForeColor = System.Drawing.Color.Green;
             this.lblVersion.Location = new System.Drawing.Point(14, 434);
             this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(53, 13);
+            this.lblVersion.Size = new System.Drawing.Size(68, 17);
             this.lblVersion.TabIndex = 14;
             this.lblVersion.Text = "Version:";
             // 
