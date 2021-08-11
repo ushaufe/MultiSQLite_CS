@@ -137,6 +137,28 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConnectionIcon.ico" />
+    <None Include="Resources\stop_process_2_322.png" />
+    <None Include="Resources\Start_Process_321.png" />
+    <None Include="Resources\Action_Transparent.png" />
+    <None Include="Resources\fileopen32_transparent.png" />
+    <None Include="Resources\Action.png" />
+    <None Include="Resources\Close_16.png" />
+    <None Include="Resources\Manual_Mono.bmp" />
+    <None Include="Resources\About_16.bmp" />
+    <None Include="Resources\Close_161.bmp" />
+    <None Include="Resources\Close_16.bmp" />
+    <None Include="Resources\fileopen32.png" />
+    <None Include="Resources\user-manual_32.png" />
+    <None Include="Resources\stop_process_2_321.png" />
+    <None Include="Resources\stop_process_2_32.png" />
+    <None Include="Resources\stop_process_32.png" />
+    <None Include="Resources\Start_Process_32.png" />
+    <None Include="Resources\LiveUpdate_32_blau.png" />
+    <None Include="Resources\LiveUpdate_323.png" />
+    <None Include="Resources\LiveUpdate_321.png" />
+    <None Include="Resources\LiveUpdate_32.png" />
+    <None Include="Resources\LiveUpdate_64.png" />
+    <None Include="Resources\LiveUpdate.png" />
     <None Include="Resources\Connections2_Light.jpg" />
     <None Include="Resources\Connections2.jpg" />
     <None Include="Resources\APP_TITLE.bmp" />
