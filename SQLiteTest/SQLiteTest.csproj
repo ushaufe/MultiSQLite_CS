@@ -73,6 +73,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +87,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -137,6 +146,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConnectionIcon.ico" />
+    <None Include="Resources\Connections2_Light2.jpg" />
+    <None Include="Resources\Haufe_Transparent1.png" />
+    <None Include="Resources\Haufe1.jpg" />
+    <None Include="Resources\Connections2_Light1.jpg" />
+    <None Include="Resources\Connections1.png" />
+    <None Include="Resources\About_16.png" />
     <None Include="Resources\stop_process_2_322.png" />
     <None Include="Resources\Start_Process_321.png" />
     <None Include="Resources\Action_Transparent.png" />

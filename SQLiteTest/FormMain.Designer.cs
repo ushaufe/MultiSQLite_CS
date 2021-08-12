@@ -45,7 +45,7 @@
             this.treeApps = new System.Windows.Forms.TreeView();
             this.tiPollApps = new System.Windows.Forms.Timer(this.components);
             this.tiUpdateApps = new System.Windows.Forms.Timer(this.components);
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblNumThreads = new System.Windows.Forms.Label();
             this.numThreads = new System.Windows.Forms.NumericUpDown();
             this.lblVersion = new System.Windows.Forms.Label();
             this.tiConnectionQuery = new System.Windows.Forms.Timer(this.components);
@@ -64,6 +64,7 @@
             this.mnuLiveUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShowManual = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tiLiveUpdateFlicker = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -78,7 +79,6 @@
             // 
             // btnShowManual
             // 
-            this.btnShowManual.Enabled = false;
             this.btnShowManual.Image = global::SQLiteTest.Properties.Resources.user_manual_32;
             this.btnShowManual.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnShowManual.Location = new System.Drawing.Point(17, 378);
@@ -254,16 +254,16 @@
             this.tiUpdateApps.Interval = 10000;
             this.tiUpdateApps.Tick += new System.EventHandler(this.tiUpdateApps_Tick);
             // 
-            // label2
+            // lblNumThreads
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(22, 157);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(101, 13);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Number of Threads:";
+            this.lblNumThreads.AutoSize = true;
+            this.lblNumThreads.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNumThreads.Location = new System.Drawing.Point(22, 157);
+            this.lblNumThreads.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblNumThreads.Name = "lblNumThreads";
+            this.lblNumThreads.Size = new System.Drawing.Size(101, 13);
+            this.lblNumThreads.TabIndex = 12;
+            this.lblNumThreads.Text = "Number of Threads:";
             // 
             // numThreads
             // 
@@ -404,7 +404,8 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuShowManual});
+            this.mnuShowManual,
+            this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.Close_162;
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
@@ -412,11 +413,19 @@
             // 
             // mnuShowManual
             // 
-            this.mnuShowManual.Enabled = false;
             this.mnuShowManual.Image = global::SQLiteTest.Properties.Resources.Manual_Mono;
             this.mnuShowManual.Name = "mnuShowManual";
-            this.mnuShowManual.Size = new System.Drawing.Size(146, 22);
+            this.mnuShowManual.Size = new System.Drawing.Size(243, 22);
             this.mnuShowManual.Text = "Show Manual";
+            this.mnuShowManual.Click += new System.EventHandler(this.mnuShowManual_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.About_161;
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.aboutToolStripMenuItem.Text = "About Haufe MultiSQLite for C#";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // tiLiveUpdateFlicker
             // 
@@ -434,7 +443,7 @@
             this.Controls.Add(this.btnLiveUpdate);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.numThreads);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lblNumThreads);
             this.Controls.Add(this.tcTabs);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.pictureBox3);
@@ -448,7 +457,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.MinimumSize = new System.Drawing.Size(746, 398);
+            this.MinimumSize = new System.Drawing.Size(747, 500);
             this.Name = "frmMain";
             this.Text = "Haufe Multi-SQLite for C#";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
@@ -484,7 +493,7 @@
         private System.Windows.Forms.Timer tiUpdateApps;
         private System.Windows.Forms.TabPage tsApps;
         private System.Windows.Forms.TreeView treeApps;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblNumThreads;
         private System.Windows.Forms.NumericUpDown numThreads;
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Timer tiConnectionQuery;
@@ -505,6 +514,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem mnuLiveUpdate;
         private System.Windows.Forms.Timer tiLiveUpdateFlicker;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

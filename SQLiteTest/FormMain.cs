@@ -51,7 +51,7 @@ namespace SQLiteTest
         ViewThread viewThread;
 
         String strDatabaseFile = "";
-        String strVersion = "";
+        static String strVersion = "";
         String strSQLiteVersion = "";
         String strDBAccessMode = "";
         const String DB_FILE = "Multisqlite.db";
@@ -59,6 +59,8 @@ namespace SQLiteTest
 
         private int appID = -1;
         string appName = "";
+
+        static public String getVersion() { return strVersion; }
 
         private delegate void AddListDelegate(List<String> list);
 
@@ -106,7 +108,7 @@ namespace SQLiteTest
                 databaseAttributes = System.IO.FileAttributes.Offline;
 
             var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            strVersion = versionInfo.FileVersion;
+            strVersion = versionInfo.FileVersion;            
             promptOut(appName + " version: " + strVersion);
             lblVersion.Text = "Version: " + strVersion;
 
@@ -315,6 +317,8 @@ namespace SQLiteTest
             btnStopThreads.Enabled = threads.running;
             mnuStartThread.Enabled = btnStartThreads.Enabled;
             mnuStopThread.Enabled = btnStopThreads.Enabled;
+            lblNumThreads.Enabled = !threads.running;
+            numThreads.Enabled = !threads.running;
         }
 
         void promptOut(String str, Color color)
@@ -458,6 +462,8 @@ namespace SQLiteTest
             }
 
             btnStartThreads.Enabled = !threads.running;
+            lblNumThreads.Enabled = !threads.running;
+            numThreads.Enabled = !threads.running;
             mnuStartThread.Enabled = btnStartThreads.Enabled;
             btnStopThreads.Enabled = threads.running;
             mnuStopThread.Enabled = btnStopThreads.Enabled;
@@ -699,11 +705,20 @@ namespace SQLiteTest
             {
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
-                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Application: " + appName + " version: " + strVersion, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_1") ;
-                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Database File: " + strDatabaseFile, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_2");
-                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "SQLite-Version: " + strSQLiteVersion, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_3");
-                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, strDBAccessMode, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_4");
                 System.IO.FileInfo fileInfo = new System.IO.FileInfo(strDatabaseFile);
+                var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                String strDebugLevel;
+                #if DEBUG
+                    strDebugLevel = "Debug";
+                #else
+                    strDebugLevel = "Relase";
+                #endif
+
+                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Application: " + appName + " version: " + strVersion + " (" + strDebugLevel + ")", false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_1") ;
+                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Application Instance: " + appID, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_2");                
+                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Database File: " + strDatabaseFile, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_3");
+                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "SQLite-Version: " + strSQLiteVersion, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_4");
+                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, strDBAccessMode, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_5");                
                 NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Database-Size: " + GetBytesReadable(fileInfo.Length), false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeType.ntStatusFileSize.ToString());                
             }
 
@@ -977,6 +992,18 @@ namespace SQLiteTest
         {
             btnLiveUpdate.BackColor = Color.LightBlue;
             tiLiveUpdateFlicker.Enabled = false;
+        }
+
+        private void mnuShowManual_Click(object sender, EventArgs e)
+        {
+            btnShowManual_Click(sender, e);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormAbout frmAbout = new FormAbout();
+            frmAbout.StartPosition = FormStartPosition.CenterScreen;
+            frmAbout.ShowDialog();
         }
     }
 

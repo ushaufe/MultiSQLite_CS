@@ -26,7 +26,6 @@ C:\Projects\Sqlite4CS\SQLiteTest\bin\Debug\stdole.dll
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Debug\SQLite.Designer.pdb
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Debug\SQLite.Designer.xml
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Debug\System.Data.SQLite.xml
-C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.csproj.AssemblyReference.cache
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.Properties.Resources.resources
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.csproj.GenerateResource.cache
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.csproj.CoreCompileInputs.cache
@@ -37,3 +36,5 @@ C:\Projects\Sqlite4CS\SQLiteTest\bin\Debug\MultiSQlite_CS.pdb
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\MultiSQlite_CS.exe
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\MultiSQlite_CS.pdb
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.frmMain.resources
+C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.FormAbout.resources
+C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.csproj.AssemblyReference.cache
