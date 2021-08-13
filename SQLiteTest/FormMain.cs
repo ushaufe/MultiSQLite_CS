@@ -82,6 +82,7 @@ namespace SQLiteTest
             }
         }
 
+
         public frmMain()
         {
             InitializeComponent();
@@ -461,7 +462,7 @@ namespace SQLiteTest
                     string strID = (string)reader["AppID"].ToString();
                     string strName = (string)reader["AppName"].ToString();
 
-                    NodeDefinition.Add(NodeDefinition.NodeType.ntApp, " <ID: " + strID + ">", true, node.Nodes, ref activeNodes, Color.Black, strID);
+                    NodeDefinition.Add(NodeDefinition.NodeType.ntApp, strName + " <ID: " + strID + ">", true, node.Nodes, ref activeNodes, Color.Black, strID);
                 }
 
                 NodeDefinition.removeInactives(node.Nodes, ref activeNodes, NodeDefinition.NodeType.ntApp);
