@@ -265,45 +265,7 @@ namespace SQLiteTest
             viewThread = new ViewThread(frm1, appID, strDatabaseFile);
         }
 
-        bool getParentDirectoryContains(ref String strPath, String strSearch)
-        {
-            string str = strPath;
-            if (str.Length == 0)
-                return false;
-            if (!str[str.Length - 1].Equals("\\"))
-                str = strPath + "\\";
-
-            string[] searchArr = strSearch.Split('/');
-
-            if (searchArr.Length == 0)
-                return false;
-
-            while (Directory.Exists(str = System.IO.Path.Combine(str, @"..\")))
-            {
-                DirectoryInfo di = System.IO.Directory.GetParent(str);
-                if (di == null)
-                    return false;
-                str = di.FullName;
-                if (str[str.Length - 1] != '\\')
-                    str = str + "\\";
-
-                string strDoc = str;
-                for (int i = 0; i < searchArr.Length - 1; i++)
-                    strDoc = strDoc + searchArr[i] + "\\";
-
-                if (Directory.Exists(str))
-                {
-                    strDoc = strDoc + searchArr[searchArr.Length - 1];
-                    if (File.Exists(strDoc))
-                    {
-                        strPath = strDoc;
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
+        
         private void btnShowContent_Click(object sender, EventArgs e)
         {
 
@@ -758,26 +720,8 @@ namespace SQLiteTest
         }
 
         private void btnShowManual_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            string strPath = System.AppDomain.CurrentDomain.BaseDirectory;
-            string strViewer = strPath;
-            string strManual = strPath;
-
-            if (!getParentDirectoryContains(ref strViewer, "Tools/Viewer.exe"))
-            {
-                MessageBox.Show("Error: The viwer for the user's manual was not found.");
-                return;
-            }
-
-            if (!getParentDirectoryContains(ref strManual, "Doc/Haufe_MultiSQLite_CS_Manual.pdf"))
-            {
-                MessageBox.Show("Error: The user's manual was not found.");
-                return;
-            }
-            proc.StartInfo.FileName = strViewer;
-            proc.StartInfo.Arguments = strManual;
-            proc.Start();
+        {           
+            System.Diagnostics.Process.Start("https://raw.githubusercontent.com/ushaufe/Sqlite4CS/master/Doc/Haufe_MultiSQLite_CS_Manual.pdf");
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)

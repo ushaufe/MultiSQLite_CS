@@ -146,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConnectionIcon.ico" />
+    <None Include="Resources\LiveUpdate_32_blau1.png" />
     <None Include="Resources\Connections2_Light2.jpg" />
     <None Include="Resources\Haufe_Transparent1.png" />
     <None Include="Resources\Haufe1.jpg" />

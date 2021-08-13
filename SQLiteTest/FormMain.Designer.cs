@@ -376,7 +376,7 @@
             // 
             this.mnuStartThread.Image = global::SQLiteTest.Properties.Resources.Start_Process_321;
             this.mnuStartThread.Name = "mnuStartThread";
-            this.mnuStartThread.Size = new System.Drawing.Size(142, 22);
+            this.mnuStartThread.Size = new System.Drawing.Size(180, 22);
             this.mnuStartThread.Text = "Start Threads";
             this.mnuStartThread.Click += new System.EventHandler(this.mnuStartThread_Click);
             // 
@@ -385,19 +385,20 @@
             this.mnuStopThread.Enabled = false;
             this.mnuStopThread.Image = global::SQLiteTest.Properties.Resources.stop_process_2_322;
             this.mnuStopThread.Name = "mnuStopThread";
-            this.mnuStopThread.Size = new System.Drawing.Size(142, 22);
+            this.mnuStopThread.Size = new System.Drawing.Size(180, 22);
             this.mnuStopThread.Text = "Stop Threads";
             this.mnuStopThread.Click += new System.EventHandler(this.mnuStopThread_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(139, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuLiveUpdate
             // 
+            this.mnuLiveUpdate.Image = global::SQLiteTest.Properties.Resources.LiveUpdate_32_blau1;
             this.mnuLiveUpdate.Name = "mnuLiveUpdate";
-            this.mnuLiveUpdate.Size = new System.Drawing.Size(142, 22);
+            this.mnuLiveUpdate.Size = new System.Drawing.Size(180, 22);
             this.mnuLiveUpdate.Text = "Live Update";
             this.mnuLiveUpdate.Click += new System.EventHandler(this.mnuLiveUpdate_Click);
             // 

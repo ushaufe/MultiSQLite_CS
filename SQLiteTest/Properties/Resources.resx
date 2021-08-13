@@ -205,6 +205,9 @@
   <data name="LiveUpdate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LiveUpdate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Connections2_Light2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Connections2_Light2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="LiveUpdate_322" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LiveUpdate_322.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -238,7 +241,7 @@
   <data name="Start_Process_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Start_Process_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Connections2_Light2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Connections2_Light2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LiveUpdate_32_blau1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LiveUpdate_32_blau1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
