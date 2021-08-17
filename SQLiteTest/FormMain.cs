@@ -55,7 +55,7 @@ namespace SQLiteTest
         String strSQLiteVersion = "";
         String strDBAccessMode = "";
         const String DB_FILE = "Multisqlite.db";
-        const int DB_REVISION = 3;
+        const String DB_VERSION = "1.0.0.0";
 
         private int appID = -1;
         string appName = "";
@@ -86,7 +86,8 @@ namespace SQLiteTest
         public frmMain()
         {
             InitializeComponent();
-
+            tiUpdateApps.Enabled = true;
+            tiUpdateApps_Tick(null, null);
 
             appName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
 
@@ -101,12 +102,14 @@ namespace SQLiteTest
                 System.IO.Directory.CreateDirectory(strDatabaseDir);
             strDatabaseFile = strDatabaseDir + DB_FILE;
 
+
             System.IO.FileAttributes databaseAttributes = 0;
 
             if (File.Exists(strDatabaseFile))
                 databaseAttributes = System.IO.File.GetAttributes(strDatabaseFile);
             else
                 databaseAttributes = System.IO.FileAttributes.Offline;
+
 
             var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
             strVersion = versionInfo.FileVersion;            
@@ -127,8 +130,8 @@ namespace SQLiteTest
             {
                 if (bDatabaseExisted)
                 {
-                    int nRevision = getRevision();
-                    if (nRevision < DB_REVISION)
+                    String strDBVersion = getDBVersion();
+                    if (!strDBVersion.Equals(DB_VERSION.Trim()))
                     {
                         promptOut("Error: Old database....");
                         promptOut("       Deleting tables");
@@ -136,6 +139,40 @@ namespace SQLiteTest
                         execQuery("drop table if exists version");
                         execQuery("drop table if exists testtable");
                         execQuery("drop table if exists apps");
+
+                        con.Close();
+                        //con = null;
+                        GC.Collect();
+                        GC.WaitForPendingFinalizers();
+                        bool bFileDeleted = false;
+                        try
+                        {                            
+                            File.Delete(strDatabaseFile);
+                            bFileDeleted = true;
+                        }
+                        catch(Exception e)
+                        {
+                            bFileDeleted = false;
+                        }
+                        if (File.Exists(strDatabaseFile))
+                        {
+                            bFileDeleted = false;
+                        }
+                        if (!bFileDeleted)
+                        {
+                            promptOut("Error: Old database could not have been removed: " + strDatabaseFile);
+                            return;
+                        }
+                        con = new SQLiteConnection(cs);
+                        con.Open();
+
+                        if (con.State != ConnectionState.Open)
+                        {
+                            {
+                                promptOut("Error: Could not recreate Database database: " + strDatabaseFile);
+                                return;
+                            }
+                        }
                     }
                 }
 
@@ -158,7 +195,7 @@ namespace SQLiteTest
                 String strInsert = "";
 
 
-                execQuery("Create Table if NOT Exists version (id INTEGER PRIMARY KEY AUTOINCREMENT, revision INTEGER) ");
+                execQuery("Create Table if NOT Exists version (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT) ");
                 execQuery("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ");
                 execQuery("Create Table if NOT Exists apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT, isActive INTEGER DEFAULT FALSE) ");
                 execQuery("Create Table if NOT Exists threads ( id INTEGER PRIMARY KEY AUTOINCREMENT, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isActive INTEGER DEFAULT FALSE ) ");
@@ -172,7 +209,7 @@ namespace SQLiteTest
                 strInsert = String.Format("insert into testtable (appID,threadid,text) values ({0},0,'{1}')", appID, dt.ToString());
                 execQuery(strInsert);
                 execQuery("Delete from version");
-                execQuery("insert into version (id,revision) values (0," + DB_REVISION + ")");
+                execQuery("insert into version (id,name) values (0,'" + DB_VERSION + "')");
 
 
                 promptOut("SQLite Version: " + strSQLiteVersion);
@@ -182,9 +219,9 @@ namespace SQLiteTest
                 promptOut("Error: Could not opened database: " + strDatabaseFile);
             }
 
-            threads = new CThreads(appID, strDatabaseFile);
-            tiUpdateApps.Enabled = true;
+            threads = new CThreads(appID, strDatabaseFile);            
             tiPollApps.Enabled = true;
+            tiUpdateApps_Tick(null, null);
             promptOut("");
             promptOut("Type in an SQL command that will be applied directly on the database.", Color.Lime);
             promptOut("", Color.Lime);
@@ -211,6 +248,35 @@ namespace SQLiteTest
         }
 
 
+        public String getDBVersion()
+        {
+            string stm = "SELECT SQLITE_VERSION()";
+            //int nRevision = -1;
+            String strDBVersion = "";
+
+            try
+            {
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand(stm, con);
+                string strVersion = cmd.ExecuteScalar().ToString();
+
+
+                cmd = new SQLiteCommand("SELECT * FROM version order by id DESC LIMIT 1", con);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    strDBVersion = reader["name"].ToString();                    
+                    this.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";
+                    //this.Text = strID;
+                }
+            }
+            catch (Exception e)
+            {
+                //MessageBox.Show(e.Message);
+            }
+            return strDBVersion.Trim();;
+        }
+
         public int getRevision()
         {
             string stm = "SELECT SQLITE_VERSION()";
@@ -235,7 +301,7 @@ namespace SQLiteTest
             }
             catch (Exception e)
             {
-
+                //MessageBox.Show(e.Message);
             }
             return nRevision;
         }
@@ -274,6 +340,8 @@ namespace SQLiteTest
 
         private void btnStopThreads_Click(object sender, EventArgs e)
         {
+            if (threads == null)
+                return;
             tcTabs.SelectedTab = tsApps;
             threads.running = false;
             btnStartThreads.Enabled = !threads.running;
@@ -373,6 +441,11 @@ namespace SQLiteTest
         private void tiUpdateApps_Tick(object sender, EventArgs e)
         {
             lblVersion.ForeColor = Color.Red;
+            if (con == null)
+                return;
+            if (con.State != ConnectionState.Open)
+                return;
+
             SQLiteCommand cmd = null;
             cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, con);
             cmd.ExecuteNonQuery();
@@ -410,6 +483,11 @@ namespace SQLiteTest
         private void buttonStartThreads_Click(object sender, EventArgs e)
         {
             listThreads.Clear();
+            if (threads == null)
+                return;
+            if (con.State != ConnectionState.Open)
+                return;
+
 
             tcTabs.SelectedTab = tsApps;
 
@@ -434,6 +512,11 @@ namespace SQLiteTest
 
         void updateNode(TreeNode node, NodeDefinition.NodeAction nodeAction)
         {
+            if (con == null)
+                return;
+            if (con.State != ConnectionState.Open)
+                return;
+
             NodeDefinition nd = (NodeDefinition)node.Tag;
             if (nd == null)
                 return;
@@ -703,8 +786,11 @@ namespace SQLiteTest
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            threads.running = false;
+            if (threads!=null)
+                threads.running = false;
             if (con == null)
+                return;
+            if (con.State == ConnectionState.Closed)
                 return;
             execQuery("update apps set isActive=0 where id = " + appID);
         }
@@ -860,6 +946,8 @@ namespace SQLiteTest
 
         private void tiLiveUpdate_Tick(object sender, EventArgs e)
         {
+            if (con.State != ConnectionState.Open)
+                return;
             tiLiveUpdate.Enabled = false;
             btnLiveUpdate.UseVisualStyleBackColor = true;            
             btnLiveUpdate.BackColor = Color.DarkBlue;
@@ -877,6 +965,10 @@ namespace SQLiteTest
 
         private void btnLiveUpdate_Click(object sender, EventArgs e)
         {
+            if (con == null)
+                return;
+            if (con.State != ConnectionState.Open)
+                return;
 
             tiLiveUpdate.Enabled = !tiLiveUpdate.Enabled;
 
