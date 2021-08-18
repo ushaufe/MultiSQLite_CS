@@ -62,7 +62,7 @@ namespace SQLiteTest
 
             
             AppendFormattedText(reText, "MultiSQLite for C# makes it possible to test multiple connections with SQLite. Connections can be created from different threads from within the application or from multiple instances running simultaneously. \n\nDetailed information about performance and database status is displayed. In addition an edition for C++ is available, that allows testing in mixed development environements.", Color.Black, false, HorizontalAlignment.Left);
-            lblVersion.Text = "Version: " + frmMain.getVersion();
+            lblVersion.Text = "Version: " + frmMain.getVersion() + " (" + frmMain.DEBUG_LEVEL + ")";
         }
     }
 }

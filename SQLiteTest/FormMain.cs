@@ -56,7 +56,17 @@ namespace SQLiteTest
         String strDBAccessMode = "";
         const String DB_FILE = "Multisqlite.db";
         const String DB_VERSION = "1.0.0.0";
+        
 
+               
+
+#if DEBUG
+    public const String DEBUG_LEVEL = "Debug";        
+#else
+    public const String DEBUG_LEVEL = "Release";
+#endif
+
+        
         private int appID = -1;
         string appName = "";
 
@@ -69,7 +79,7 @@ namespace SQLiteTest
             if (rePrompt.InvokeRequired)
             {
                 var d = new AddListDelegate(AddListSafe);
-                rePrompt.Invoke(d, new object[] { list });
+                rePrompt.Invoke(d, new object[] { list });                
             }
             else
             {
@@ -86,8 +96,10 @@ namespace SQLiteTest
         public frmMain()
         {
             InitializeComponent();
+            updatePollingInterval(10);
             tiUpdateApps.Enabled = true;
-            tiUpdateApps_Tick(null, null);
+            tiUpdateApps_Tick(tiUpdateApps, null);
+            this.ActiveControl = rePrompt;
 
             appName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
 
@@ -114,7 +126,7 @@ namespace SQLiteTest
             var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
             strVersion = versionInfo.FileVersion;            
             promptOut(appName + " version: " + strVersion);
-            lblVersion.Text = "Version: " + strVersion;
+            lblVersion.Text = "Version: " + strVersion + " ("+DEBUG_LEVEL+")";
 
 
             DateTime dt = DateTime.Now;
@@ -133,12 +145,14 @@ namespace SQLiteTest
                     String strDBVersion = getDBVersion();
                     if (!strDBVersion.Equals(DB_VERSION.Trim()))
                     {
+                        /*
                         promptOut("Error: Old database....");
                         promptOut("       Deleting tables");
                         promptOut("");
                         execQuery("drop table if exists version");
                         execQuery("drop table if exists testtable");
                         execQuery("drop table if exists apps");
+                        */
 
                         con.Close();
                         //con = null;
@@ -146,7 +160,9 @@ namespace SQLiteTest
                         GC.WaitForPendingFinalizers();
                         bool bFileDeleted = false;
                         try
-                        {                            
+                        {
+                            promptOut("Error: Old database....");
+                            promptOut("       Trying to delete database file...");                            
                             File.Delete(strDatabaseFile);
                             bFileDeleted = true;
                         }
@@ -158,7 +174,11 @@ namespace SQLiteTest
                         {
                             bFileDeleted = false;
                         }
-                        if (!bFileDeleted)
+                        if (bFileDeleted)
+                        {
+                            promptOut("       Old database has been removed");
+                        }
+                        else
                         {
                             promptOut("Error: Old database could not have been removed: " + strDatabaseFile);
                             return;
@@ -171,8 +191,13 @@ namespace SQLiteTest
                             {
                                 promptOut("Error: Could not recreate Database database: " + strDatabaseFile);
                                 return;
-                            }
+                            }                            
                         }
+                        else
+                        {
+                            promptOut("Database recreated: " + strDatabaseFile);
+                        }
+                        promptOut("");
                     }
                 }
 
@@ -221,7 +246,7 @@ namespace SQLiteTest
 
             threads = new CThreads(appID, strDatabaseFile);            
             tiPollApps.Enabled = true;
-            tiUpdateApps_Tick(null, null);
+            tiUpdateApps_Tick(tiUpdateApps, null);
             promptOut("");
             promptOut("Type in an SQL command that will be applied directly on the database.", Color.Lime);
             promptOut("", Color.Lime);
@@ -233,9 +258,16 @@ namespace SQLiteTest
 
         protected void execQuery(String strQuery)
         {
-            SQLiteCommand cmd = null;
-            cmd = new SQLiteCommand(strQuery, con);
-            cmd.ExecuteNonQuery();
+            try
+            {
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand(strQuery, con);
+                cmd.ExecuteNonQuery();
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
 
@@ -445,32 +477,48 @@ namespace SQLiteTest
                 return;
             if (con.State != ConnectionState.Open)
                 return;
+            ((System.Windows.Forms.Timer)sender).Enabled = false;
+            try
+            {
 
-            SQLiteCommand cmd = null;
-            cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, con);
-            cmd.ExecuteNonQuery();
-            cmd = new SQLiteCommand("update apps set isActive=0 where strftime('%s', 'now') -strftime('%s', tsLastPoll)  > 30 ", con);
-            cmd.ExecuteNonQuery();
-            tiConnectionQuery.Enabled = true;
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, con);
+                cmd.ExecuteNonQuery();
+                cmd = new SQLiteCommand("update apps set isActive=0 where strftime('%s', 'now') -strftime('%s', tsLastPoll)  > 30 ", con);
+                cmd.ExecuteNonQuery();
+                tiConnectionQuery.Enabled = true;
+            }
+            finally
+            {
+                ((System.Windows.Forms.Timer)sender).Enabled = true;
+            }
         }
 
         private void tiPollApps_Tick(object sender, EventArgs e)
         {
-            if (tcTabs.SelectedTab == tsApps)
+            ((System.Windows.Forms.Timer)sender).Enabled = false;
+
+            try            
             {
-                List<TreeNode> activeNodes = new List<TreeNode>();
-                bool bFound = false;
+                if (tcTabs.SelectedTab == tsApps)
+                {
+                    List<TreeNode> activeNodes = new List<TreeNode>();
+                    bool bFound = false;
 
 
-                TreeNode nodeAppHeadline = NodeDefinition.Add(NodeDefinition.NodeType.ntAppHeadline, "Active Apps", true, treeApps.Nodes, ref activeNodes, Color.Black, "", "");
-                nodeAppHeadline.Expand();
+                    TreeNode nodeAppHeadline = NodeDefinition.Add(NodeDefinition.NodeType.ntAppHeadline, "Active Apps", true, treeApps.Nodes, ref activeNodes, Color.Black, "", "");
+                    nodeAppHeadline.Expand();
 
-                NodeDefinition.Add(NodeDefinition.NodeType.ntTotalStatusHeadline, "Total Statistics:", true, treeApps.Nodes, ref activeNodes, Color.SteelBlue, "", "");
-                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusHeadline, "Status:", true, treeApps.Nodes, ref activeNodes, Color.Coral, "", "");
+                    NodeDefinition.Add(NodeDefinition.NodeType.ntTotalStatusHeadline, "Total Statistics:", true, treeApps.Nodes, ref activeNodes, Color.SteelBlue, "", "");
+                    NodeDefinition.Add(NodeDefinition.NodeType.ntStatusHeadline, "Status:", true, treeApps.Nodes, ref activeNodes, Color.Coral, "", "");
 
-                treeApps_BeforeExpand_1(sender, new TreeViewCancelEventArgs(nodeAppHeadline, false, new TreeViewAction()));
+                    treeApps_BeforeExpand_1(sender, new TreeViewCancelEventArgs(nodeAppHeadline, false, new TreeViewAction()));
+                }
             }
-
+            finally
+            {
+                ((System.Windows.Forms.Timer)sender).Enabled = true;
+            }            
         }
 
         private void treeApps_BeforeExpand(object sender, TreeViewCancelEventArgs e)
@@ -483,6 +531,8 @@ namespace SQLiteTest
         private void buttonStartThreads_Click(object sender, EventArgs e)
         {
             listThreads.Clear();
+            if (con == null)
+                return;
             if (threads == null)
                 return;
             if (con.State != ConnectionState.Open)
@@ -753,14 +803,9 @@ namespace SQLiteTest
                 List<TreeNode> activeNodes = null;
                 System.IO.FileInfo fileInfo = new System.IO.FileInfo(strDatabaseFile);
                 var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                String strDebugLevel;
-                #if DEBUG
-                    strDebugLevel = "Debug";
-                #else
-                    strDebugLevel = "Relase";
-                #endif
 
-                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Application: " + appName + " version: " + strVersion + " (" + strDebugLevel + ")", false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_1") ;
+               
+                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Application: " + appName + " version: " + strVersion + " (" + DEBUG_LEVEL + ")", false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_1") ;
                 NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Application Instance: " + appID, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_2");                
                 NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Database File: " + strDatabaseFile, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_3");
                 NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "SQLite-Version: " + strSQLiteVersion, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_4");
@@ -797,7 +842,7 @@ namespace SQLiteTest
 
         private void tcTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tiPollApps_Tick(null, null);
+            tiPollApps_Tick(tiPollApps, null);
         }
 
         private void tiConnectionQuery_Tick(object sender, EventArgs e)
@@ -843,14 +888,41 @@ namespace SQLiteTest
         {
             if (e.KeyCode == Keys.Enter)
             {
+
+                /*
                 rePrompt.SelectionStart = rePrompt.Text.Length;
                 int cursorPosition = rePrompt.SelectionStart;
                 int cmdIndex = rePrompt.GetLineFromCharIndex(cursorPosition) - 2;
                 if (cmdIndex < 0)
                     return;
+                  int cmdIndex = rePrompt.Lines.Length - 1;
+
                 String strCMD = unprompt(rePrompt.Lines[cmdIndex]);
+                */
+
+                String strLastLine = "";
+                foreach(String strLine in rePrompt.Lines)
+                {
+                    if (strLine.Trim().Length > 0)
+                        strLastLine = strLine;
+                }
+
+                String strCMD = unprompt(strLastLine);
                 if (strCMD.Trim().Length == 0)
+                {
+                    prompt();
                     return;
+                }
+                if (strCMD.ToUpper().Equals("DISCONNECT"))
+                {
+                    if (con == null)
+                        return;
+                    con.Close();                    
+                    con = null;
+                    promptOut("Database connection is closed");
+                    prompt();
+                    return;
+                }
                 SQLiteCommand cmd = null;
                 if (con == null)
                 {
@@ -943,24 +1015,45 @@ namespace SQLiteTest
             // Return formatted number with suffix
             return readable.ToString("0.### ") + suffix;
         }
+        
 
         private void tiLiveUpdate_Tick(object sender, EventArgs e)
         {
             if (con.State != ConnectionState.Open)
                 return;
-            tiLiveUpdate.Enabled = false;
-            btnLiveUpdate.UseVisualStyleBackColor = true;            
-            btnLiveUpdate.BackColor = Color.DarkBlue;
-            btnLiveUpdate.Invalidate();
-            btnLiveUpdate.Update();
-            btnLiveUpdate.Refresh();          
-            System.Windows.Forms.Application.DoEvents();
-            tiLiveUpdateFlicker.Enabled = true;
-            foreach (TreeNode node in treeApps.Nodes)
+            ((System.Windows.Forms.Timer)sender).Enabled = false;
+            try
             {
-                updateNodeRecursive(node);
+                tiLiveUpdate.Enabled = false;
+                btnLiveUpdate.UseVisualStyleBackColor = true;
+                btnLiveUpdate.BackColor = Color.DarkBlue;
+                btnLiveUpdate.Invalidate();
+                btnLiveUpdate.Update();
+                btnLiveUpdate.Refresh();
+                System.Windows.Forms.Application.DoEvents();
+                tiLiveUpdateFlicker.Enabled = true;
+                foreach (TreeNode node in treeApps.Nodes)
+                {
+                    updateNodeRecursive(node);
+                }
             }
-            tiLiveUpdate.Enabled = true; ;
+            finally
+            {
+                ((System.Windows.Forms.Timer)sender).Enabled = true;
+            }
+
+        }
+
+        void updatePollingInterval(int intervall = 0)
+        {
+            if (intervall>0)
+            {
+                tbDBInterval.Value = intervall;
+            }
+            LBL_DB_PollingInterval.Text = "DB Polling Interval: " + tbDBInterval.Value + " Seconds";
+            tiPollApps.Interval = tbDBInterval.Value * 1000;
+            tiLiveUpdate.Interval = tbDBInterval.Value * 1000;
+            tiUpdateApps.Interval = tbDBInterval.Value * 1000;
         }
 
         private void btnLiveUpdate_Click(object sender, EventArgs e)
@@ -1041,6 +1134,33 @@ namespace SQLiteTest
             FormAbout frmAbout = new FormAbout();
             frmAbout.StartPosition = FormStartPosition.CenterScreen;
             frmAbout.ShowDialog();
+        }
+
+        private void tbDBInterval_ValueChanged(object sender, EventArgs e)
+        {
+            updatePollingInterval();
+        }
+
+        private void tbDBInterval_Scroll(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rePrompt_KeyDown(object sender, KeyEventArgs e)
+        {
+            
+        }
+
+        private void rePrompt_Enter(object sender, EventArgs e)
+        {
+            tiScrollCaret.Enabled = true;
+        }
+
+        private void tiScrollCaret_Tick(object sender, EventArgs e)
+        {
+            rePrompt.Select(this.rePrompt.Text.Length, 0);
+            rePrompt.ScrollToCaret();
+            tiScrollCaret.Enabled = false;
         }
     }
 
