@@ -56,6 +56,8 @@
             this.btnLiveUpdate = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuOpenExternalDB = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuConnect = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuDisconnect = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
@@ -359,6 +361,8 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuOpenExternalDB,
+            this.toolStripMenuItem3,
             this.mnuConnect,
             this.mnuDisconnect,
             this.toolStripMenuItem2,
@@ -369,12 +373,25 @@
             this.fileToolStripMenuItem.Text = "&File";
             this.fileToolStripMenuItem.DropDownOpening += new System.EventHandler(this.fileToolStripMenuItem_DropDownOpening);
             // 
+            // mnuOpenExternalDB
+            // 
+            this.mnuOpenExternalDB.Image = global::SQLiteTest.Properties.Resources.OpenFile;
+            this.mnuOpenExternalDB.Name = "mnuOpenExternalDB";
+            this.mnuOpenExternalDB.Size = new System.Drawing.Size(203, 26);
+            this.mnuOpenExternalDB.Text = "Open e&xternal Database";
+            this.mnuOpenExternalDB.Click += new System.EventHandler(this.mnuOpenExternalDB_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(200, 6);
+            // 
             // mnuConnect
             // 
             this.mnuConnect.BackColor = System.Drawing.Color.Transparent;
             this.mnuConnect.Image = global::SQLiteTest.Properties.Resources.Connected1;
             this.mnuConnect.Name = "mnuConnect";
-            this.mnuConnect.Size = new System.Drawing.Size(184, 26);
+            this.mnuConnect.Size = new System.Drawing.Size(203, 26);
             this.mnuConnect.Text = "&Connect";
             this.mnuConnect.Click += new System.EventHandler(this.mnuConnect_Click);
             // 
@@ -382,20 +399,20 @@
             // 
             this.mnuDisconnect.Image = global::SQLiteTest.Properties.Resources.Disconnected;
             this.mnuDisconnect.Name = "mnuDisconnect";
-            this.mnuDisconnect.Size = new System.Drawing.Size(184, 26);
+            this.mnuDisconnect.Size = new System.Drawing.Size(203, 26);
             this.mnuDisconnect.Text = "&Disconnect";
             this.mnuDisconnect.Click += new System.EventHandler(this.mnuDisconnect_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(181, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(200, 6);
             // 
             // menuExit
             // 
             this.menuExit.Image = global::SQLiteTest.Properties.Resources.Close_161;
             this.menuExit.Name = "menuExit";
-            this.menuExit.Size = new System.Drawing.Size(184, 26);
+            this.menuExit.Size = new System.Drawing.Size(203, 26);
             this.menuExit.Text = "E&xit";
             this.menuExit.Click += new System.EventHandler(this.menuExit_Click);
             // 
@@ -610,6 +627,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuConnect;
         private System.Windows.Forms.ToolStripMenuItem mnuDisconnect;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem mnuOpenExternalDB;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
     }
 }
 

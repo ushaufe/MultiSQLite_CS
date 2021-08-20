@@ -52,7 +52,7 @@ namespace SQLiteTest
                 for (int i = 0; i < 3; i++)
                 {
                     SQLiteCommand cmd = null;
-                    String strCMD = "SELECT text FROM (SELECT * FROM testtable where threadID=" + i + " and appID=" + appID + " ORDER BY id DESC LIMIT 2) ORDER BY id ASC; ";
+                    String strCMD = "SELECT text FROM (SELECT * FROM multisqlite_entries where threadID=" + i + " and appID=" + appID + " ORDER BY id DESC LIMIT 2) ORDER BY id ASC; ";
                     //String strCMD = "SELECT text FROM (SELECT * FROM testtable where threadID=" + i + " ORDER BY id DESC LIMIT 2) ORDER BY id ASC; ";
                     cmd = new SQLiteCommand(strCMD, con);
                     SQLiteDataReader reader = cmd.ExecuteReader();

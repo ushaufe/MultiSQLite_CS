@@ -29,8 +29,9 @@ namespace SQLiteTest
         
         public const String DB_FILE = "Multisqlite.db";
         public const int DB_VERSION_MIN = 1000;
-        public const int DB_VERSION_MAX = 1100;
-        public String DB_VERSION = "1.1.0.0";
+        public const int DB_VERSION_MAX = 2000;
+        public String DB_VERSION_STR = "2.0.0.0";
+        public const int DB_VERSION = 2000;
 
        
 
@@ -84,7 +85,7 @@ namespace SQLiteTest
             strSQLiteVersion = cmd.ExecuteScalar().ToString();
         }
 
-        public void setAppID(Form frm, ref int appID)
+        public void setAppID(Form frm, ref int appID, String strDatabaseFile = "")
         {
             if (get().State != ConnectionState.Open)
             {
@@ -100,17 +101,17 @@ namespace SQLiteTest
             string strVersion = cmd.ExecuteScalar().ToString();
 
 
-            cmd = new SQLiteCommand("SELECT* FROM apps order by id DESC LIMIT 1", get());
+            cmd = new SQLiteCommand("SELECT* FROM multisqlite_apps order by id DESC LIMIT 1", get());
             SQLiteDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 String strID = reader["id"].ToString();
                 appID = Convert.ToInt32(strID);
-                frm.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";
+                frm.Text = "Haufe Multi-SQLite for C# <" +strDatabaseFile +" ID: " + appID + ">";
             }
         }
 
-        public void Connect(ref int appID, ref DBThreads threads)
+        public void Connect(ref int appID, ref DBThreads threads, String strExternalFile = "")
         {
             String strDatabaseDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
             if (strDatabaseDir.Length == 0)
@@ -121,6 +122,9 @@ namespace SQLiteTest
             if (!System.IO.Directory.Exists(strDatabaseDir))
                 System.IO.Directory.CreateDirectory(strDatabaseDir);
             strDatabaseFile = strDatabaseDir + DB_FILE;
+
+            if ((strExternalFile.Length > 0) && (File.Exists(strExternalFile)))
+                strDatabaseFile = strExternalFile;
 
             System.IO.FileAttributes databaseAttributes = 0;
             string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
@@ -150,7 +154,7 @@ namespace SQLiteTest
                     //String strDBVersion = getDBVersion();
                     //if (!strDBVersion.Equals(DB_VERSION.Trim()))
                      dbVersion = getDBVersionNumber();
-                    if ((dbVersion<DB_VERSION_MIN) || (dbVersion>DB_VERSION_MAX))
+                    if ((strExternalFile.Length==0) && ((dbVersion<DB_VERSION_MIN) || (dbVersion>DB_VERSION_MAX)))
                     {    
                         con.Close();
                         //con = null;
@@ -200,9 +204,17 @@ namespace SQLiteTest
                         }
                         prompt.Out("");
                     }
-                    else if (dbVersion < DB_VERSION_MIN)
+                    else if (dbVersion < DB_VERSION)
                     {
-                        prompt.Out("Old database, try updating....");
+                        if (strExternalFile.Length==0)
+                        {
+                            prompt.Out("Old database, try updating....");
+                        }
+                        else 
+                        {
+                           
+                        }
+                        
                     }
                 }
 
@@ -227,29 +239,52 @@ namespace SQLiteTest
 
                 if (dbVersion < DB_VERSION_MIN)
                 {
-                    execQuery("Create Table if NOT Exists version (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT) ");
-                    execQuery("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ");
-                    execQuery("Create Table if NOT Exists apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT, isActive INTEGER DEFAULT FALSE) ");
-                    execQuery("Create Table if NOT Exists threads ( id INTEGER PRIMARY KEY AUTOINCREMENT, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isActive INTEGER DEFAULT FALSE ) ");
+                    if (strExternalFile.Length == 0)
+                    {
+                        execQuery("Create Table if NOT Exists version (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT) ");
+                        execQuery("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ");
+                        execQuery("Create Table if NOT Exists apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT, isActive INTEGER DEFAULT FALSE) ");
+                        execQuery("Create Table if NOT Exists threads ( id INTEGER PRIMARY KEY AUTOINCREMENT, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isActive INTEGER DEFAULT FALSE ) ");
+                    }
                     dbVersion = 1000;
                 }
                 
-                // Create a table that can hold text-data along with the thread-id of the thread that created the data
-                strInsert = String.Format("insert into testtable (appID,threadid,text) values ({0},0,'{1}')", appID, dt.ToString());
+               
                 execQuery(strInsert);
                 if (dbVersion < 1100)
                 {
                     execQuery("Drop table if exists multisqlite_version");
                     execQuery("Create Table if NOT Exists multisqlite_version (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, version TEXT) ");
                     execQuery("insert into multisqlite_version (id,name,version) values (0,'MULTISQLITE', '" + "1.1.0.0" + "')");
-                    dbVersion = 1100;
-                    DB_VERSION = "1.1.0.0";
+                    dbVersion = 1100;                    
                 }
 
-                cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, get());
-                execQuery("update apps set isActive=0 where tsLastPoll is null ");
-                execQuery("insert into apps (name, isActive) values ('" + appName + "', true)");
-                setAppID(form, ref appID);
+                if (dbVersion < 2000)
+                {
+                    if (strExternalFile.Length > 0)
+                    {
+                        execQuery("Create Table if NOT Exists multisqlite_entries (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ");
+                        execQuery("Create Table if NOT Exists multisqlite_apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT, isActive INTEGER DEFAULT FALSE) ");
+                        execQuery("Create Table if NOT Exists multisqlite_threads ( id INTEGER PRIMARY KEY AUTOINCREMENT, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isActive INTEGER DEFAULT FALSE ) ");
+                    }
+                    else
+                    {
+                        execQuery("Alter Table testtable RENAME TO multisqlite_entries ");
+                        execQuery("Alter Table apps RENAME TO multisqlite_apps  ");
+                        execQuery("Alter Table threads RENAME TO multisqlite_threads  ");
+                    }
+                    execQuery("Update multisqlite_version set version='" + DB_VERSION_STR + "'");    
+                    dbVersion = 2000;                    
+                }
+                    
+
+                // Create a table that can hold text-data along with the thread-id of the thread that created the data
+                cmd = new SQLiteCommand("update multisqlite_apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, get());
+                execQuery("update multisqlite_apps set isActive=0 where tsLastPoll is null ");
+                execQuery("insert into multisqlite_apps (name, isActive) values ('" + appName + "', true)");
+                setAppID(form, ref appID, strExternalFile);
+                strInsert = String.Format("insert into multisqlite_entries (appID,threadid,text) values ({0},0,'{1}')", appID, dt.ToString());
+                execQuery(strInsert);
 
                 prompt.Out("SQLite Version: " + strSQLiteVersion);
             }
@@ -354,7 +389,7 @@ namespace SQLiteTest
 
             SQLiteCommand cmd = null;
 
-            String strStartThread = String.Format("insert into threads (threadid,appID,isActive) values ({0},'{1}',1)", threadID, appID);
+            String strStartThread = String.Format("insert into multisqlite_threads (threadid,appID,isActive) values ({0},'{1}',1)", threadID, appID);
             cmd = new SQLiteCommand(strStartThread, con1);
             cmd.ExecuteNonQuery();
 
@@ -372,12 +407,12 @@ namespace SQLiteTest
                     str = str + (char)rand.Next(65, 65 + 32);
                 } while (rand.Next(1, 255) != 100);
 
-                String strInsert = String.Format("insert into testtable (threadid,text,appid) values ({0},'{1}', {2})", threadID, str, appID);
+                String strInsert = String.Format("insert into multisqlite_entries (threadid,text,appid) values ({0},'{1}', {2})", threadID, str, appID);
                 cmd = new SQLiteCommand(strInsert, con1);
                 cmd.ExecuteNonQuery();
             }
 
-            String strStopThread = String.Format("update threads set isActive=0 where threadID={0} and appID={1} ", threadID, appID);
+            String strStopThread = String.Format("update multisqlite_threads set isActive=0 where threadID={0} and appID={1} ", threadID, appID);
             cmd = new SQLiteCommand(strStopThread, con1);
             cmd.ExecuteNonQuery();
         }

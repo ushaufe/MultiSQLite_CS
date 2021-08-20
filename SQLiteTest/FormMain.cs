@@ -105,9 +105,7 @@ namespace SQLiteTest
             prompt = new PromptCommands(ref rePrompt, ref connection);
             connection = new ConnectionClass(this, prompt, appName);
 
-            updatePollingInterval(10);
-            tiUpdateApps.Enabled = true;
-            tiUpdateApps_Tick(tiUpdateApps, null);
+
 
 
            
@@ -118,6 +116,10 @@ namespace SQLiteTest
             lblVersion.Text = "Version: " + strVersion + " ("+DEBUG_LEVEL+")";
 
             connection.Connect(ref appID, ref threads);
+
+            updatePollingInterval(10);
+            tiUpdateApps.Enabled = true;
+            tiUpdateApps_Tick(tiUpdateApps, null);
 
             tiPollApps.Enabled = true;
             tiUpdateApps_Tick(tiUpdateApps, null);
@@ -186,7 +188,7 @@ namespace SQLiteTest
             prompt.Out("Running: " + strRunning);
 
             SQLiteCommand cmd = null;
-            cmd = new SQLiteCommand("Select count(text) as cnt from testtable", connection.get());
+            cmd = new SQLiteCommand("Select count(text) as cnt from multisqlite_entries", connection.get());
             SQLiteDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -239,9 +241,9 @@ namespace SQLiteTest
             {
 
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, connection.get());
+                cmd = new SQLiteCommand("update multisqlite_apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, connection.get());
                 cmd.ExecuteNonQuery();
-                cmd = new SQLiteCommand("update apps set isActive=0 where strftime('%s', 'now') -strftime('%s', tsLastPoll)  > 30 ", connection.get());
+                cmd = new SQLiteCommand("update multisqlite_apps set isActive=0 where strftime('%s', 'now') -strftime('%s', tsLastPoll)  > 30 ", connection.get());
                 cmd.ExecuteNonQuery();
                 tiConnectionQuery.Enabled = true;
             }
@@ -268,6 +270,7 @@ namespace SQLiteTest
 
                     NodeDefinition.Add(NodeDefinition.NodeType.ntTotalStatusHeadline, "Total Statistics:", true, treeApps.Nodes, ref activeNodes, Color.SteelBlue, "", "");
                     NodeDefinition.Add(NodeDefinition.NodeType.ntStatusHeadline, "Status:", true, treeApps.Nodes, ref activeNodes, Color.Coral, "", "");
+                    NodeDefinition.Add(NodeDefinition.NodeType.ntTablesHeadline, "Tables: ", true, treeApps.Nodes, ref activeNodes, Color.BlueViolet, "");
 
                     treeApps_BeforeExpand_1(sender, new TreeViewCancelEventArgs(nodeAppHeadline, false, new TreeViewAction()));
                 }
@@ -345,7 +348,7 @@ namespace SQLiteTest
                 bool bFound = false;
                 List<TreeNode> activeNodes = new List<TreeNode>();
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("Select distinct apps.id as AppID,apps.name as AppName from apps where isActive=1 ", connection.get());
+                cmd = new SQLiteCommand("Select distinct multisqlite_apps.id as AppID,multisqlite_apps.name as AppName from multisqlite_apps where isActive=1 ", connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -366,6 +369,7 @@ namespace SQLiteTest
                 NodeDefinition.Add(NodeDefinition.NodeType.ntCountAppEntriesHeadline, "Entries Count:", true, node.Nodes, ref activeNodes, Color.Black, nd.strAppID);
                 NodeDefinition.Add(NodeDefinition.NodeType.ntThreadHeadline, "Threads:", true, node.Nodes, ref activeNodes, Color.Black, nd.strAppID);
                 NodeDefinition.Add(NodeDefinition.NodeType.ntAppThroughputHeadline, "Throughput:", true, node.Nodes, ref activeNodes, Color.Black, nd.strAppID);
+                //NodeDefinition.Add(NodeDefinition.NodeType.ntTablesHeadline, "Tables: ", true, node.Nodes, ref activeNodes, Color.BlueViolet, nd.strAppID);
             }
 
             else if (nd.nodeType == NodeType.ntTotalStatusHeadline)
@@ -377,13 +381,76 @@ namespace SQLiteTest
                 NodeDefinition.Add(NodeDefinition.NodeType.ntCountTotalThreadsActiveHeadline, "Total Active Threads Count:", true, node.Nodes, ref activeNodes, nd.parentColor, "", "");
                 NodeDefinition.Add(NodeDefinition.NodeType.ntTotalThroughputHeadline, "Total Throughput:", true, node.Nodes, ref activeNodes, nd.parentColor);
             }
+            
+            else if (nd.nodeType == NodeDefinition.NodeType.ntTablesHeadline)
+            {
+                node.Nodes.Clear();
+                List<TreeNode> activeNodes = null;
+        
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand("SELECT name FROM sqlite_master where name not like 'multisqlite_%' and name not like 'sqlite_sequence'", connection.get());
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    string strTableName = (string)reader["name"].ToString();
+                    
+                    NodeDefinition.Add(NodeDefinition.NodeType.ntTableHeadline, strTableName, true, node.Nodes, ref activeNodes, nd.parentColor, "", "", strTableName);
+                }
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntTableFieldHeadline)
+            {
+                node.Nodes.Clear();
+                List<TreeNode> activeNodes = null;
+
+                SQLiteCommand cmd = null;
+                cmd = new SQLiteCommand("select * from '" + nd.strID + "'", connection.get());
+                try
+                {
+                    List<List<string>> table = new List<List<string>>();
+                    List<string> columns = new List<string>();
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string strColumn = reader.GetName(i);
+                        columns.Add(strColumn);
+                    }
+                    table.Add(columns.GetRange(0, columns.Count));
+                    while ((reader != null) && (reader.Read()))
+                    {
+                        columns.Clear();
+                        String strLine = "";
+                        foreach (String strCol in table[0])
+                        {
+                            string str = (string)reader[strCol].ToString();
+                            columns.Add(str);
+                            strLine = strLine + strCol + ":" + " " + str + "; ";
+                        }                        
+                        NodeDefinition.Add(NodeDefinition.NodeType.ntTableFieldEntryLine, strLine, true, node.Nodes, ref activeNodes, nd.parentColor, "", "", nd.strID + "/" + strLine);
+                        //table.Add(columns.GetRange(0, columns.Count));
+                    }
+                    //printTable(table);
+                    //prompt.Prompt();
+                }
+                catch(Exception e)
+                {
+
+                }
+            }
+
+            else if (nd.nodeType == NodeDefinition.NodeType.ntTableHeadline)
+            {
+                node.Nodes.Clear();
+                List<TreeNode> activeNodes = null;
+                NodeDefinition.Add(NodeDefinition.NodeType.ntTableFieldHeadline, "Fields", true, node.Nodes, ref activeNodes, nd.parentColor, "", "", nd.strID);
+            }
 
             else if (nd.nodeType == NodeDefinition.NodeType.ntCountThreadHeadline)
             {
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(distinct threadid) as CNT from testtable where appID=" + nd.strAppID, connection.get());
+                cmd = new SQLiteCommand("select count(distinct threadid) as CNT from multisqlite_entries where appID=" + nd.strAppID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -402,7 +469,7 @@ namespace SQLiteTest
                 TreeNode treeNodeThread = NodeDefinition.Add(NodeDefinition.NodeType.ntThread, "GUI-Thread", true, node.Nodes, ref activeNodes, Color.Black, nd.strAppID, "0");
 
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select distinct threadid, isActive from threads where appID=" + nd.strAppID, connection.get());
+                cmd = new SQLiteCommand("select distinct threadid, isActive from multisqlite_threads where appID=" + nd.strAppID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -436,7 +503,7 @@ namespace SQLiteTest
                 node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select id,text,appid,threadid,tsCreated from testtable where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, connection.get());
+                cmd = new SQLiteCommand("select id,text,appid,threadid,tsCreated from multisqlite_entries where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -455,7 +522,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(id) as CNT from testtable where appID=" + nd.strAppID, connection.get());
+                cmd = new SQLiteCommand("select count(id) as CNT from multisqlite_entries where appID=" + nd.strAppID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -469,7 +536,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(id) as CNT from testtable where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, connection.get());
+                cmd = new SQLiteCommand("select count(id) as CNT from multisqlite_entries where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -483,7 +550,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(id) as CNT from testtable", connection.get());
+                cmd = new SQLiteCommand("select count(id) as CNT from multisqlite_entries", connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -498,7 +565,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(distinct th.appID|| ',' || th.threadid) as CNT from testtable tt,apps ap, threads th where tt.appID = th.appID and tt.threadID = th.threadID and th.isActive = 1 and ap.id = th.appID and ap.isActive=1", connection.get());
+                cmd = new SQLiteCommand("select count(distinct th.appID|| ',' || th.threadid) as CNT from multisqlite_entries tt,multisqlite_apps ap, multisqlite_threads th where tt.appID = th.appID and tt.threadID = th.threadID and th.isActive = 1 and ap.id = th.appID and ap.isActive=1", connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -513,7 +580,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                String strThroughput = String.Format("select count(tt.id)/60 as CNT from testtable tt, apps ap, threads th where tt.appID={0} and tt.threadID={1} and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1", nd.strAppID, nd.strThreadID);
+                String strThroughput = String.Format("select count(tt.id)/60 as CNT from multisqlite_entries tt, multisqlite_apps ap, multisqlite_threads th where tt.appID={0} and tt.threadID={1} and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1", nd.strAppID, nd.strThreadID);
                 cmd = new SQLiteCommand(strThroughput, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -528,7 +595,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                String strThroughput = String.Format("select count(tt.id)/60 as CNT from testtable tt, apps ap, threads th where tt.appID={0} and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1", nd.strAppID);
+                String strThroughput = String.Format("select count(tt.id)/60 as CNT from multisqlite_entries tt, multisqlite_apps ap, multisqlite_threads th where tt.appID={0} and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1", nd.strAppID);
                 cmd = new SQLiteCommand(strThroughput, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -544,7 +611,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                String strThroughput = String.Format("select count(tt.id)/60 as CNT from testtable tt, apps ap, threads th where tt.appID in (select id from apps where isActive=1) and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1");
+                String strThroughput = String.Format("select count(tt.id)/60 as CNT from multisqlite_entries tt, multisqlite_apps ap, multisqlite_threads th where tt.appID in (select id from apps where isActive=1) and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1");
                 cmd = new SQLiteCommand(strThroughput, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -594,7 +661,7 @@ namespace SQLiteTest
                 return;
             if (connection.get().State == ConnectionState.Closed)
                 return;
-            connection.execQuery("update apps set isActive=0 where id = " + appID);
+            connection.execQuery("update multisqlite_apps set isActive=0 where id = " + appID);
         }
 
         private void tcTabs_SelectedIndexChanged(object sender, EventArgs e)
@@ -934,6 +1001,22 @@ namespace SQLiteTest
         private void mnuDisconnect_Click(object sender, EventArgs e)
         {
             prompt.Disconnect(ref appID);
+        }
+
+        private void mnuOpenExternalDB_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog od = new OpenFileDialog();
+            od.Filter = "Haufe Database Files ´(*.dbs)|*.dbs|SQLite Database Files (*.db)|*.db";
+            od.Title = "Open External Database:";
+            if (od.ShowDialog()==DialogResult.OK)
+            {
+                if (od.FileName.Length == 0)
+                    return;
+                prompt.Out("Opening external database: " + od.FileName);
+                connection.Connect(ref appID, ref threads, od.FileName);
+                prompt.Prompt();
+            }
+            
         }
     }
 

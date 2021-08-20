@@ -31,6 +31,7 @@ namespace SQLiteTest
         {
             ntAppHeadline,
             ntApp,
+          
             ntCountTotalEntriesHeadline,
             ntCountTotalEntries,
             ntCountTotalThreadsActiveHeadline,
@@ -40,6 +41,11 @@ namespace SQLiteTest
             ntCountThreadHeadline,
             ntTotalThreadCount,
             ntEntryHeadline,
+            ntTablesHeadline,
+            ntTableHeadline,
+            ntTableFieldsHeadline,
+            ntTableFieldHeadline,
+            ntTableFieldEntryLine,
             ntEntry,
             ntCountAppEntriesHeadline,
             ntCountAppEntries,
@@ -65,7 +71,7 @@ namespace SQLiteTest
         public NodeType nodeType;
         public string strAppID = "";
         public string strThreadID = "";
-        public string strID = "";
+        public string strID = "";        
         public Color parentColor = Color.Black;
 
         static public bool isLiveable(NodeType type)
@@ -127,7 +133,7 @@ namespace SQLiteTest
             nd.strAppID = strAppID;
             nd.strThreadID = strThreadID;
             nd.strID = strID;
-            nd.nodeType = nodeType;
+            nd.nodeType = nodeType;           
             nd.parentColor = color;
             node.Tag = nd;
             node.ForeColor = color;
@@ -174,7 +180,8 @@ namespace SQLiteTest
                     case NodeType.ntTotalThroughput:
 
                     case NodeType.ntTotalStatusHeadline:
-                    case NodeType.ntStatusHeadline:
+                    case NodeType.ntStatusHeadline:                    
+                    case NodeType.ntTablesHeadline:
 
                         if (((NodeDefinition)(newNode.Tag)).nodeType == nd.nodeType)
                         {
