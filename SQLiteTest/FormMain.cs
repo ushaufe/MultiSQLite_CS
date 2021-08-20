@@ -36,9 +36,9 @@ namespace SQLiteTest
 
     public partial class frmMain : Form
     {
-        SQLiteConnection con = null;
+        
 
-        CThreads threads;
+        public DBThreads threads;
 
 
         // These threads are used for simultaneous writing...
@@ -49,13 +49,9 @@ namespace SQLiteTest
         //   the database and refreshing them )
         // Can be run simultanously to writing threads
         ViewThread viewThread;
+        public static String strVersion = "";
 
-        String strDatabaseFile = "";
-        static String strVersion = "";
-        String strSQLiteVersion = "";
-        String strDBAccessMode = "";
-        const String DB_FILE = "Multisqlite.db";
-        const String DB_VERSION = "1.0.0.0";
+
         
 
                
@@ -68,11 +64,15 @@ namespace SQLiteTest
 
         
         private int appID = -1;
-        string appName = "";
+        private string appName = "";
 
         static public String getVersion() { return strVersion; }
 
         private delegate void AddListDelegate(List<String> list);
+
+        private ConnectionClass connection;
+
+        public PromptCommands prompt;
 
         public void AddListSafe(List<String> list)
         {
@@ -86,282 +86,57 @@ namespace SQLiteTest
                 rePrompt.Clear();
                 foreach (string str in list)
                 {
-                    promptOut(str);
+                   prompt.Out(str);
                 }
 
             }
         }
 
-
+        
         public frmMain()
         {
             InitializeComponent();
-            updatePollingInterval(10);
-            tiUpdateApps.Enabled = true;
-            tiUpdateApps_Tick(tiUpdateApps, null);
+
             this.ActiveControl = rePrompt;
 
             appName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+            
+            
+            prompt = new PromptCommands(ref rePrompt, ref connection);
+            connection = new ConnectionClass(this, prompt, appName);
 
-            String strDatabaseDir = Path.Combine(Environment.GetFolderPath(
-                Environment.SpecialFolder.ApplicationData));
-            if (strDatabaseDir.Length == 0)
-                strDatabaseDir = "C:";
-            if (strDatabaseDir[strDatabaseDir.Length - 1] != '\\')
-                strDatabaseDir += '\\';
-            strDatabaseDir += "MultiSQLite\\";
-            if (!System.IO.Directory.Exists(strDatabaseDir))
-                System.IO.Directory.CreateDirectory(strDatabaseDir);
-            strDatabaseFile = strDatabaseDir + DB_FILE;
+            updatePollingInterval(10);
+            tiUpdateApps.Enabled = true;
+            tiUpdateApps_Tick(tiUpdateApps, null);
 
 
-            System.IO.FileAttributes databaseAttributes = 0;
-
-            if (File.Exists(strDatabaseFile))
-                databaseAttributes = System.IO.File.GetAttributes(strDatabaseFile);
-            else
-                databaseAttributes = System.IO.FileAttributes.Offline;
-
-
+           
             var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            strVersion = versionInfo.FileVersion;            
-            promptOut(appName + " version: " + strVersion);
+            strVersion = versionInfo.FileVersion;
+                                   
+            prompt.Out(appName + " version: " + strVersion);
             lblVersion.Text = "Version: " + strVersion + " ("+DEBUG_LEVEL+")";
 
+            connection.Connect(ref appID, ref threads);
 
-            DateTime dt = DateTime.Now;
-            string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
-            SQLiteCommand cmd = null;
-
-            bool bDatabaseExisted = File.Exists(strDatabaseFile);
-            con = new SQLiteConnection(cs);
-            con.Open();
-
-            String strConnected = "";
-            if (con.State == ConnectionState.Open)
-            {
-                if (bDatabaseExisted)
-                {
-                    String strDBVersion = getDBVersion();
-                    if (!strDBVersion.Equals(DB_VERSION.Trim()))
-                    {
-                        /*
-                        promptOut("Error: Old database....");
-                        promptOut("       Deleting tables");
-                        promptOut("");
-                        execQuery("drop table if exists version");
-                        execQuery("drop table if exists testtable");
-                        execQuery("drop table if exists apps");
-                        */
-
-                        con.Close();
-                        //con = null;
-                        GC.Collect();
-                        GC.WaitForPendingFinalizers();
-                        bool bFileDeleted = false;
-                        try
-                        {
-                            promptOut("Error: Old database....");
-                            promptOut("       Trying to delete database file...");                            
-                            File.Delete(strDatabaseFile);
-                            bFileDeleted = true;
-                        }
-                        catch(Exception e)
-                        {
-                            bFileDeleted = false;
-                        }
-                        if (File.Exists(strDatabaseFile))
-                        {
-                            bFileDeleted = false;
-                        }
-                        if (bFileDeleted)
-                        {
-                            promptOut("       Old database has been removed");
-                        }
-                        else
-                        {
-                            promptOut("Error: Old database could not have been removed: " + strDatabaseFile);
-                            return;
-                        }
-                        con = new SQLiteConnection(cs);
-                        con.Open();
-
-                        if (con.State != ConnectionState.Open)
-                        {
-                            {
-                                promptOut("Error: Could not recreate Database database: " + strDatabaseFile);
-                                return;
-                            }                            
-                        }
-                        else
-                        {
-                            promptOut("Database recreated: " + strDatabaseFile);
-                        }
-                        promptOut("");
-                    }
-                }
-
-                setSQLiteVersion();
-                if (databaseAttributes == System.IO.FileAttributes.Offline)
-                {
-                    databaseAttributes = System.IO.File.GetAttributes(strDatabaseFile);
-                    promptOut("Database created: " + strDatabaseFile);
-                }
-                else
-                {
-                    promptOut("Database opened: " + strDatabaseFile);
-                }
-                strDBAccessMode = "Database accessible for " + ((databaseAttributes == System.IO.FileAttributes.ReadOnly) ? " Read only" : "Read + Write");
-                promptOut(strDBAccessMode);
-
-
-
-                String strDeleteFrom = "";
-                String strInsert = "";
-
-
-                execQuery("Create Table if NOT Exists version (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT) ");
-                execQuery("Create Table if NOT Exists testtable (id INTEGER PRIMARY KEY AUTOINCREMENT, text VARCHAR, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ");
-                execQuery("Create Table if NOT Exists apps (id INTEGER PRIMARY KEY AUTOINCREMENT, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  tsLastPoll TIMESTAMP DEFAULT CURRENT_TIMESTAMP, name TEXT, isActive INTEGER DEFAULT FALSE) ");
-                execQuery("Create Table if NOT Exists threads ( id INTEGER PRIMARY KEY AUTOINCREMENT, threadID INTEGER, appID INTEGER, tsCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, isActive INTEGER DEFAULT FALSE ) ");
-                cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, con);
-                execQuery("update apps set isActive=0 where tsLastPoll is null ");
-                execQuery("insert into apps (name, isActive) values ('" + appName + "', true)");
-                setAppID();
-
-
-                // Create a table that can hold text-data along with the thread-id of the thread that created the data
-                strInsert = String.Format("insert into testtable (appID,threadid,text) values ({0},0,'{1}')", appID, dt.ToString());
-                execQuery(strInsert);
-                execQuery("Delete from version");
-                execQuery("insert into version (id,name) values (0,'" + DB_VERSION + "')");
-
-
-                promptOut("SQLite Version: " + strSQLiteVersion);
-            }
-            else
-            {
-                promptOut("Error: Could not opened database: " + strDatabaseFile);
-            }
-
-            threads = new CThreads(appID, strDatabaseFile);            
             tiPollApps.Enabled = true;
             tiUpdateApps_Tick(tiUpdateApps, null);
-            promptOut("");
-            promptOut("Type in an SQL command that will be applied directly on the database.", Color.Lime);
-            promptOut("", Color.Lime);
-            promptOut("Type \"SELECT name FROM sqlite_master\" to show the structure of the database.", Color.Lime);
-            promptOut("", Color.Lime);
-            promptOut("Note: The commands will be executed on the GUI-thread.", Color.Lime);
-            prompt();
-        }
-
-        protected void execQuery(String strQuery)
-        {
-            try
-            {
-                SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand(strQuery, con);
-                cmd.ExecuteNonQuery();
-            }
-            catch(Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
+            prompt.Out("");
+            prompt.Out("Type in an SQL command that will be applied directly on the database.", Color.Lime);
+            prompt.Out("", Color.Lime);
+            prompt.Out("Type \"SELECT name FROM sqlite_master\" to show the structure of the database.", Color.Lime);
+            prompt.Out("", Color.Lime);
+            prompt.Out("Note: The commands will be executed on the GUI-thread.", Color.Lime);
+            prompt.Prompt();
         }
 
 
-        public void setSQLiteVersion()
-        {
-            SQLiteCommand cmd = null;
-            string stm = "SELECT SQLITE_VERSION()";
-            cmd = new SQLiteCommand(stm, con);
-            strSQLiteVersion = cmd.ExecuteScalar().ToString();
-        }
-
-
-        public String getDBVersion()
-        {
-            string stm = "SELECT SQLITE_VERSION()";
-            //int nRevision = -1;
-            String strDBVersion = "";
-
-            try
-            {
-                SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand(stm, con);
-                string strVersion = cmd.ExecuteScalar().ToString();
-
-
-                cmd = new SQLiteCommand("SELECT * FROM version order by id DESC LIMIT 1", con);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    strDBVersion = reader["name"].ToString();                    
-                    this.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";
-                    //this.Text = strID;
-                }
-            }
-            catch (Exception e)
-            {
-                //MessageBox.Show(e.Message);
-            }
-            return strDBVersion.Trim();;
-        }
-
-        public int getRevision()
-        {
-            string stm = "SELECT SQLITE_VERSION()";
-            int nRevision = -1;
-
-            try
-            {
-                SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand(stm, con);
-                string strVersion = cmd.ExecuteScalar().ToString();
-
-
-                cmd = new SQLiteCommand("SELECT * FROM version order by id DESC LIMIT 1", con);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    String strID = reader["revision"].ToString();
-                    nRevision = Convert.ToInt32(strID);
-                    this.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";
-                    //this.Text = strID;
-                }
-            }
-            catch (Exception e)
-            {
-                //MessageBox.Show(e.Message);
-            }
-            return nRevision;
-        }
-
-        public void setAppID()
-        {
-            string stm = "SELECT SQLITE_VERSION()";
-
-            SQLiteCommand cmd = null;
-            cmd = new SQLiteCommand(stm, con);
-            string strVersion = cmd.ExecuteScalar().ToString();
-
-
-            cmd = new SQLiteCommand("SELECT* FROM apps order by id DESC LIMIT 1", con);
-            SQLiteDataReader reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                String strID = reader["id"].ToString();
-                appID = Convert.ToInt32(strID);
-                this.Text = "Haufe Multi-SQLite for C# <ID: " + appID + ">";
-            }
-        }
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
             frmMain frm1 = this;
-            viewThread = new ViewThread(frm1, appID, strDatabaseFile);
+            viewThread = new ViewThread(frm1, appID, connection.getDatabaseFile());
         }
 
         
@@ -384,27 +159,9 @@ namespace SQLiteTest
             numThreads.Enabled = !threads.running;
         }
 
-        void promptOut(String str, Color color)
-        {
-            int selStart = rePrompt.TextLength;
-            rePrompt.AppendText(str + "\r\n");
-            int selEnd = rePrompt.TextLength;
-            rePrompt.SelectionStart = selStart;
-            rePrompt.SelectionLength = selEnd - selStart;
-            rePrompt.SelectionColor = color;
-            rePrompt.ScrollToCaret();
-        }
 
-        void promptOut(String str)
-        {
-            promptOut(str, Color.White);
-        }
 
-        void prompt()
-        {
-            rePrompt.AppendText("\r\n" + "$:> ");
-            rePrompt.ScrollToCaret();
-        }
+
 
         String unprompt(String str)
         {
@@ -426,16 +183,16 @@ namespace SQLiteTest
                 strRunning = "YES";
 
             rePrompt.Clear();
-            promptOut("Running: " + strRunning);
+            prompt.Out("Running: " + strRunning);
 
             SQLiteCommand cmd = null;
-            cmd = new SQLiteCommand("Select count(text) as cnt from testtable", con);
+            cmd = new SQLiteCommand("Select count(text) as cnt from testtable", connection.get());
             SQLiteDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
                 string str = "Count=" + reader["cnt"];
 
-                promptOut(str);
+                prompt.Out(str);
             }
         }
 
@@ -473,18 +230,18 @@ namespace SQLiteTest
         private void tiUpdateApps_Tick(object sender, EventArgs e)
         {
             lblVersion.ForeColor = Color.Red;
-            if (con == null)
+            if (connection.get() == null)
                 return;
-            if (con.State != ConnectionState.Open)
+            if (connection.get().State != ConnectionState.Open)
                 return;
             ((System.Windows.Forms.Timer)sender).Enabled = false;
             try
             {
 
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, con);
+                cmd = new SQLiteCommand("update apps set tsLastPoll = CURRENT_TIMESTAMP where id=" + appID, connection.get());
                 cmd.ExecuteNonQuery();
-                cmd = new SQLiteCommand("update apps set isActive=0 where strftime('%s', 'now') -strftime('%s', tsLastPoll)  > 30 ", con);
+                cmd = new SQLiteCommand("update apps set isActive=0 where strftime('%s', 'now') -strftime('%s', tsLastPoll)  > 30 ", connection.get());
                 cmd.ExecuteNonQuery();
                 tiConnectionQuery.Enabled = true;
             }
@@ -531,11 +288,11 @@ namespace SQLiteTest
         private void buttonStartThreads_Click(object sender, EventArgs e)
         {
             listThreads.Clear();
-            if (con == null)
+            if (connection.get() == null)
                 return;
             if (threads == null)
                 return;
-            if (con.State != ConnectionState.Open)
+            if (connection.get().State != ConnectionState.Open)
                 return;
 
 
@@ -562,9 +319,9 @@ namespace SQLiteTest
 
         void updateNode(TreeNode node, NodeDefinition.NodeAction nodeAction)
         {
-            if (con == null)
+            if (connection.get() == null)
                 return;
-            if (con.State != ConnectionState.Open)
+            if (connection.get().State != ConnectionState.Open)
                 return;
 
             NodeDefinition nd = (NodeDefinition)node.Tag;
@@ -588,7 +345,7 @@ namespace SQLiteTest
                 bool bFound = false;
                 List<TreeNode> activeNodes = new List<TreeNode>();
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("Select distinct apps.id as AppID,apps.name as AppName from apps where isActive=1 ", con);
+                cmd = new SQLiteCommand("Select distinct apps.id as AppID,apps.name as AppName from apps where isActive=1 ", connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -626,7 +383,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(distinct threadid) as CNT from testtable where appID=" + nd.strAppID, con);
+                cmd = new SQLiteCommand("select count(distinct threadid) as CNT from testtable where appID=" + nd.strAppID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -645,7 +402,7 @@ namespace SQLiteTest
                 TreeNode treeNodeThread = NodeDefinition.Add(NodeDefinition.NodeType.ntThread, "GUI-Thread", true, node.Nodes, ref activeNodes, Color.Black, nd.strAppID, "0");
 
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select distinct threadid, isActive from threads where appID=" + nd.strAppID, con);
+                cmd = new SQLiteCommand("select distinct threadid, isActive from threads where appID=" + nd.strAppID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -679,7 +436,7 @@ namespace SQLiteTest
                 node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select id,text,appid,threadid,tsCreated from testtable where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, con);
+                cmd = new SQLiteCommand("select id,text,appid,threadid,tsCreated from testtable where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -698,7 +455,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(id) as CNT from testtable where appID=" + nd.strAppID, con);
+                cmd = new SQLiteCommand("select count(id) as CNT from testtable where appID=" + nd.strAppID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -712,7 +469,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(id) as CNT from testtable where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, con);
+                cmd = new SQLiteCommand("select count(id) as CNT from testtable where appID=" + nd.strAppID + " and threadID=" + nd.strThreadID, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -726,7 +483,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(id) as CNT from testtable", con);
+                cmd = new SQLiteCommand("select count(id) as CNT from testtable", connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -741,7 +498,7 @@ namespace SQLiteTest
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("select count(distinct th.appID|| ',' || th.threadid) as CNT from testtable tt,apps ap, threads th where tt.appID = th.appID and tt.threadID = th.threadID and th.isActive = 1 and ap.id = th.appID and ap.isActive=1", con);
+                cmd = new SQLiteCommand("select count(distinct th.appID|| ',' || th.threadid) as CNT from testtable tt,apps ap, threads th where tt.appID = th.appID and tt.threadID = th.threadID and th.isActive = 1 and ap.id = th.appID and ap.isActive=1", connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -757,7 +514,7 @@ namespace SQLiteTest
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
                 String strThroughput = String.Format("select count(tt.id)/60 as CNT from testtable tt, apps ap, threads th where tt.appID={0} and tt.threadID={1} and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1", nd.strAppID, nd.strThreadID);
-                cmd = new SQLiteCommand(strThroughput, con);
+                cmd = new SQLiteCommand(strThroughput, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -772,7 +529,7 @@ namespace SQLiteTest
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
                 String strThroughput = String.Format("select count(tt.id)/60 as CNT from testtable tt, apps ap, threads th where tt.appID={0} and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1", nd.strAppID);
-                cmd = new SQLiteCommand(strThroughput, con);
+                cmd = new SQLiteCommand(strThroughput, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -788,7 +545,7 @@ namespace SQLiteTest
                 List<TreeNode> activeNodes = null;
                 SQLiteCommand cmd = null;
                 String strThroughput = String.Format("select count(tt.id)/60 as CNT from testtable tt, apps ap, threads th where tt.appID in (select id from apps where isActive=1) and tt.threadID=th.threadID and tt.appID=ap.id and th.AppID=ap.ID and ap.isActive=true and th.isActive=true and (ROUND((JULIANDAY('now') -JULIANDAY(tt.tsCreated)) *86400) / 60 )<1");
-                cmd = new SQLiteCommand(strThroughput, con);
+                cmd = new SQLiteCommand(strThroughput, connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -801,15 +558,15 @@ namespace SQLiteTest
             {
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
-                System.IO.FileInfo fileInfo = new System.IO.FileInfo(strDatabaseFile);
+                System.IO.FileInfo fileInfo = new System.IO.FileInfo(connection.getDatabaseFile());
                 var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
                
                 NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Application: " + appName + " version: " + strVersion + " (" + DEBUG_LEVEL + ")", false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_1") ;
                 NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Application Instance: " + appID, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_2");                
-                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Database File: " + strDatabaseFile, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_3");
-                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "SQLite-Version: " + strSQLiteVersion, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_4");
-                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, strDBAccessMode, false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_5");                
+                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Database File: " + connection.getDatabaseFile(), false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_3");
+                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "SQLite-Version: " + connection.getSQLiteVersion(), false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_4");
+                NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, connection.getDBAccessMode(), false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeDefinition.NodeType.ntStatusItem.ToString() + "_5");                
                 NodeDefinition.Add(NodeDefinition.NodeType.ntStatusItem, "Database-Size: " + GetBytesReadable(fileInfo.Length), false, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID, NodeType.ntStatusFileSize.ToString());                
             }
 
@@ -833,11 +590,11 @@ namespace SQLiteTest
         {
             if (threads!=null)
                 threads.running = false;
-            if (con == null)
+            if (connection.get() == null)
                 return;
-            if (con.State == ConnectionState.Closed)
+            if (connection.get().State == ConnectionState.Closed)
                 return;
-            execQuery("update apps set isActive=0 where id = " + appID);
+            connection.execQuery("update apps set isActive=0 where id = " + appID);
         }
 
         private void tcTabs_SelectedIndexChanged(object sender, EventArgs e)
@@ -910,28 +667,28 @@ namespace SQLiteTest
                 String strCMD = unprompt(strLastLine);
                 if (strCMD.Trim().Length == 0)
                 {
-                    prompt();
+                    prompt.Prompt();
                     return;
                 }
                 if (strCMD.ToUpper().Equals("DISCONNECT"))
                 {
-                    if (con == null)
-                        return;
-                    con.Close();                    
-                    con = null;
-                    promptOut("Database connection is closed");
-                    prompt();
+                    prompt.Disconnect(ref appID);
+                    return;
+                }
+                if (strCMD.ToUpper().Equals("CONNECT"))
+                {
+                    prompt.Connect(ref appID, ref threads);
                     return;
                 }
                 SQLiteCommand cmd = null;
-                if (con == null)
+                if (connection.get() == null)
                 {
-                    promptOut("");
-                    promptOut("Error: No Database Connection", Color.OrangeRed);
-                    prompt();
+                    prompt.Out("");
+                    prompt.Out("Error: No Database Connection", Color.OrangeRed);
+                    prompt.Prompt();
                     return;
                 }
-                cmd = new SQLiteCommand(strCMD, con);
+                cmd = new SQLiteCommand(strCMD, connection.get());
                 try
                 {
                     List<List<string>> table = new List<List<string>>();
@@ -954,14 +711,14 @@ namespace SQLiteTest
                         table.Add(columns.GetRange(0, columns.Count));
                     }
                     printTable(table);
-                    prompt();
+                    prompt.Prompt();
                 }
                 catch (Exception ex)
                 {
 
-                    promptOut("");
-                    promptOut("Error: The SQLite-database throws the following error:\n" + ex.Message + "\n", Color.OrangeRed);
-                    prompt();
+                    prompt.Out("");
+                    prompt.Out("Error: The SQLite-database throws the following error:\n" + ex.Message + "\n", Color.OrangeRed);
+                    prompt.Prompt();
                     return;
                 }
             }
@@ -1019,7 +776,7 @@ namespace SQLiteTest
 
         private void tiLiveUpdate_Tick(object sender, EventArgs e)
         {
-            if (con.State != ConnectionState.Open)
+            if (connection.get().State != ConnectionState.Open)
                 return;
             ((System.Windows.Forms.Timer)sender).Enabled = false;
             try
@@ -1058,9 +815,9 @@ namespace SQLiteTest
 
         private void btnLiveUpdate_Click(object sender, EventArgs e)
         {
-            if (con == null)
+            if (connection.get() == null)
                 return;
-            if (con.State != ConnectionState.Open)
+            if (connection.get().State != ConnectionState.Open)
                 return;
 
             tiLiveUpdate.Enabled = !tiLiveUpdate.Enabled;
@@ -1162,324 +919,30 @@ namespace SQLiteTest
             rePrompt.ScrollToCaret();
             tiScrollCaret.Enabled = false;
         }
+
+        private void fileToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {            
+            mnuConnect.Enabled =   !(connection.get().State==ConnectionState.Open);
+            mnuDisconnect.Enabled = (connection.get().State==ConnectionState.Open);            
+        }
+
+        private void mnuConnect_Click(object sender, EventArgs e)
+        {
+            prompt.Connect(ref appID, ref threads);
+        }
+
+        private void mnuDisconnect_Click(object sender, EventArgs e)
+        {
+            prompt.Disconnect(ref appID);
+        }
     }
 
-    // This class contains a thread that is constantly polling the database
-    // And refreshing GUI-elements
-    // The threads uses it's own database-object (pooling) and can be
-    // executed in parallell to writing-threads
-    public class ViewThread
-        {
-            SQLiteConnection con = null;
-            public Boolean running = false;
-            frmMain frm;
-            private int appID;
-            public ViewThread(frmMain frm, int appID, String strDatabaseFile)
-            {
-                string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
-                con = new SQLiteConnection(cs);
-                con.Open();
-                this.frm = frm;
-                this.appID = appID;
-            }
+    
 
-            public void view()
-            {
-                while (running)
-                {
-                    List<string> list = new List<String>();
-                    for (int i = 0; i < 3; i++)
-                    {
-                        SQLiteCommand cmd = null;
-                        String strCMD = "SELECT text FROM (SELECT * FROM testtable where threadID=" + i + " and appID=" + appID + " ORDER BY id DESC LIMIT 2) ORDER BY id ASC; ";
-                        //String strCMD = "SELECT text FROM (SELECT * FROM testtable where threadID=" + i + " ORDER BY id DESC LIMIT 2) ORDER BY id ASC; ";
-                        cmd = new SQLiteCommand(strCMD, con);
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            string str = "Count=" + reader["text"];
-                            list.Add(str);
-                        }
+       
 
-                    }
-                    frm.AddListSafe(list);
-                }
-            }
-        }
+   
 
-        public class CThreads
-        {
-            // Two different Connection-Objets
-            SQLiteConnection con1 = null;
-            SQLiteConnection con2 = null;
-
-            static int maxThreadID;
-
-            private int appID;
-
-            // Control-Variable if thread is running
-            public Boolean running = false;
-
-            // Constructor cretes a separate connection for each thread
-            public CThreads(int appID, String strDatabaseFile)
-            {
-                this.appID = appID;
-                maxThreadID = 0;
-
-                // First connection is opened, note Max Pool Size=100
-                string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
-                // First object is instantiated
-                con1 = new SQLiteConnection(cs);
-                con1.Open();
-
-                // Second connection is opened, note Max Pool Size=100
-                con2 = new SQLiteConnection(cs);
-                con2.Open();
-                SQLiteCommand cmd = null;
-            }
-
-
-            public void insert_thread_function()
-            {
-                int threadID = ++maxThreadID;
-
-                SQLiteCommand cmd = null;
-
-                String strStartThread = String.Format("insert into threads (threadid,appID,isActive) values ({0},'{1}',1)", threadID, appID);
-                cmd = new SQLiteCommand(strStartThread, con1);
-                cmd.ExecuteNonQuery();
-
-                // The first thread is writing to the database in an infinite loop
-                // using it's own instance of the DB-connection
-                // writing can be stopped when setting running = false
-                while (running)
-                {
-                    DateTime dt = DateTime.Now;
-                    String str = "";
-                    int nNow = (int)(DateTime.Now.Ticks % Int32.MaxValue);
-                    Random rand = new Random(nNow);
-                    do
-                    {
-                        str = str + (char)rand.Next(65, 65 + 32);
-                    } while (rand.Next(1, 255) != 100);
-
-                    String strInsert = String.Format("insert into testtable (threadid,text,appid) values ({0},'{1}', {2})", threadID, str, appID);
-                    cmd = new SQLiteCommand(strInsert, con1);
-                    cmd.ExecuteNonQuery();
-                }
-
-                String strStopThread = String.Format("update threads set isActive=0 where threadID={0} and appID={1} ", threadID, appID);
-                cmd = new SQLiteCommand(strStopThread, con1);
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-        class NodeDefinition
-        {
-            public enum NodeType
-            {
-                ntAppHeadline,
-                ntApp,
-                ntCountTotalEntriesHeadline,
-                ntCountTotalEntries,
-                ntCountTotalThreadsActiveHeadline,
-                ntCountTotalThreadsActive,
-                ntThread,
-                ntThreadHeadline,
-                ntCountThreadHeadline,
-                ntTotalThreadCount,
-                ntEntryHeadline,
-                ntEntry,
-                ntCountAppEntriesHeadline,
-                ntCountAppEntries,
-                ntCountThreadEntriesHeadline,
-                ntCountThreadEntries,
-                ntThreadThroughputHeadline,
-                ntThreadThroughput,
-                ntAppThroughputHeadline,
-                ntAppThroughput,
-                ntTotalThroughputHeadline,
-                ntTotalThroughput,
-                ntTotalStatusHeadline,
-                ntTotalStatus,
-                ntStatusHeadline,
-                ntStatusItem,
-                
-                ntStatusFileSize
-
-            };
-
-            public enum NodeAction { LiveView, Update };
-
-            public NodeType nodeType;
-            public string strAppID = "";
-            public string strThreadID = "";
-            public string strID = "";
-            public Color parentColor = Color.Black;
-
-            static public bool isLiveable(NodeType type)
-            {
-                switch (type)
-                {
-                    case NodeType.ntThreadThroughputHeadline:
-                    case NodeType.ntAppThroughputHeadline:
-                    case NodeType.ntTotalThroughputHeadline:
-                    case NodeType.ntStatusHeadline:                    
-                    case NodeType.ntCountTotalThreadsActiveHeadline:
-                    case NodeType.ntCountTotalEntriesHeadline:
-                    case NodeType.ntCountAppEntriesHeadline:
-                    case NodeType.ntCountThreadHeadline:
-                    case NodeType.ntCountThreadEntriesHeadline:
-
-                        //case NodeType.ntThreadThroughput:
-                    return true;
-                }
-                return false;
-            }
-
-            static public void removeInactives(TreeNodeCollection nodes, ref List<TreeNode> activeNodes, NodeType type)
-            {
-                bool bFound = false;
-
-                switch (type)
-                {
-                    case NodeDefinition.NodeType.ntApp:
-                        {
-                            for (int x = nodes.Count - 1; x >= 0; x--)
-                            {
-                                bFound = false;
-
-                                if (nodes[x].Nodes.Count == 0)
-                                    nodes[x].Nodes.Add("");
-
-                                for (int y = 0; y < activeNodes.Count; y++)
-                                {
-                                    if (activeNodes[y].Text.Equals(nodes[x].Text))
-                                        bFound = true;
-                                }
-                                if (!bFound)
-                                    nodes.RemoveAt(x);
-                            }
-                            break;
-                        }
-                }
-            }
-
-            static public TreeNode Add(NodeType nodeType, String name, bool expandable, TreeNodeCollection nodes, ref List<TreeNode> activeNodes, Color color, String strAppID = "", String strThreadID = "", String strID = "")
-            {
-                TreeNode node = new TreeNode(name);
-                if (expandable)
-                {
-                    node.Nodes.Add("");
-                }
-                NodeDefinition nd = new NodeDefinition();
-                nd.strAppID = strAppID;
-                nd.strThreadID = strThreadID;
-                nd.strID = strID;
-                nd.nodeType = nodeType;
-                nd.parentColor = color;
-                node.Tag = nd;
-                node.ForeColor = color;
-                String strNodeText = node.Text;
-                Color nodeColor = node.ForeColor;
-                for (int i = nodes.Count - 1; i >= 0; i--)
-                    if (nodes[i].Text.Length == 0)
-                        nodes.RemoveAt(i);
-                Add(ref node, nodes, ref activeNodes);
-                node.Text = strNodeText;
-                node.ForeColor = nodeColor;
-                return node;
-            }
-            static public void Add(ref TreeNode newNode, TreeNodeCollection nodes, ref List<TreeNode> activeNodes)
-            {
-                bool bFound = false;
-
-                foreach (TreeNode node in nodes)
-                {
-                    NodeDefinition nd = (NodeDefinition)node.Tag;
-                    switch (((NodeDefinition)newNode.Tag).nodeType)
-                    {
-                        case NodeType.ntAppHeadline:
-                        case NodeType.ntCountTotalEntriesHeadline:
-                        case NodeType.ntCountTotalThreadsActiveHeadline:
-                        case NodeType.ntCountTotalThreadsActive:
-                        case NodeType.ntTotalThroughputHeadline:
-                        case NodeType.ntTotalThreadCount:
-                        case NodeType.ntThreadHeadline:
-
-                        case NodeType.ntEntryHeadline:
-                        case NodeType.ntCountThreadEntriesHeadline:
-                        case NodeType.ntThreadThroughputHeadline:
-
-                        case NodeType.ntCountThreadHeadline:
-                        case NodeType.ntCountAppEntriesHeadline:
-
-                        case NodeType.ntCountAppEntries:
-                        case NodeType.ntCountThreadEntries:
-                        case NodeType.ntCountTotalEntries:
-
-                        //case NodeType.ntCountTotalThreadsActiveHeadline:                                       
-                        case NodeType.ntAppThroughputHeadline:
-                        case NodeType.ntTotalThroughput:
-
-                        case NodeType.ntTotalStatusHeadline:
-                        case NodeType.ntStatusHeadline:
-
-                            if (((NodeDefinition)(newNode.Tag)).nodeType == nd.nodeType)
-                            {
-                                bFound = true;
-                                newNode = node;
-                            }
-                            break;
-                        case NodeDefinition.NodeType.ntApp:
-                        case NodeType.ntAppThroughput:
-
-                            if ((((NodeDefinition)(newNode.Tag)).nodeType == nd.nodeType) &&
-                               (((NodeDefinition)(newNode.Tag)).strAppID == nd.strAppID))
-                            {
-                                bFound = true;
-                                newNode = node;
-                            }
-                            break;
-                        case NodeType.ntThread:
-                        case NodeType.ntThreadThroughput:
-                            if ((((NodeDefinition)(newNode.Tag)).nodeType == nd.nodeType) &&
-                               (((NodeDefinition)(newNode.Tag)).strAppID == nd.strAppID) &&
-                                (((NodeDefinition)(newNode.Tag)).strThreadID == nd.strThreadID))
-                            {
-                                bFound = true;
-                                newNode = node;
-                            }
-                            break;
-                        //( 
-                        case NodeType.ntEntry:                        
-                            if ((((NodeDefinition)(newNode.Tag)).nodeType == nd.nodeType) &&
-                                (((NodeDefinition)(newNode.Tag)).strID == nd.strID))
-                            {
-                                bFound = false;                            
-                            }
-                            break;                    
-                    case NodeType.ntStatusItem:
-                    case NodeType.ntStatusFileSize:
-                        if ((((NodeDefinition)(newNode.Tag)).nodeType == nd.nodeType) &&
-                            (((NodeDefinition)(newNode.Tag)).strID == nd.strID))
-                        {
-                            bFound = true;
-                            newNode = node;
-                        }
-                        break;
-                }
-                    if (bFound == true)
-                        break;
-                }
-                if (!bFound)
-                {
-                    nodes.Add(newNode);
-                }
-                if (activeNodes != null)
-                    activeNodes.Add(newNode);
-
-            }
-        }
+    
     }
 

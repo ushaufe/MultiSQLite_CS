@@ -8,7 +8,6 @@ C:\Projects\Sqlite4CS\SQLiteTest\bin\Release\stdole.dll
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Release\SQLite.Designer.pdb
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Release\SQLite.Designer.xml
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Release\System.Data.SQLite.xml
-C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\SQLiteTest.csproj.AssemblyReference.cache
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\SQLiteTest.FormAbout.resources
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\SQLiteTest.frmMain.resources
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\SQLiteTest.Properties.Resources.resources

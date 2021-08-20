@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionClass.cs" />
     <Compile Include="FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,8 +86,11 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="NodeDefinition.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="PromptCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewThread.cs" />
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
@@ -146,6 +150,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConnectionIcon.ico" />
+    <None Include="Resources\Disconnected.png" />
+    <None Include="Resources\Connected1.png" />
+    <None Include="Resources\Connected.png" />
     <None Include="Resources\LiveUpdate_32_blau1.png" />
     <None Include="Resources\Connections2_Light2.jpg" />
     <None Include="Resources\Haufe_Transparent1.png" />
