@@ -74,8 +74,7 @@ namespace SQLiteTest
 
         public PromptCommands prompt;
 
-        private int countUpdateAppTicks = 0;
-        Color colorUpdate = Color.LightBlue;
+
         public void AddListSafe(List<String> list)
         {
             if (rePrompt.InvokeRequired)
@@ -1037,185 +1036,17 @@ namespace SQLiteTest
             
         }
 
-        private bool UpdateApp(bool bPrompt = true)
-        {
-            tcTabs.SelectedTab = tsGeneral;
-            
-            prompt.Out("", colorUpdate);
-            prompt.Out("Cheking for updates...", colorUpdate);
-            prompt.Out("", colorUpdate);
-
-            //System.Diagnostics.Process.Start("https://raw.githubusercontent.com/ushaufe/Sqlite4CS/master/Doc/Haufe_MultiSQLite_CS_Manual.pdf");
-            String strAppDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            String strAppFilePath = Path.GetDirectoryName(strAppDir);
-            String strDownloadPath = "https://github.com/ushaufe/Sqlite4CS/raw/master/SQLiteTest/bin/";
-            if (strAppFilePath.Length == 0)
-                return false;
-            if (strAppFilePath[strAppFilePath.Length - 1] != '\\')
-                strAppFilePath += "\\";
-            String strUpdatePath = strAppFilePath + "Update";
-            try { System.IO.Directory.Delete(strUpdatePath, true); } catch (Exception ex) { }
-
-            if (!System.IO.Directory.Exists(strUpdatePath))
-                System.IO.Directory.CreateDirectory(strUpdatePath);
-            if (strUpdatePath[strUpdatePath.Length - 1] != '\\')
-                strUpdatePath += "\\";
-
-            try
-            {
-                foreach (string fileDelete in Directory.GetFiles(strAppFilePath))
-                    if (fileDelete.Contains("_temp_"))
-                        File.Delete(fileDelete);
-            }
-            catch (Exception ex) { }
-
-            String strAppFile = Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-            List<String> downloadFiles = new List<String>();
-            downloadFiles.Add("EnvDTE.dll");
-            downloadFiles.Add("Microsoft.VisualStudio.OLE.Interop.dll");
-            downloadFiles.Add("Microsoft.VisualStudio.Shell.Interop.dll");
-            downloadFiles.Add("Microsoft.VisualStudio.TextManager.Interop.dll");
-            downloadFiles.Add("MultiSQLite_CS.exe");
-            downloadFiles.Add("MultiSQLite_CS.exe.config");
-            downloadFiles.Add("MultiSQLite_CS.pdb");
-            downloadFiles.Add("SQLite.Designer.dll");
-            downloadFiles.Add("SQLite.Designer.pdb");
-            downloadFiles.Add("SQLite.Designer.xml");
-            downloadFiles.Add("SumatraPDF - settings.txt");
-            downloadFiles.Add("System.Data.SQLite.dll");
-            downloadFiles.Add("System.Data.SQLite.xml");
-            downloadFiles.Add("stdole.dll");
-
-            using (var client = new System.Net.WebClient())
-            {
-                String strVersionDebug = "", strVersionRelease = "";
-                prompt.Out("    Newest version is....", colorUpdate);
-
-                try
-                {
-                    String strSourceDebug = "" + strDownloadPath + "Debug/" + strAppFile + "";
-                    String strDestDebug = "" + strUpdatePath + "VersionTesterDebug.ne" + "";
-                    client.DownloadFile(strSourceDebug, strDestDebug);
-                    var versionInfoDebug = FileVersionInfo.GetVersionInfo(strDestDebug);
-                    strVersionDebug = versionInfoDebug.FileVersion;
-                }
-                catch (Exception ex)
-                {
-                }
-                try 
-                { 
-                    String strSourceRelease = "" + strDownloadPath + "Release/" + strAppFile + "";
-                    String strDestRelease = "" + strUpdatePath + "VersionTesterRelease.ne" + "";
-                    client.DownloadFile(strSourceRelease, strDestRelease);
-                    var versionInfoRelease = FileVersionInfo.GetVersionInfo(strDestRelease);
-                    strVersionRelease = versionInfoRelease.FileVersion;                    
-                }
-                catch (Exception ex)
-                {
-                }
-                String strBranch = "";
-                String strNewVersion = "";
-                if (ConnectionClass.getDBVersionNumber(strVersionDebug) > ConnectionClass.getDBVersionNumber(strVersionRelease))
-                {
-                    strNewVersion = strVersionDebug;
-                    strBranch = "Debug";
-                }
-                else
-                {
-                    strBranch = "Release";
-                    strNewVersion = strVersionRelease;
-                }
-                if (ConnectionClass.getDBVersionNumber(strVersion) >= ConnectionClass.getDBVersionNumber(strNewVersion))
-                {
-                    prompt.Out("", colorUpdate);
-                    prompt.Out("This is the newest version. No upate is currently available.", colorUpdate);
-                    prompt.Out("", colorUpdate);
-                    if (bPrompt)
-                        prompt.Prompt();
-                    return false;
-                }
-                prompt.Out("    Updating " + strVersion + " -> " + strNewVersion + "...", colorUpdate);
-                prompt.Out("", colorUpdate);
-                strDownloadPath += strBranch + "/";
-                try
-                {
-                    foreach (String strDownloadFile in downloadFiles)
-                    {
-                        if (strDownloadFile.Contains(" "))
-                            continue;
-                        prompt.Out("    Downloading " + strDownloadFile, colorUpdate);
-                        String strSource = "" + strDownloadPath + strDownloadFile + "";
-                        String strDest = "" + strUpdatePath + strDownloadFile + "";
-                        client.DownloadFile(strSource, strDest);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    prompt.Out("", Color.Red);
-                    prompt.Out("Error During Update.", Color.Red);
-                    prompt.Out("Error Message: " + ex.Message, Color.Red);
-                    if (bPrompt)
-                        prompt.Prompt();
-                    return false;
-                }
-
-                prompt.Out("", colorUpdate);
-                prompt.Out("Download completed, updating files....", colorUpdate);
-
-                String[] strDir = Directory.GetFiles(strAppFilePath);
-                String[] strUpdateFiles = Directory.GetFiles(strUpdatePath);
-                foreach (String strFile in strUpdateFiles)
-                    try
-                    {
-                        String strOriginal = strAppFilePath + Path.GetFileName(strFile);
-                        if (File.Exists(strOriginal))
-                        {
-                            String strTempFile = strOriginal + "_temp_" + DateTime.Now.Ticks.ToString();
-                            File.Move(strOriginal, strTempFile);
-                        }
-                        prompt.Out("Updating file " + strFile, colorUpdate);
-                        File.Move(strFile, strOriginal);
-                    }
-                    catch (Exception ex)
-                    {
-                        prompt.Out("", Color.Red);
-                        prompt.Out("Error: Unknown error during update", Color.Red);
-                        if (bPrompt)
-                            prompt.Prompt();
-                        return false;
-                    }
-            }
-            prompt.Out("", colorUpdate);
-            prompt.Out("Update complete.", colorUpdate);            
-            prompt.Out("Starting new version of MultiSQlite for C#", colorUpdate);
-            countUpdateAppTicks = 0;
-            tiAppUpdate.Enabled = true;
-            if (bPrompt)
-                prompt.Prompt();
-            return true;
-        }            
+        
 
         private void mnuUpdate_Click(object sender, EventArgs e)
         {
-            UpdateApp();
+            tcTabs.SelectedTab = tsGeneral;
+            UpdateClass.UpdateApp(prompt);
         }
 
         private void tiAppUpdate_Tick(object sender, EventArgs e)
         {
-            prompt.Out(".", colorUpdate,false);
-            countUpdateAppTicks++;
-            if (countUpdateAppTicks==20)
-            {
-                prompt.Out("Close this instance of MultiSQlite for C#", colorUpdate);
-                System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            }
-            if (countUpdateAppTicks >= 40)
-            {
-                countUpdateAppTicks = 0;
-                tiUpdateApps.Enabled = false;
-                System.Windows.Forms.Application.Exit();                
-            }
+
         }
 
         private void mnuShowGitHub_Click(object sender, EventArgs e)
@@ -1226,8 +1057,9 @@ namespace SQLiteTest
         private void tiDelayGUILoad_Tick(object sender, EventArgs e)
         {
             tiDelayGUILoad.Enabled = false;
-            if (!System.Diagnostics.Debugger.IsAttached)
-                if (UpdateApp(false) == true)
+            tcTabs.SelectedTab = tsGeneral;
+            if (!System.Diagnostics.Debugger.IsAttached)            
+                if (UpdateClass.UpdateApp(prompt,false) == true)
                     return;
 
             connection.Connect(ref appID, ref threads);
