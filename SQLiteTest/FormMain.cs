@@ -1235,6 +1235,11 @@ namespace SQLiteTest
                 System.Windows.Forms.Application.Exit();                
             }
         }
+
+        private void mnuShowGitHub_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/ushaufe/Sqlite4CS.git");
+        }
     }
 }
 
