@@ -111,6 +111,8 @@ namespace SQLiteTest
             prompt.Out(appName + " version: " + strVersion);
             lblVersion.Text = "Version: " + strVersion + " ("+DEBUG_LEVEL+")";
 
+            UpdateApp(false);
+
             connection.Connect(ref appID, ref threads);
 
             updatePollingInterval(10);
@@ -1051,7 +1053,7 @@ namespace SQLiteTest
             
         }
 
-        private void mnuUpdate_Click(object sender, EventArgs e)
+        private bool UpdateApp(bool bPrompt = true)
         {
             tcTabs.SelectedTab = tsGeneral;
             Color colorUpdate = Color.LightBlue;
@@ -1063,17 +1065,17 @@ namespace SQLiteTest
             String strAppFilePath = Path.GetDirectoryName(strAppDir);
             String strDownloadPath = "https://github.com/ushaufe/Sqlite4CS/raw/master/SQLiteTest/bin/";
             if (strAppFilePath.Length == 0)
-                return;
+                return false;
             if (strAppFilePath[strAppFilePath.Length - 1] != '\\')
                 strAppFilePath += "\\";
             String strUpdatePath = strAppFilePath + "Update";
             try { System.IO.Directory.Delete(strUpdatePath, true); } catch (Exception ex) { }
-            
+
             if (!System.IO.Directory.Exists(strUpdatePath))
                 System.IO.Directory.CreateDirectory(strUpdatePath);
             if (strUpdatePath[strUpdatePath.Length - 1] != '\\')
                 strUpdatePath += "\\";
-            
+
             try
             {
                 foreach (string fileDelete in Directory.GetFiles(strAppFilePath))
@@ -1098,28 +1100,26 @@ namespace SQLiteTest
             downloadFiles.Add("SumatraPDF - settings.txt");
             downloadFiles.Add("System.Data.SQLite.dll");
             downloadFiles.Add("System.Data.SQLite.xml");
-            downloadFiles.Add("stdole.dll");            
+            downloadFiles.Add("stdole.dll");
 
             using (var client = new System.Net.WebClient())
-            {                
+            {
                 String strVersionDebug = "", strVersionRelease = "";
                 prompt.Out("    Newest version is....", colorUpdate);
 
                 try
-                {                    
-                    String strSourceDebug = "" + strDownloadPath + "Debug/" + strAppFile + "";                    
-                    String strDestDebug = "" + strUpdatePath + "VersionTesterDebug.ne" + "";                    
-                    client.DownloadFile(strSourceDebug, strDestDebug);                    
+                {
+                    String strSourceDebug = "" + strDownloadPath + "Debug/" + strAppFile + "";
+                    String strDestDebug = "" + strUpdatePath + "VersionTesterDebug.ne" + "";
+                    client.DownloadFile(strSourceDebug, strDestDebug);
                     var versionInfoDebug = FileVersionInfo.GetVersionInfo(strDestDebug);
                     strVersionDebug = versionInfoDebug.FileVersion;                    
-                    //prompt.Out("        Debug=" + strVersionDebug, colorUpdate);                                       
-                      
-                    String strSourceRelease = "" + strDownloadPath + "Release/" + strAppFile + "";                    
-                    String strDestRelease = "" + strUpdatePath + "VersionTesterRelease.ne" + "";                    
-                    client.DownloadFile(strSourceRelease, strDestRelease);                                        
+
+                    String strSourceRelease = "" + strDownloadPath + "Release/" + strAppFile + "";
+                    String strDestRelease = "" + strUpdatePath + "VersionTesterRelease.ne" + "";
+                    client.DownloadFile(strSourceRelease, strDestRelease);
                     var versionInfoRelease = FileVersionInfo.GetVersionInfo(strDestRelease);
-                    strVersionRelease = versionInfoRelease.FileVersion;
-                    //prompt.Out("        Release=" + strVersionRelease, colorUpdate);                    
+                    strVersionRelease = versionInfoRelease.FileVersion;                    
                 }
                 catch (Exception ex)
                 {
@@ -1136,26 +1136,28 @@ namespace SQLiteTest
                     strBranch = "Release";
                     strNewVersion = strVersionRelease;
                 }
-                if (ConnectionClass.getDBVersionNumber(strVersion)>ConnectionClass.getDBVersionNumber(strNewVersion))
+                if (ConnectionClass.getDBVersionNumber(strVersion) > ConnectionClass.getDBVersionNumber(strNewVersion))
                 {
                     prompt.Out("", colorUpdate);
                     prompt.Out("This is the newest version. No upate is currently available.", colorUpdate);
-                    prompt.Prompt();
-                    return;
+                    prompt.Out("", colorUpdate);
+                    if (bPrompt)
+                        prompt.Prompt();
+                    return false;
                 }
-                prompt.Out("    Updating " + strVersion + " -> "  +strNewVersion + "...", colorUpdate);
+                prompt.Out("    Updating " + strVersion + " -> " + strNewVersion + "...", colorUpdate);
                 prompt.Out("", colorUpdate);
                 strDownloadPath += strBranch + "/";
                 try
                 {
                     foreach (String strDownloadFile in downloadFiles)
-                    {                        
-                        if (strDownloadFile.Contains (" "))
+                    {
+                        if (strDownloadFile.Contains(" "))
                             continue;
                         prompt.Out("    Downloading" + strDownloadFile, colorUpdate);
-                        String strSource = "" + strDownloadPath  + strDownloadFile + "";
-                        String strDest = "" + strUpdatePath  + strDownloadFile + "";
-                        client.DownloadFile( strSource , strDest);
+                        String strSource = "" + strDownloadPath + strDownloadFile + "";
+                        String strDest = "" + strUpdatePath + strDownloadFile + "";
+                        client.DownloadFile(strSource, strDest);
                     }
                 }
                 catch (Exception ex)
@@ -1163,8 +1165,9 @@ namespace SQLiteTest
                     prompt.Out("", Color.Red);
                     prompt.Out("Error During Update.", Color.Red);
                     prompt.Out("Error Message: " + ex.Message, Color.Red);
-                    prompt.Prompt();
-                    return;
+                    if (bPrompt)
+                        prompt.Prompt();
+                    return false;
                 }
 
                 prompt.Out("", colorUpdate);
@@ -1172,30 +1175,38 @@ namespace SQLiteTest
 
                 String[] strDir = Directory.GetFiles(strAppFilePath);
                 String[] strUpdateFiles = Directory.GetFiles(strUpdatePath);
-                foreach (String strFile in strUpdateFiles)           
-                try
-                {                        
+                foreach (String strFile in strUpdateFiles)
+                    try
+                    {
                         String strOriginal = strAppFilePath + Path.GetFileName(strFile);
                         if (File.Exists(strOriginal))
                         {
-                            String strTempFile = strOriginal + "_temp_" + DateTime.Now.Ticks.ToString();                            
+                            String strTempFile = strOriginal + "_temp_" + DateTime.Now.Ticks.ToString();
                             File.Move(strOriginal, strTempFile);
                         }
                         prompt.Out("Updating file " + strFile, colorUpdate);
                         File.Move(strFile, strOriginal);
-                }
-                catch(Exception ex)
-                {
+                    }
+                    catch (Exception ex)
+                    {
                         prompt.Out("", Color.Red);
                         prompt.Out("Error: Unknown error during update", Color.Red);
-                        prompt.Prompt();
-                        return;
-                }                 
+                        if (bPrompt)
+                            prompt.Prompt();
+                        return false;
+                    }
             }
             prompt.Out("", colorUpdate);
             prompt.Out("Update complete.", colorUpdate);
             prompt.Out("The application must be restarted.", colorUpdate);
-            prompt.Prompt();
+            if (bPrompt)
+                prompt.Prompt();
+            return true;
+        }            
+
+        private void mnuUpdate_Click(object sender, EventArgs e)
+        {
+            UpdateApp();
         }
     }
 }

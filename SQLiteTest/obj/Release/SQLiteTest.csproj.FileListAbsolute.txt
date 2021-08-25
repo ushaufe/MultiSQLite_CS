@@ -19,3 +19,4 @@ C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\MultiSQlite_CS.pdb
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Release\Microsoft.VisualStudio.OLE.Interop.dll
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Release\Microsoft.VisualStudio.Shell.Interop.dll
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Release\Microsoft.VisualStudio.TextManager.Interop.dll
+C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\SQLiteTest.csproj.AssemblyReference.cache
