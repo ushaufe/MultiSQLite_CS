@@ -111,25 +111,7 @@ namespace SQLiteTest
             lblVersion.Text = "Version: " + strVersion + " (" + DEBUG_LEVEL + ")";
             prompt.Out(appName + " version: " + strVersion);
 
-            if (!System.Diagnostics.Debugger.IsAttached)
-                if (UpdateApp(false) == true)
-                    return;
-                                                        
-            connection.Connect(ref appID, ref threads);
-
-            updatePollingInterval(10);
-            tiUpdateApps.Enabled = true;
-            tiUpdateApps_Tick(tiUpdateApps, null);
-
-            tiPollApps.Enabled = true;
-            tiUpdateApps_Tick(tiUpdateApps, null);
-            prompt.Out("");
-            prompt.Out("Type in an SQL command that will be applied directly on the database.", Color.Lime);
-            prompt.Out("", Color.Lime);
-            prompt.Out("Type \"SELECT name FROM sqlite_master\" to show the structure of the database.", Color.Lime);
-            prompt.Out("", Color.Lime);
-            prompt.Out("Note: The commands will be executed on the GUI-thread.", Color.Lime);
-            prompt.Prompt();
+            tiDelayGUILoad.Enabled = true;
         }
 
 
@@ -1239,6 +1221,30 @@ namespace SQLiteTest
         private void mnuShowGitHub_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/ushaufe/Sqlite4CS.git");
+        }
+
+        private void tiDelayGUILoad_Tick(object sender, EventArgs e)
+        {
+            tiDelayGUILoad.Enabled = false;
+            if (!System.Diagnostics.Debugger.IsAttached)
+                if (UpdateApp(false) == true)
+                    return;
+
+            connection.Connect(ref appID, ref threads);
+
+            updatePollingInterval(10);
+            tiUpdateApps.Enabled = true;
+            tiUpdateApps_Tick(tiUpdateApps, null);
+
+            tiPollApps.Enabled = true;
+            tiUpdateApps_Tick(tiUpdateApps, null);
+            prompt.Out("");
+            prompt.Out("Type in an SQL command that will be applied directly on the database.", Color.Lime);
+            prompt.Out("", Color.Lime);
+            prompt.Out("Type \"SELECT name FROM sqlite_master\" to show the structure of the database.", Color.Lime);
+            prompt.Out("", Color.Lime);
+            prompt.Out("Note: The commands will be executed on the GUI-thread.", Color.Lime);
+            prompt.Prompt();
         }
     }
 }
