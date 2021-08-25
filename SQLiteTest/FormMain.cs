@@ -1094,9 +1094,9 @@ namespace SQLiteTest
             downloadFiles.Add("Microsoft.VisualStudio.OLE.Interop.dll");
             downloadFiles.Add("Microsoft.VisualStudio.Shell.Interop.dll");
             downloadFiles.Add("Microsoft.VisualStudio.TextManager.Interop.dll");
-            downloadFiles.Add("MultiSQlite_CS.exe");
-            downloadFiles.Add("MultiSQlite_CS.exe.config");
-            downloadFiles.Add("MultiSQlite_CS.pdb");
+            downloadFiles.Add("MultiSQLite_CS.exe");
+            downloadFiles.Add("MultiSQLite_CS.exe.config");
+            downloadFiles.Add("MultiSQLite_CS.pdb");
             downloadFiles.Add("SQLite.Designer.dll");
             downloadFiles.Add("SQLite.Designer.pdb");
             downloadFiles.Add("SQLite.Designer.xml");
@@ -1162,7 +1162,7 @@ namespace SQLiteTest
                     {
                         if (strDownloadFile.Contains(" "))
                             continue;
-                        prompt.Out("    Downloading" + strDownloadFile, colorUpdate);
+                        prompt.Out("    Downloading " + strDownloadFile, colorUpdate);
                         String strSource = "" + strDownloadPath + strDownloadFile + "";
                         String strDest = "" + strUpdatePath + strDownloadFile + "";
                         client.DownloadFile(strSource, strDest);
