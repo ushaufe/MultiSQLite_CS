@@ -70,7 +70,8 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuShowGitHub = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowGitHub_CS = new System.Windows.Forms.ToolStripMenuItem();
+            this.showGitHubProjectForCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuShowManual = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,6 +82,7 @@
             this.tiScrollCaret = new System.Windows.Forms.Timer(this.components);
             this.tiAppUpdate = new System.Windows.Forms.Timer(this.components);
             this.tiDelayGUILoad = new System.Windows.Forms.Timer(this.components);
+            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -192,7 +194,7 @@
             this.pictureBox4.BackgroundImage = global::SQLiteTest.Properties.Resources.Haufe_Transparent;
             this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox4.Location = new System.Drawing.Point(969, 25);
-            this.pictureBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox4.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(332, 46);
             this.pictureBox4.TabIndex = 10;
@@ -232,7 +234,7 @@
             this.rePrompt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rePrompt.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.rePrompt.Location = new System.Drawing.Point(3, 2);
-            this.rePrompt.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.rePrompt.Margin = new System.Windows.Forms.Padding(4);
             this.rePrompt.Name = "rePrompt";
             this.rePrompt.Size = new System.Drawing.Size(709, 301);
             this.rePrompt.TabIndex = 0;
@@ -344,7 +346,7 @@
             this.btnLiveUpdate.Image = global::SQLiteTest.Properties.Resources.LiveUpdate_32_blau;
             this.btnLiveUpdate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLiveUpdate.Location = new System.Drawing.Point(23, 384);
-            this.btnLiveUpdate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnLiveUpdate.Margin = new System.Windows.Forms.Padding(4);
             this.btnLiveUpdate.Name = "btnLiveUpdate";
             this.btnLiveUpdate.Size = new System.Drawing.Size(201, 55);
             this.btnLiveUpdate.TabIndex = 15;
@@ -471,7 +473,9 @@
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuUpdate,
             this.toolStripMenuItem4,
-            this.mnuShowGitHub,
+            this.mnuShowGitHub_CS,
+            this.showGitHubProjectForCToolStripMenuItem,
+            this.toolStripMenuItem6,
             this.mnuShowManual,
             this.toolStripMenuItem5,
             this.aboutToolStripMenuItem});
@@ -484,41 +488,49 @@
             // 
             this.mnuUpdate.Image = global::SQLiteTest.Properties.Resources.Update;
             this.mnuUpdate.Name = "mnuUpdate";
-            this.mnuUpdate.Size = new System.Drawing.Size(243, 22);
+            this.mnuUpdate.Size = new System.Drawing.Size(247, 26);
             this.mnuUpdate.Text = "&Update to latest version";
             this.mnuUpdate.Click += new System.EventHandler(this.mnuUpdate_Click);
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(240, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(244, 6);
             // 
-            // mnuShowGitHub
+            // mnuShowGitHub_CS
             // 
-            this.mnuShowGitHub.Image = global::SQLiteTest.Properties.Resources.SourceCode;
-            this.mnuShowGitHub.Name = "mnuShowGitHub";
-            this.mnuShowGitHub.Size = new System.Drawing.Size(243, 22);
-            this.mnuShowGitHub.Text = "Show GitHub Project";
-            this.mnuShowGitHub.Click += new System.EventHandler(this.mnuShowGitHub_Click);
+            this.mnuShowGitHub_CS.Image = global::SQLiteTest.Properties.Resources.SourceCode;
+            this.mnuShowGitHub_CS.Name = "mnuShowGitHub_CS";
+            this.mnuShowGitHub_CS.Size = new System.Drawing.Size(247, 26);
+            this.mnuShowGitHub_CS.Text = "Show GitHub Project for C#";
+            this.mnuShowGitHub_CS.Click += new System.EventHandler(this.mnuShowGitHub_CS_Click);
+            // 
+            // showGitHubProjectForCToolStripMenuItem
+            // 
+            this.showGitHubProjectForCToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.SourceCode1;
+            this.showGitHubProjectForCToolStripMenuItem.Name = "showGitHubProjectForCToolStripMenuItem";
+            this.showGitHubProjectForCToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
+            this.showGitHubProjectForCToolStripMenuItem.Text = "Show GitHub Project for C++";
+            this.showGitHubProjectForCToolStripMenuItem.Click += new System.EventHandler(this.showGitHubProjectForCToolStripMenuItem_Click);
             // 
             // mnuShowManual
             // 
             this.mnuShowManual.Image = global::SQLiteTest.Properties.Resources.Manual_Mono;
             this.mnuShowManual.Name = "mnuShowManual";
-            this.mnuShowManual.Size = new System.Drawing.Size(243, 22);
+            this.mnuShowManual.Size = new System.Drawing.Size(247, 26);
             this.mnuShowManual.Text = "Show Manual";
             this.mnuShowManual.Click += new System.EventHandler(this.mnuShowManual_Click);
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(240, 6);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(244, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.About_161;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
             this.aboutToolStripMenuItem.Text = "About Haufe MultiSQLite for C#";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -577,6 +589,11 @@
             // tiDelayGUILoad
             // 
             this.tiDelayGUILoad.Tick += new System.EventHandler(this.tiDelayGUILoad_Tick);
+            // 
+            // toolStripMenuItem6
+            // 
+            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(244, 6);
             // 
             // frmMain
             // 
@@ -678,9 +695,11 @@
         private System.Windows.Forms.ToolStripMenuItem mnuUpdate;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.Timer tiAppUpdate;
-        private System.Windows.Forms.ToolStripMenuItem mnuShowGitHub;
+        private System.Windows.Forms.ToolStripMenuItem mnuShowGitHub_CS;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
         private System.Windows.Forms.Timer tiDelayGUILoad;
+        private System.Windows.Forms.ToolStripMenuItem showGitHubProjectForCToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
     }
 }
 

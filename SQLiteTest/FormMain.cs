@@ -1246,6 +1246,16 @@ namespace SQLiteTest
             prompt.Out("Note: The commands will be executed on the GUI-thread.", Color.Lime);
             prompt.Prompt();
         }
+
+        private void mnuShowGitHub_CS_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/ushaufe/Sqlite4CS.git");
+        }
+
+        private void showGitHubProjectForCToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/ushaufe/Sqlite4CPP");
+        }
     }
 }
 

@@ -153,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConnectionIcon.ico" />
+    <None Include="Resources\SourceCode1.png" />
     <None Include="Resources\SourceCode.png" />
     <None Include="Resources\Update.png" />
     <None Include="Resources\OpenFile.png" />
