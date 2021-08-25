@@ -1113,8 +1113,13 @@ namespace SQLiteTest
                     String strDestDebug = "" + strUpdatePath + "VersionTesterDebug.ne" + "";
                     client.DownloadFile(strSourceDebug, strDestDebug);
                     var versionInfoDebug = FileVersionInfo.GetVersionInfo(strDestDebug);
-                    strVersionDebug = versionInfoDebug.FileVersion;                    
-
+                    strVersionDebug = versionInfoDebug.FileVersion;
+                }
+                catch (Exception ex)
+                {
+                }
+                try 
+                { 
                     String strSourceRelease = "" + strDownloadPath + "Release/" + strAppFile + "";
                     String strDestRelease = "" + strUpdatePath + "VersionTesterRelease.ne" + "";
                     client.DownloadFile(strSourceRelease, strDestRelease);
@@ -1136,7 +1141,7 @@ namespace SQLiteTest
                     strBranch = "Release";
                     strNewVersion = strVersionRelease;
                 }
-                if (ConnectionClass.getDBVersionNumber(strVersion) > ConnectionClass.getDBVersionNumber(strNewVersion))
+                if (ConnectionClass.getDBVersionNumber(strVersion) >= ConnectionClass.getDBVersionNumber(strNewVersion))
                 {
                     prompt.Out("", colorUpdate);
                     prompt.Out("This is the newest version. No upate is currently available.", colorUpdate);
