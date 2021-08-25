@@ -60,18 +60,21 @@ namespace SQLiteTest
         }
 
 
-        public void Out(String str)
+        public void Out(String str, bool newLine = true)
         {
-            Out(str, Color.White);
+            Out(str, Color.White, newLine);
         }
 
-        public void Out(String str, Color color)
+        public void Out(String str, Color color, bool newLine = true)
         {
             if (rePrompt.Lines.Length > 0)
-                if (rePrompt.Lines[rePrompt.Lines.Length-1].Length > 0)
+                if ((rePrompt.Lines[rePrompt.Lines.Length-1].Length > 0) && (newLine))
                     rePrompt.AppendText("\r\n");
             int selStart = rePrompt.TextLength;
-            rePrompt.AppendText(str + "\r\n");
+            if (newLine)
+                rePrompt.AppendText(str + "\r\n");
+            else
+                rePrompt.AppendText(str);
             int selEnd = rePrompt.TextLength;
             rePrompt.SelectionStart = selStart;
             rePrompt.SelectionLength = selEnd - selStart;

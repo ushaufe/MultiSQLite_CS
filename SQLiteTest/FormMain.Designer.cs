@@ -77,6 +77,7 @@
             this.tbDBInterval = new System.Windows.Forms.TrackBar();
             this.LBL_DB_PollingInterval = new System.Windows.Forms.Label();
             this.tiScrollCaret = new System.Windows.Forms.Timer(this.components);
+            this.tiAppUpdate = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -550,6 +551,11 @@
             // 
             this.tiScrollCaret.Tick += new System.EventHandler(this.tiScrollCaret_Tick);
             // 
+            // tiAppUpdate
+            // 
+            this.tiAppUpdate.Interval = 1000;
+            this.tiAppUpdate.Tick += new System.EventHandler(this.tiAppUpdate_Tick);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -649,6 +655,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem mnuUpdate;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+        private System.Windows.Forms.Timer tiAppUpdate;
     }
 }
 

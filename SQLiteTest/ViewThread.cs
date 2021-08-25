@@ -37,11 +37,14 @@ namespace SQLiteTest
         private int appID;
         public ViewThread(frmMain frm, int appID, String strDatabaseFile)
         {
-            string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
-            con = new SQLiteConnection(cs);
-            con.Open();
-            this.frm = frm;
-            this.appID = appID;
+            if (strDatabaseFile.Length > 0)
+            {
+                string cs = "Data Source=" + strDatabaseFile + ";Version=3;Pooling=True;Max Pool Size=100;";
+                con = new SQLiteConnection(cs);
+                con.Open();
+                this.frm = frm;
+                this.appID = appID;
+            }
         }
 
         public void view()

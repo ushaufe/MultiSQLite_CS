@@ -7,7 +7,7 @@
     <ProjectGuid>{220E2F96-002F-454D-9939-F8BB85D8E5A1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>SQLiteTest</RootNamespace>
-    <AssemblyName>MultiSQlite_CS</AssemblyName>
+    <AssemblyName>MultiSQLite_CS</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

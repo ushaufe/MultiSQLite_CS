@@ -74,6 +74,8 @@ namespace SQLiteTest
 
         public PromptCommands prompt;
 
+        private int countUpdateAppTicks = 0;
+        Color colorUpdate = Color.LightBlue;
         public void AddListSafe(List<String> list)
         {
             if (rePrompt.InvokeRequired)
@@ -100,19 +102,19 @@ namespace SQLiteTest
             this.ActiveControl = rePrompt;
 
             appName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            
-            
+
             prompt = new PromptCommands(ref rePrompt, ref connection);
             connection = new ConnectionClass(this, prompt, appName);
-           
+
             var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
             strVersion = versionInfo.FileVersion;
-                                   
+            lblVersion.Text = "Version: " + strVersion + " (" + DEBUG_LEVEL + ")";
             prompt.Out(appName + " version: " + strVersion);
-            lblVersion.Text = "Version: " + strVersion + " ("+DEBUG_LEVEL+")";
 
-            UpdateApp(false);
-
+            if (!System.Diagnostics.Debugger.IsAttached)
+                if (UpdateApp(false) == true)
+                    return;
+                                                        
             connection.Connect(ref appID, ref threads);
 
             updatePollingInterval(10);
@@ -1056,10 +1058,11 @@ namespace SQLiteTest
         private bool UpdateApp(bool bPrompt = true)
         {
             tcTabs.SelectedTab = tsGeneral;
-            Color colorUpdate = Color.LightBlue;
+            
             prompt.Out("", colorUpdate);
             prompt.Out("Cheking for updates...", colorUpdate);
             prompt.Out("", colorUpdate);
+
             //System.Diagnostics.Process.Start("https://raw.githubusercontent.com/ushaufe/Sqlite4CS/master/Doc/Haufe_MultiSQLite_CS_Manual.pdf");
             String strAppDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
             String strAppFilePath = Path.GetDirectoryName(strAppDir);
@@ -1202,8 +1205,10 @@ namespace SQLiteTest
                     }
             }
             prompt.Out("", colorUpdate);
-            prompt.Out("Update complete.", colorUpdate);
-            prompt.Out("The application must be restarted.", colorUpdate);
+            prompt.Out("Update complete.", colorUpdate);            
+            prompt.Out("Starting new version of MultiSQlite for C#", colorUpdate);
+            countUpdateAppTicks = 0;
+            tiAppUpdate.Enabled = true;
             if (bPrompt)
                 prompt.Prompt();
             return true;
@@ -1212,6 +1217,23 @@ namespace SQLiteTest
         private void mnuUpdate_Click(object sender, EventArgs e)
         {
             UpdateApp();
+        }
+
+        private void tiAppUpdate_Tick(object sender, EventArgs e)
+        {
+            prompt.Out(".", colorUpdate,false);
+            countUpdateAppTicks++;
+            if (countUpdateAppTicks==20)
+            {
+                prompt.Out("Close this instance of MultiSQlite for C#", colorUpdate);
+                System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            }
+            if (countUpdateAppTicks >= 40)
+            {
+                countUpdateAppTicks = 0;
+                tiUpdateApps.Enabled = false;
+                System.Windows.Forms.Application.Exit();                
+            }
         }
     }
 }
