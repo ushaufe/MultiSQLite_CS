@@ -31,6 +31,9 @@ namespace SQLiteTest
         {
             ntAppHeadline,
             ntApp,
+            ntAppActiveHeadline,
+            ntAppInactiveHeadline,
+            ntAppActive,
           
             ntCountTotalEntriesHeadline,
             ntCountTotalEntries,
@@ -47,14 +50,14 @@ namespace SQLiteTest
             ntTableFieldHeadline,
             ntTableFieldEntryLine,
             ntEntry,
-            ntCountAppEntriesHeadline,
-            ntCountAppEntries,
+            ntCountAppActiveEntriesHeadline,
+            ntCountAppActiveEntries,           
             ntCountThreadEntriesHeadline,
             ntCountThreadEntries,
             ntThreadThroughputHeadline,
             ntThreadThroughput,
-            ntAppThroughputHeadline,
-            ntAppThroughput,
+            ntAppActiveThroughputHeadline,
+            ntAppActiveThroughput,
             ntTotalThroughputHeadline,
             ntTotalThroughput,
             ntTotalStatusHeadline,
@@ -79,12 +82,12 @@ namespace SQLiteTest
             switch (type)
             {
                 case NodeType.ntThreadThroughputHeadline:
-                case NodeType.ntAppThroughputHeadline:
+                case NodeType.ntAppActiveThroughputHeadline:
                 case NodeType.ntTotalThroughputHeadline:
                 case NodeType.ntStatusHeadline:
                 case NodeType.ntCountTotalThreadsActiveHeadline:
                 case NodeType.ntCountTotalEntriesHeadline:
-                case NodeType.ntCountAppEntriesHeadline:
+                case NodeType.ntCountAppActiveEntriesHeadline:
                 case NodeType.ntCountThreadHeadline:
                 case NodeType.ntCountThreadEntriesHeadline:
 
@@ -100,7 +103,7 @@ namespace SQLiteTest
 
             switch (type)
             {
-                case NodeDefinition.NodeType.ntApp:
+                case NodeDefinition.NodeType.ntAppActive:
                     {
                         for (int x = nodes.Count - 1; x >= 0; x--)
                         {
@@ -155,8 +158,10 @@ namespace SQLiteTest
             {
                 NodeDefinition nd = (NodeDefinition)node.Tag;
                 switch (((NodeDefinition)newNode.Tag).nodeType)
-                {
+                {                    
                     case NodeType.ntAppHeadline:
+                    case NodeType.ntAppActiveHeadline:
+                    case NodeType.ntAppInactiveHeadline:
                     case NodeType.ntCountTotalEntriesHeadline:
                     case NodeType.ntCountTotalThreadsActiveHeadline:
                     case NodeType.ntCountTotalThreadsActive:
@@ -169,14 +174,14 @@ namespace SQLiteTest
                     case NodeType.ntThreadThroughputHeadline:
 
                     case NodeType.ntCountThreadHeadline:
-                    case NodeType.ntCountAppEntriesHeadline:
+                    case NodeType.ntCountAppActiveEntriesHeadline:
 
-                    case NodeType.ntCountAppEntries:
+                    case NodeType.ntCountAppActiveEntries:
                     case NodeType.ntCountThreadEntries:
                     case NodeType.ntCountTotalEntries:
 
                     //case NodeType.ntCountTotalThreadsActiveHeadline:                                       
-                    case NodeType.ntAppThroughputHeadline:
+                    case NodeType.ntAppActiveThroughputHeadline:
                     case NodeType.ntTotalThroughput:
 
                     case NodeType.ntTotalStatusHeadline:
@@ -189,8 +194,8 @@ namespace SQLiteTest
                             newNode = node;
                         }
                         break;
-                    case NodeDefinition.NodeType.ntApp:
-                    case NodeType.ntAppThroughput:
+                    case NodeDefinition.NodeType.ntAppActive:
+                    case NodeType.ntAppActiveThroughput:
 
                         if ((((NodeDefinition)(newNode.Tag)).nodeType == nd.nodeType) &&
                            (((NodeDefinition)(newNode.Tag)).strAppID == nd.strAppID))

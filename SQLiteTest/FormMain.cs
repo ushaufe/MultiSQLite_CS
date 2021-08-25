@@ -246,7 +246,7 @@ namespace SQLiteTest
                     bool bFound = false;
 
 
-                    TreeNode nodeAppHeadline = NodeDefinition.Add(NodeDefinition.NodeType.ntAppHeadline, "Active Apps", true, treeApps.Nodes, ref activeNodes, Color.Black, "", "");
+                    TreeNode nodeAppHeadline = NodeDefinition.Add(NodeDefinition.NodeType.ntAppHeadline, "Apps", true, treeApps.Nodes, ref activeNodes, Color.Black, "", "");
                     nodeAppHeadline.Expand();
 
                     NodeDefinition.Add(NodeDefinition.NodeType.ntTotalStatusHeadline, "Total Statistics:", true, treeApps.Nodes, ref activeNodes, Color.SteelBlue, "", "");
@@ -326,30 +326,40 @@ namespace SQLiteTest
 
             if (nd.nodeType == NodeDefinition.NodeType.ntAppHeadline)
             {
+                List<TreeNode> activeNodes = new List<TreeNode>();
+                TreeNode nodeAppActiveHeadline = NodeDefinition.Add(NodeDefinition.NodeType.ntAppActiveHeadline, "Active Apps", true, node.Nodes, ref activeNodes, Color.Green);                
+                TreeNode nodeAppInactiveHeadline = NodeDefinition.Add(NodeDefinition.NodeType.ntAppInactiveHeadline, "Inactive Apps", true, node.Nodes, ref activeNodes, Color.Red);
+                nodeAppActiveHeadline.Expand();
+            }
+            if ( (nd.nodeType == NodeDefinition.NodeType.ntAppActiveHeadline) || ((nd.nodeType == NodeDefinition.NodeType.ntAppInactiveHeadline)) )
+            {
                 bool bFound = false;
                 List<TreeNode> activeNodes = new List<TreeNode>();
                 SQLiteCommand cmd = null;
-                cmd = new SQLiteCommand("Select distinct multisqlite_apps.id as AppID,multisqlite_apps.name as AppName from multisqlite_apps where isActive=1 ", connection.get());
+                if (nd.nodeType == NodeDefinition.NodeType.ntAppActiveHeadline)
+                    cmd = new SQLiteCommand("Select distinct multisqlite_apps.id as AppID,multisqlite_apps.name as AppName from multisqlite_apps where isActive=1 ", connection.get());
+                else if (nd.nodeType == NodeDefinition.NodeType.ntAppInactiveHeadline)
+                    cmd = new SQLiteCommand("Select distinct multisqlite_apps.id as AppID,multisqlite_apps.name as AppName from multisqlite_apps where isActive=0 ", connection.get());
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
                     string strID = (string)reader["AppID"].ToString();
                     string strName = (string)reader["AppName"].ToString();
 
-                    NodeDefinition.Add(NodeDefinition.NodeType.ntApp, strName + " <ID: " + strID + ">", true, node.Nodes, ref activeNodes, Color.Black, strID);
+                    NodeDefinition.Add(NodeDefinition.NodeType.ntAppActive, strName + " <ID: " + strID + ">", true, node.Nodes, ref activeNodes, nd.parentColor, strID);
                 }
 
-                NodeDefinition.removeInactives(node.Nodes, ref activeNodes, NodeDefinition.NodeType.ntApp);
+                NodeDefinition.removeInactives(node.Nodes, ref activeNodes, NodeDefinition.NodeType.ntAppActive);
             }
 
-            else if (nd.nodeType == NodeDefinition.NodeType.ntApp)
+            else if (nd.nodeType == NodeDefinition.NodeType.ntAppActive)
             {
                 node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
-                NodeDefinition.Add(NodeDefinition.NodeType.ntCountThreadHeadline, "Threads Count:", true, node.Nodes, ref activeNodes, Color.Black, nd.strAppID);
-                NodeDefinition.Add(NodeDefinition.NodeType.ntCountAppEntriesHeadline, "Entries Count:", true, node.Nodes, ref activeNodes, Color.Black, nd.strAppID);
-                NodeDefinition.Add(NodeDefinition.NodeType.ntThreadHeadline, "Threads:", true, node.Nodes, ref activeNodes, Color.Black, nd.strAppID);
-                NodeDefinition.Add(NodeDefinition.NodeType.ntAppThroughputHeadline, "Throughput:", true, node.Nodes, ref activeNodes, Color.Black, nd.strAppID);
+                NodeDefinition.Add(NodeDefinition.NodeType.ntCountThreadHeadline, "Threads Count:", true, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID);
+                NodeDefinition.Add(NodeDefinition.NodeType.ntCountAppActiveEntriesHeadline, "Entries Count:", true, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID);
+                NodeDefinition.Add(NodeDefinition.NodeType.ntThreadHeadline, "Threads:", true, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID);
+                NodeDefinition.Add(NodeDefinition.NodeType.ntAppActiveThroughputHeadline, "Throughput:", true, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID);
                 //NodeDefinition.Add(NodeDefinition.NodeType.ntTablesHeadline, "Tables: ", true, node.Nodes, ref activeNodes, Color.BlueViolet, nd.strAppID);
             }
 
@@ -498,7 +508,7 @@ namespace SQLiteTest
                 }
             }
 
-            else if (nd.nodeType == NodeDefinition.NodeType.ntCountAppEntriesHeadline)
+            else if (nd.nodeType == NodeDefinition.NodeType.ntCountAppActiveEntriesHeadline)
             {
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
@@ -508,7 +518,7 @@ namespace SQLiteTest
                 while (reader.Read())
                 {
                     string strCNT = (string)reader["CNT"].ToString();
-                    NodeDefinition.Add(NodeDefinition.NodeType.ntCountAppEntries, strCNT, true, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID);
+                    NodeDefinition.Add(NodeDefinition.NodeType.ntCountAppActiveEntries, strCNT, true, node.Nodes, ref activeNodes, nd.parentColor, nd.strAppID, nd.strThreadID);
                 }
             }
 
@@ -571,7 +581,7 @@ namespace SQLiteTest
                 }
             }
 
-            else if (nd.nodeType == NodeDefinition.NodeType.ntAppThroughputHeadline)
+            else if (nd.nodeType == NodeDefinition.NodeType.ntAppActiveThroughputHeadline)
             {
                 //node.Nodes.Clear();
                 List<TreeNode> activeNodes = null;
