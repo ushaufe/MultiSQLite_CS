@@ -672,8 +672,44 @@ namespace SQLiteTest
         }
 
         private void btnShowManual_Click(object sender, EventArgs e)
-        {           
-            System.Diagnostics.Process.Start("https://raw.githubusercontent.com/ushaufe/Sqlite4CS/master/Doc/Haufe_MultiSQLite_CS_Manual.pdf");
+        {
+            String strAppDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
+
+            String strAppFilePath = Path.GetDirectoryName(strAppDir);
+            if (strAppFilePath.Length == 0)
+                return;
+            if (strAppFilePath[strAppFilePath.Length - 1] != '\\')
+                strAppFilePath += "\\";
+            String strManualNew = strAppFilePath + "Manual.new";
+            String strManual = strAppFilePath + "Manual.pdf";
+
+            if (File.Exists(strManualNew))
+                File.Delete(strManualNew);
+
+            using (var client = new System.Net.WebClient())
+            {
+                try
+                {
+                    client.DownloadFile("https://raw.githubusercontent.com/ushaufe/Sqlite4CS/master/Doc/Haufe_MultiSQLite_CS_Manual.pdf", strManualNew );
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            if (File.Exists(strManualNew))
+            {
+                try
+                {
+                    File.Delete(strManual);
+                }
+                catch(Exception ex)
+                {
+                    
+                }
+                File.Move(strManualNew, strManual);
+            }
+            System.Diagnostics.Process.Start(strManual);
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
