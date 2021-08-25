@@ -67,6 +67,9 @@ namespace SQLiteTest
 
         public void Out(String str, Color color)
         {
+            if (rePrompt.Lines.Length > 0)
+                if (rePrompt.Lines[rePrompt.Lines.Length-1].Length > 0)
+                    rePrompt.AppendText("\r\n");
             int selStart = rePrompt.TextLength;
             rePrompt.AppendText(str + "\r\n");
             int selEnd = rePrompt.TextLength;

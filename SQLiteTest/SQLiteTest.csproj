@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{220E2F96-002F-454D-9939-F8BB85D8E5A1}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>SQLiteTest</RootNamespace>
     <AssemblyName>MultiSQlite_CS</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
@@ -52,6 +52,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>ConnectionIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SQLite.Designer">
@@ -150,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ConnectionIcon.ico" />
+    <None Include="Resources\Update.png" />
     <None Include="Resources\OpenFile.png" />
     <None Include="Resources\Disconnected.png" />
     <None Include="Resources\Connected1.png" />

@@ -68,6 +68,8 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuLiveUpdate = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuShowManual = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tiLiveUpdateFlicker = new System.Windows.Forms.Timer(this.components);
@@ -92,10 +94,10 @@
             // 
             this.btnShowManual.Image = global::SQLiteTest.Properties.Resources.user_manual_32;
             this.btnShowManual.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnShowManual.Location = new System.Drawing.Point(17, 378);
-            this.btnShowManual.Margin = new System.Windows.Forms.Padding(2);
+            this.btnShowManual.Location = new System.Drawing.Point(23, 465);
+            this.btnShowManual.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnShowManual.Name = "btnShowManual";
-            this.btnShowManual.Size = new System.Drawing.Size(151, 45);
+            this.btnShowManual.Size = new System.Drawing.Size(201, 55);
             this.btnShowManual.TabIndex = 0;
             this.btnShowManual.Text = "User\'s Manual";
             this.btnShowManual.UseVisualStyleBackColor = true;
@@ -105,10 +107,10 @@
             // 
             this.btnStartThreads.Image = global::SQLiteTest.Properties.Resources.Start_Process_32;
             this.btnStartThreads.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnStartThreads.Location = new System.Drawing.Point(17, 174);
-            this.btnStartThreads.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStartThreads.Location = new System.Drawing.Point(23, 214);
+            this.btnStartThreads.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnStartThreads.Name = "btnStartThreads";
-            this.btnStartThreads.Size = new System.Drawing.Size(151, 45);
+            this.btnStartThreads.Size = new System.Drawing.Size(201, 55);
             this.btnStartThreads.TabIndex = 2;
             this.btnStartThreads.Text = "Start Threads";
             this.btnStartThreads.UseVisualStyleBackColor = true;
@@ -119,10 +121,10 @@
             this.btnStopThreads.Enabled = false;
             this.btnStopThreads.Image = global::SQLiteTest.Properties.Resources.stop_process_2_321;
             this.btnStopThreads.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnStopThreads.Location = new System.Drawing.Point(17, 243);
-            this.btnStopThreads.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStopThreads.Location = new System.Drawing.Point(23, 299);
+            this.btnStopThreads.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnStopThreads.Name = "btnStopThreads";
-            this.btnStopThreads.Size = new System.Drawing.Size(151, 45);
+            this.btnStopThreads.Size = new System.Drawing.Size(201, 55);
             this.btnStopThreads.TabIndex = 3;
             this.btnStopThreads.Text = "Stop Threads";
             this.btnStopThreads.UseVisualStyleBackColor = true;
@@ -135,10 +137,10 @@
             this.pictureBox1.BackgroundImage = global::SQLiteTest.Properties.Resources.Haufe_Transparent;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox1.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.InitialImage")));
-            this.pictureBox1.Location = new System.Drawing.Point(1323, 39);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBox1.Location = new System.Drawing.Point(1764, 48);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(320, 41);
+            this.pictureBox1.Size = new System.Drawing.Size(427, 50);
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
@@ -148,10 +150,10 @@
             this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox2.BackgroundImage = global::SQLiteTest.Properties.Resources.CS;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox2.Location = new System.Drawing.Point(930, 89);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBox2.Location = new System.Drawing.Point(1240, 110);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(86, 77);
+            this.pictureBox2.Size = new System.Drawing.Size(115, 95);
             this.pictureBox2.TabIndex = 7;
             this.pictureBox2.TabStop = false;
             // 
@@ -160,8 +162,7 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(185, 85);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(247, 105);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(264, 52);
             this.label1.TabIndex = 8;
@@ -173,10 +174,10 @@
             this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox3.BackgroundImage = global::SQLiteTest.Properties.Resources._1920px_SQLite370_svg;
             this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox3.Location = new System.Drawing.Point(727, 89);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBox3.Location = new System.Drawing.Point(969, 110);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(148, 77);
+            this.pictureBox3.Size = new System.Drawing.Size(197, 95);
             this.pictureBox3.TabIndex = 9;
             this.pictureBox3.TabStop = false;
             // 
@@ -186,9 +187,10 @@
             this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox4.BackgroundImage = global::SQLiteTest.Properties.Resources.Haufe_Transparent;
             this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBox4.Location = new System.Drawing.Point(727, 20);
+            this.pictureBox4.Location = new System.Drawing.Point(969, 25);
+            this.pictureBox4.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(249, 37);
+            this.pictureBox4.Size = new System.Drawing.Size(332, 46);
             this.pictureBox4.TabIndex = 10;
             this.pictureBox4.TabStop = false;
             // 
@@ -199,22 +201,22 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tcTabs.Controls.Add(this.tsGeneral);
             this.tcTabs.Controls.Add(this.tsApps);
-            this.tcTabs.Location = new System.Drawing.Point(190, 152);
-            this.tcTabs.Margin = new System.Windows.Forms.Padding(2);
+            this.tcTabs.Location = new System.Drawing.Point(253, 187);
+            this.tcTabs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tcTabs.Name = "tcTabs";
             this.tcTabs.SelectedIndex = 0;
-            this.tcTabs.Size = new System.Drawing.Size(542, 271);
+            this.tcTabs.Size = new System.Drawing.Size(723, 334);
             this.tcTabs.TabIndex = 11;
             this.tcTabs.SelectedIndexChanged += new System.EventHandler(this.tcTabs_SelectedIndexChanged);
             // 
             // tsGeneral
             // 
             this.tsGeneral.Controls.Add(this.rePrompt);
-            this.tsGeneral.Location = new System.Drawing.Point(4, 22);
-            this.tsGeneral.Margin = new System.Windows.Forms.Padding(2);
+            this.tsGeneral.Location = new System.Drawing.Point(4, 25);
+            this.tsGeneral.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tsGeneral.Name = "tsGeneral";
-            this.tsGeneral.Padding = new System.Windows.Forms.Padding(2);
-            this.tsGeneral.Size = new System.Drawing.Size(534, 245);
+            this.tsGeneral.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tsGeneral.Size = new System.Drawing.Size(715, 305);
             this.tsGeneral.TabIndex = 0;
             this.tsGeneral.Text = "Prompt";
             this.tsGeneral.UseVisualStyleBackColor = true;
@@ -225,9 +227,10 @@
             this.rePrompt.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rePrompt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rePrompt.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.rePrompt.Location = new System.Drawing.Point(2, 2);
+            this.rePrompt.Location = new System.Drawing.Point(3, 2);
+            this.rePrompt.Margin = new System.Windows.Forms.Padding(4);
             this.rePrompt.Name = "rePrompt";
-            this.rePrompt.Size = new System.Drawing.Size(530, 241);
+            this.rePrompt.Size = new System.Drawing.Size(709, 301);
             this.rePrompt.TabIndex = 0;
             this.rePrompt.Text = "";
             this.rePrompt.Enter += new System.EventHandler(this.rePrompt_Enter);
@@ -237,11 +240,11 @@
             // tsApps
             // 
             this.tsApps.Controls.Add(this.treeApps);
-            this.tsApps.Location = new System.Drawing.Point(4, 22);
-            this.tsApps.Margin = new System.Windows.Forms.Padding(2);
+            this.tsApps.Location = new System.Drawing.Point(4, 25);
+            this.tsApps.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tsApps.Name = "tsApps";
-            this.tsApps.Padding = new System.Windows.Forms.Padding(2);
-            this.tsApps.Size = new System.Drawing.Size(534, 245);
+            this.tsApps.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tsApps.Size = new System.Drawing.Size(715, 305);
             this.tsApps.TabIndex = 2;
             this.tsApps.Text = "Analyzation Tree";
             this.tsApps.UseVisualStyleBackColor = true;
@@ -250,10 +253,10 @@
             // 
             this.treeApps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeApps.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.treeApps.Location = new System.Drawing.Point(2, 2);
-            this.treeApps.Margin = new System.Windows.Forms.Padding(2);
+            this.treeApps.Location = new System.Drawing.Point(3, 2);
+            this.treeApps.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.treeApps.Name = "treeApps";
-            this.treeApps.Size = new System.Drawing.Size(530, 241);
+            this.treeApps.Size = new System.Drawing.Size(709, 301);
             this.treeApps.TabIndex = 0;
             this.treeApps.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeApps_BeforeExpand_1);
             // 
@@ -271,8 +274,7 @@
             // 
             this.lblNumThreads.AutoSize = true;
             this.lblNumThreads.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNumThreads.Location = new System.Drawing.Point(22, 157);
-            this.lblNumThreads.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblNumThreads.Location = new System.Drawing.Point(29, 193);
             this.lblNumThreads.Name = "lblNumThreads";
             this.lblNumThreads.Size = new System.Drawing.Size(101, 13);
             this.lblNumThreads.TabIndex = 12;
@@ -280,15 +282,15 @@
             // 
             // numThreads
             // 
-            this.numThreads.Location = new System.Drawing.Point(130, 153);
-            this.numThreads.Margin = new System.Windows.Forms.Padding(2);
+            this.numThreads.Location = new System.Drawing.Point(173, 188);
+            this.numThreads.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.numThreads.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.numThreads.Name = "numThreads";
-            this.numThreads.Size = new System.Drawing.Size(38, 20);
+            this.numThreads.Size = new System.Drawing.Size(51, 22);
             this.numThreads.TabIndex = 13;
             this.numThreads.Value = new decimal(new int[] {
             1,
@@ -303,7 +305,8 @@
             this.lblVersion.BackColor = System.Drawing.Color.Transparent;
             this.lblVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblVersion.ForeColor = System.Drawing.Color.Green;
-            this.lblVersion.Location = new System.Drawing.Point(15, 440);
+            this.lblVersion.Location = new System.Drawing.Point(20, 542);
+            this.lblVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(53, 13);
             this.lblVersion.TabIndex = 14;
@@ -336,9 +339,10 @@
             // 
             this.btnLiveUpdate.Image = global::SQLiteTest.Properties.Resources.LiveUpdate_32_blau;
             this.btnLiveUpdate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnLiveUpdate.Location = new System.Drawing.Point(17, 312);
+            this.btnLiveUpdate.Location = new System.Drawing.Point(23, 384);
+            this.btnLiveUpdate.Margin = new System.Windows.Forms.Padding(4);
             this.btnLiveUpdate.Name = "btnLiveUpdate";
-            this.btnLiveUpdate.Size = new System.Drawing.Size(151, 45);
+            this.btnLiveUpdate.Size = new System.Drawing.Size(201, 55);
             this.btnLiveUpdate.TabIndex = 15;
             this.btnLiveUpdate.Text = "Live Update";
             this.btnLiveUpdate.UseVisualStyleBackColor = true;
@@ -353,8 +357,8 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(731, 28);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(975, 28);
             this.menuStrip1.TabIndex = 16;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -377,21 +381,21 @@
             // 
             this.mnuOpenExternalDB.Image = global::SQLiteTest.Properties.Resources.OpenFile;
             this.mnuOpenExternalDB.Name = "mnuOpenExternalDB";
-            this.mnuOpenExternalDB.Size = new System.Drawing.Size(203, 26);
+            this.mnuOpenExternalDB.Size = new System.Drawing.Size(199, 22);
             this.mnuOpenExternalDB.Text = "Open e&xternal Database";
             this.mnuOpenExternalDB.Click += new System.EventHandler(this.mnuOpenExternalDB_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(200, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(196, 6);
             // 
             // mnuConnect
             // 
             this.mnuConnect.BackColor = System.Drawing.Color.Transparent;
             this.mnuConnect.Image = global::SQLiteTest.Properties.Resources.Connected1;
             this.mnuConnect.Name = "mnuConnect";
-            this.mnuConnect.Size = new System.Drawing.Size(203, 26);
+            this.mnuConnect.Size = new System.Drawing.Size(199, 22);
             this.mnuConnect.Text = "&Connect";
             this.mnuConnect.Click += new System.EventHandler(this.mnuConnect_Click);
             // 
@@ -399,20 +403,20 @@
             // 
             this.mnuDisconnect.Image = global::SQLiteTest.Properties.Resources.Disconnected;
             this.mnuDisconnect.Name = "mnuDisconnect";
-            this.mnuDisconnect.Size = new System.Drawing.Size(203, 26);
+            this.mnuDisconnect.Size = new System.Drawing.Size(199, 22);
             this.mnuDisconnect.Text = "&Disconnect";
             this.mnuDisconnect.Click += new System.EventHandler(this.mnuDisconnect_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(200, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(196, 6);
             // 
             // menuExit
             // 
             this.menuExit.Image = global::SQLiteTest.Properties.Resources.Close_161;
             this.menuExit.Name = "menuExit";
-            this.menuExit.Size = new System.Drawing.Size(203, 26);
+            this.menuExit.Size = new System.Drawing.Size(199, 22);
             this.menuExit.Text = "E&xit";
             this.menuExit.Click += new System.EventHandler(this.menuExit_Click);
             // 
@@ -461,6 +465,8 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuUpdate,
+            this.toolStripMenuItem4,
             this.mnuShowManual,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.Close_162;
@@ -468,11 +474,24 @@
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(64, 24);
             this.helpToolStripMenuItem.Text = "&Help";
             // 
+            // mnuUpdate
+            // 
+            this.mnuUpdate.Image = global::SQLiteTest.Properties.Resources.Update;
+            this.mnuUpdate.Name = "mnuUpdate";
+            this.mnuUpdate.Size = new System.Drawing.Size(247, 26);
+            this.mnuUpdate.Text = "&Update to latest version";
+            this.mnuUpdate.Click += new System.EventHandler(this.mnuUpdate_Click);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(244, 6);
+            // 
             // mnuShowManual
             // 
             this.mnuShowManual.Image = global::SQLiteTest.Properties.Resources.Manual_Mono;
             this.mnuShowManual.Name = "mnuShowManual";
-            this.mnuShowManual.Size = new System.Drawing.Size(243, 22);
+            this.mnuShowManual.Size = new System.Drawing.Size(247, 26);
             this.mnuShowManual.Text = "Show Manual";
             this.mnuShowManual.Click += new System.EventHandler(this.mnuShowManual_Click);
             // 
@@ -480,7 +499,7 @@
             // 
             this.aboutToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.About_161;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
             this.aboutToolStripMenuItem.Text = "About Haufe MultiSQLite for C#";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -493,12 +512,12 @@
             // 
             this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBar1.Location = new System.Drawing.Point(240, 622);
-            this.trackBar1.Margin = new System.Windows.Forms.Padding(2);
+            this.trackBar1.Location = new System.Drawing.Point(320, 766);
+            this.trackBar1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.trackBar1.Maximum = 60;
             this.trackBar1.Minimum = 1;
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(795, 45);
+            this.trackBar1.Size = new System.Drawing.Size(1060, 45);
             this.trackBar1.TabIndex = 17;
             this.trackBar1.Value = 1;
             // 
@@ -506,12 +525,12 @@
             // 
             this.tbDBInterval.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbDBInterval.Location = new System.Drawing.Point(195, 424);
-            this.tbDBInterval.Margin = new System.Windows.Forms.Padding(2);
+            this.tbDBInterval.Location = new System.Drawing.Point(260, 522);
+            this.tbDBInterval.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tbDBInterval.Maximum = 60;
             this.tbDBInterval.Minimum = 1;
             this.tbDBInterval.Name = "tbDBInterval";
-            this.tbDBInterval.Size = new System.Drawing.Size(533, 45);
+            this.tbDBInterval.Size = new System.Drawing.Size(711, 45);
             this.tbDBInterval.TabIndex = 19;
             this.tbDBInterval.Value = 1;
             this.tbDBInterval.Scroll += new System.EventHandler(this.tbDBInterval_Scroll);
@@ -521,10 +540,9 @@
             // 
             this.LBL_DB_PollingInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LBL_DB_PollingInterval.AutoSize = true;
-            this.LBL_DB_PollingInterval.Location = new System.Drawing.Point(195, 443);
-            this.LBL_DB_PollingInterval.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.LBL_DB_PollingInterval.Location = new System.Drawing.Point(260, 545);
             this.LBL_DB_PollingInterval.Name = "LBL_DB_PollingInterval";
-            this.LBL_DB_PollingInterval.Size = new System.Drawing.Size(97, 13);
+            this.LBL_DB_PollingInterval.Size = new System.Drawing.Size(120, 16);
             this.LBL_DB_PollingInterval.TabIndex = 20;
             this.LBL_DB_PollingInterval.Text = "DB Polling Interval:";
             // 
@@ -534,12 +552,12 @@
             // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImage = global::SQLiteTest.Properties.Resources.Connections2_Light;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(731, 461);
+            this.ClientSize = new System.Drawing.Size(975, 567);
             this.Controls.Add(this.LBL_DB_PollingInterval);
             this.Controls.Add(this.tbDBInterval);
             this.Controls.Add(this.trackBar1);
@@ -559,8 +577,8 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(2);
-            this.MinimumSize = new System.Drawing.Size(746, 499);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MinimumSize = new System.Drawing.Size(989, 605);
             this.Name = "frmMain";
             this.Text = "Haufe Multi-SQLite for C#";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
@@ -629,6 +647,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem mnuOpenExternalDB;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem mnuUpdate;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
     }
 }
 

@@ -59,10 +59,8 @@ namespace SQLiteTest
             return con;
         }
 
-        public int getDBVersionNumber()
-        {
-            String strDBVersion = getDBVersion();
-
+        public static int getDBVersionNumber(String strDBVersion)
+        {            
             do // First get rid of spaces like "  \r"
             {
                 strDBVersion = strDBVersion.Replace(".", "");
@@ -153,7 +151,7 @@ namespace SQLiteTest
                 {
                     //String strDBVersion = getDBVersion();
                     //if (!strDBVersion.Equals(DB_VERSION.Trim()))
-                     dbVersion = getDBVersionNumber();
+                     dbVersion = getDBVersionNumber(getDBVersion());
                     if ((strExternalFile.Length==0) && ((dbVersion<DB_VERSION_MIN) || (dbVersion>DB_VERSION_MAX)))
                     {    
                         con.Close();

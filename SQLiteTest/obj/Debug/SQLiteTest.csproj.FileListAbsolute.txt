@@ -37,7 +37,6 @@ C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\MultiSQlite_CS.exe
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\MultiSQlite_CS.pdb
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.frmMain.resources
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.FormAbout.resources
-C:\Projects\Sqlite4CS\SQLiteTest\obj\Debug\SQLiteTest.csproj.AssemblyReference.cache
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Debug\Microsoft.VisualStudio.OLE.Interop.dll
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Debug\Microsoft.VisualStudio.Shell.Interop.dll
 C:\Projects\Sqlite4CS\SQLiteTest\bin\Debug\Microsoft.VisualStudio.TextManager.Interop.dll
