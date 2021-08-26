@@ -1,4 +1,4 @@
-﻿namespace SQLiteTest
+﻿namespace MultiSQLite
 {
     partial class frmMain
     {
@@ -98,7 +98,7 @@
             // 
             // btnShowManual
             // 
-            this.btnShowManual.Image = global::SQLiteTest.Properties.Resources.user_manual_32;
+            this.btnShowManual.Image = global::MultiSQLite.Properties.Resources.user_manual_32;
             this.btnShowManual.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnShowManual.Location = new System.Drawing.Point(23, 465);
             this.btnShowManual.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -111,7 +111,7 @@
             // 
             // btnStartThreads
             // 
-            this.btnStartThreads.Image = global::SQLiteTest.Properties.Resources.Start_Process_32;
+            this.btnStartThreads.Image = global::MultiSQLite.Properties.Resources.Start_Process_32;
             this.btnStartThreads.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnStartThreads.Location = new System.Drawing.Point(23, 214);
             this.btnStartThreads.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -125,7 +125,7 @@
             // btnStopThreads
             // 
             this.btnStopThreads.Enabled = false;
-            this.btnStopThreads.Image = global::SQLiteTest.Properties.Resources.stop_process_2_321;
+            this.btnStopThreads.Image = global::MultiSQLite.Properties.Resources.stop_process_2_321;
             this.btnStopThreads.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnStopThreads.Location = new System.Drawing.Point(23, 299);
             this.btnStopThreads.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -140,7 +140,7 @@
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.BackgroundImage = global::SQLiteTest.Properties.Resources.Haufe_Transparent;
+            this.pictureBox1.BackgroundImage = global::MultiSQLite.Properties.Resources.Haufe_Transparent;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox1.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.InitialImage")));
             this.pictureBox1.Location = new System.Drawing.Point(1764, 48);
@@ -154,7 +154,7 @@
             // 
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox2.BackgroundImage = global::SQLiteTest.Properties.Resources.CS;
+            this.pictureBox2.BackgroundImage = global::MultiSQLite.Properties.Resources.CS;
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox2.Location = new System.Drawing.Point(1240, 110);
             this.pictureBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -178,7 +178,7 @@
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox3.BackgroundImage = global::SQLiteTest.Properties.Resources._1920px_SQLite370_svg;
+            this.pictureBox3.BackgroundImage = global::MultiSQLite.Properties.Resources._1920px_SQLite370_svg;
             this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox3.Location = new System.Drawing.Point(969, 110);
             this.pictureBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -191,7 +191,7 @@
             // 
             this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox4.BackgroundImage = global::SQLiteTest.Properties.Resources.Haufe_Transparent;
+            this.pictureBox4.BackgroundImage = global::MultiSQLite.Properties.Resources.Haufe_Transparent;
             this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox4.Location = new System.Drawing.Point(969, 25);
             this.pictureBox4.Margin = new System.Windows.Forms.Padding(4);
@@ -343,7 +343,7 @@
             // 
             // btnLiveUpdate
             // 
-            this.btnLiveUpdate.Image = global::SQLiteTest.Properties.Resources.LiveUpdate_32_blau;
+            this.btnLiveUpdate.Image = global::MultiSQLite.Properties.Resources.LiveUpdate_32_blau;
             this.btnLiveUpdate.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLiveUpdate.Location = new System.Drawing.Point(23, 384);
             this.btnLiveUpdate.Margin = new System.Windows.Forms.Padding(4);
@@ -377,7 +377,7 @@
             this.mnuDisconnect,
             this.toolStripMenuItem2,
             this.menuExit});
-            this.fileToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.fileopen32_transparent;
+            this.fileToolStripMenuItem.Image = global::MultiSQLite.Properties.Resources.fileopen32_transparent;
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(57, 24);
             this.fileToolStripMenuItem.Text = "&File";
@@ -385,7 +385,7 @@
             // 
             // mnuOpenExternalDB
             // 
-            this.mnuOpenExternalDB.Image = global::SQLiteTest.Properties.Resources.OpenFile;
+            this.mnuOpenExternalDB.Image = global::MultiSQLite.Properties.Resources.OpenFile;
             this.mnuOpenExternalDB.Name = "mnuOpenExternalDB";
             this.mnuOpenExternalDB.Size = new System.Drawing.Size(199, 22);
             this.mnuOpenExternalDB.Text = "Open e&xternal Database";
@@ -399,7 +399,7 @@
             // mnuConnect
             // 
             this.mnuConnect.BackColor = System.Drawing.Color.Transparent;
-            this.mnuConnect.Image = global::SQLiteTest.Properties.Resources.Connected1;
+            this.mnuConnect.Image = global::MultiSQLite.Properties.Resources.Connected1;
             this.mnuConnect.Name = "mnuConnect";
             this.mnuConnect.Size = new System.Drawing.Size(199, 22);
             this.mnuConnect.Text = "&Connect";
@@ -407,7 +407,7 @@
             // 
             // mnuDisconnect
             // 
-            this.mnuDisconnect.Image = global::SQLiteTest.Properties.Resources.Disconnected;
+            this.mnuDisconnect.Image = global::MultiSQLite.Properties.Resources.Disconnected;
             this.mnuDisconnect.Name = "mnuDisconnect";
             this.mnuDisconnect.Size = new System.Drawing.Size(199, 22);
             this.mnuDisconnect.Text = "&Disconnect";
@@ -420,7 +420,7 @@
             // 
             // menuExit
             // 
-            this.menuExit.Image = global::SQLiteTest.Properties.Resources.Close_161;
+            this.menuExit.Image = global::MultiSQLite.Properties.Resources.Close_161;
             this.menuExit.Name = "menuExit";
             this.menuExit.Size = new System.Drawing.Size(199, 22);
             this.menuExit.Text = "E&xit";
@@ -433,14 +433,14 @@
             this.mnuStopThread,
             this.toolStripMenuItem1,
             this.mnuLiveUpdate});
-            this.actionsToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.Action_Transparent;
+            this.actionsToolStripMenuItem.Image = global::MultiSQLite.Properties.Resources.Action_Transparent;
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(79, 24);
             this.actionsToolStripMenuItem.Text = "&Actions";
             // 
             // mnuStartThread
             // 
-            this.mnuStartThread.Image = global::SQLiteTest.Properties.Resources.Start_Process_321;
+            this.mnuStartThread.Image = global::MultiSQLite.Properties.Resources.Start_Process_321;
             this.mnuStartThread.Name = "mnuStartThread";
             this.mnuStartThread.Size = new System.Drawing.Size(142, 22);
             this.mnuStartThread.Text = "Start Threads";
@@ -449,7 +449,7 @@
             // mnuStopThread
             // 
             this.mnuStopThread.Enabled = false;
-            this.mnuStopThread.Image = global::SQLiteTest.Properties.Resources.stop_process_2_322;
+            this.mnuStopThread.Image = global::MultiSQLite.Properties.Resources.stop_process_2_322;
             this.mnuStopThread.Name = "mnuStopThread";
             this.mnuStopThread.Size = new System.Drawing.Size(142, 22);
             this.mnuStopThread.Text = "Stop Threads";
@@ -462,7 +462,7 @@
             // 
             // mnuLiveUpdate
             // 
-            this.mnuLiveUpdate.Image = global::SQLiteTest.Properties.Resources.LiveUpdate_32_blau1;
+            this.mnuLiveUpdate.Image = global::MultiSQLite.Properties.Resources.LiveUpdate_32_blau1;
             this.mnuLiveUpdate.Name = "mnuLiveUpdate";
             this.mnuLiveUpdate.Size = new System.Drawing.Size(142, 22);
             this.mnuLiveUpdate.Text = "Live Update";
@@ -479,14 +479,14 @@
             this.mnuShowManual,
             this.toolStripMenuItem5,
             this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.Close_162;
+            this.helpToolStripMenuItem.Image = global::MultiSQLite.Properties.Resources.Close_162;
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(64, 24);
             this.helpToolStripMenuItem.Text = "&Help";
             // 
             // mnuUpdate
             // 
-            this.mnuUpdate.Image = global::SQLiteTest.Properties.Resources.Update;
+            this.mnuUpdate.Image = global::MultiSQLite.Properties.Resources.Update;
             this.mnuUpdate.Name = "mnuUpdate";
             this.mnuUpdate.Size = new System.Drawing.Size(247, 26);
             this.mnuUpdate.Text = "&Update to latest version";
@@ -499,7 +499,7 @@
             // 
             // mnuShowGitHub_CS
             // 
-            this.mnuShowGitHub_CS.Image = global::SQLiteTest.Properties.Resources.SourceCode;
+            this.mnuShowGitHub_CS.Image = global::MultiSQLite.Properties.Resources.SourceCode;
             this.mnuShowGitHub_CS.Name = "mnuShowGitHub_CS";
             this.mnuShowGitHub_CS.Size = new System.Drawing.Size(247, 26);
             this.mnuShowGitHub_CS.Text = "Show GitHub Project for C#";
@@ -507,7 +507,7 @@
             // 
             // showGitHubProjectForCToolStripMenuItem
             // 
-            this.showGitHubProjectForCToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.SourceCode1;
+            this.showGitHubProjectForCToolStripMenuItem.Image = global::MultiSQLite.Properties.Resources.SourceCode1;
             this.showGitHubProjectForCToolStripMenuItem.Name = "showGitHubProjectForCToolStripMenuItem";
             this.showGitHubProjectForCToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
             this.showGitHubProjectForCToolStripMenuItem.Text = "Show GitHub Project for C++";
@@ -515,7 +515,7 @@
             // 
             // mnuShowManual
             // 
-            this.mnuShowManual.Image = global::SQLiteTest.Properties.Resources.Manual_Mono;
+            this.mnuShowManual.Image = global::MultiSQLite.Properties.Resources.Manual_Mono;
             this.mnuShowManual.Name = "mnuShowManual";
             this.mnuShowManual.Size = new System.Drawing.Size(247, 26);
             this.mnuShowManual.Text = "Show Manual";
@@ -528,7 +528,7 @@
             // 
             // aboutToolStripMenuItem
             // 
-            this.aboutToolStripMenuItem.Image = global::SQLiteTest.Properties.Resources.About_161;
+            this.aboutToolStripMenuItem.Image = global::MultiSQLite.Properties.Resources.About_161;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
             this.aboutToolStripMenuItem.Text = "About Haufe MultiSQLite for C#";
@@ -600,7 +600,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.BackgroundImage = global::SQLiteTest.Properties.Resources.Connections2_Light;
+            this.BackgroundImage = global::MultiSQLite.Properties.Resources.Connections2_Light;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(975, 567);
             this.Controls.Add(this.LBL_DB_PollingInterval);

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SQLiteTest
+namespace MultiSQLite
 {
     public partial class FormAbout : Form
     {

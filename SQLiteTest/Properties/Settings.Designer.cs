@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SQLiteTest.Properties {
+namespace MultiSQLite.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -1,5 +1,5 @@
 ﻿
-namespace SQLiteTest
+namespace MultiSQLite
 {
     partial class FormAbout
     {
@@ -70,7 +70,7 @@ namespace SQLiteTest
             // pictureBox2
             // 
             this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox2.Image = global::SQLiteTest.Properties.Resources.Haufe_Transparent1;
+            this.pictureBox2.Image = global::MultiSQLite.Properties.Resources.Haufe_Transparent1;
             this.pictureBox2.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox2.InitialImage")));
             this.pictureBox2.Location = new System.Drawing.Point(12, 12);
             this.pictureBox2.Name = "pictureBox2";
@@ -82,7 +82,7 @@ namespace SQLiteTest
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = global::SQLiteTest.Properties.Resources.Connections1;
+            this.pictureBox1.Image = global::MultiSQLite.Properties.Resources.Connections1;
             this.pictureBox1.Location = new System.Drawing.Point(12, 72);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(95, 101);
@@ -106,7 +106,7 @@ namespace SQLiteTest
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox3.BackgroundImage = global::SQLiteTest.Properties.Resources._1920px_SQLite370_svg;
+            this.pictureBox3.BackgroundImage = global::MultiSQLite.Properties.Resources._1920px_SQLite370_svg;
             this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox3.Location = new System.Drawing.Point(267, 154);
             this.pictureBox3.Margin = new System.Windows.Forms.Padding(2);
@@ -119,7 +119,7 @@ namespace SQLiteTest
             // 
             this.pictureBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox4.BackgroundImage = global::SQLiteTest.Properties.Resources.CS;
+            this.pictureBox4.BackgroundImage = global::MultiSQLite.Properties.Resources.CS;
             this.pictureBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox4.Location = new System.Drawing.Point(333, 154);
             this.pictureBox4.Margin = new System.Windows.Forms.Padding(2);
@@ -146,7 +146,7 @@ namespace SQLiteTest
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.BackgroundImage = global::SQLiteTest.Properties.Resources.Connections2_Light2;
+            this.BackgroundImage = global::MultiSQLite.Properties.Resources.Connections2_Light2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(378, 431);
             this.Controls.Add(this.lblVersion);

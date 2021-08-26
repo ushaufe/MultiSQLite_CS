@@ -20,10 +20,10 @@ using System.Security.Cryptography;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
-using static SQLiteTest.NodeDefinition;
+using static MultiSQLite.NodeDefinition;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace SQLiteTest
+namespace MultiSQLite
 {
     static class UpdateClass
     {
@@ -45,7 +45,7 @@ namespace SQLiteTest
             //System.Diagnostics.Process.Start("https://raw.githubusercontent.com/ushaufe/Sqlite4CS/master/Doc/Haufe_MultiSQLite_CS_Manual.pdf");
             String strAppDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
             String strAppFilePath = Path.GetDirectoryName(strAppDir);
-            String strDownloadPath = "https://github.com/ushaufe/Sqlite4CS/raw/master/SQLiteTest/bin/";
+            String strDownloadPath = "https://github.com/ushaufe/Sqlite4CS/raw/master/MultiSQLite/bin/";
             if (strAppFilePath.Length == 0)
                 return false;
             if (strAppFilePath[strAppFilePath.Length - 1] != '\\')

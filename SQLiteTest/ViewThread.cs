@@ -20,10 +20,10 @@ using System.Security.Cryptography;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
-using static SQLiteTest.NodeDefinition;
+using static MultiSQLite.NodeDefinition;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace SQLiteTest
+namespace MultiSQLite
 {
     // This class contains a thread that is constantly polling the database
     // And refreshing GUI-elements

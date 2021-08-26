@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
-using static SQLiteTest.NodeDefinition;
+using static MultiSQLite.NodeDefinition;
 using System.Runtime.InteropServices.ComTypes;
 
 
@@ -31,7 +31,7 @@ using System.Runtime.InteropServices.ComTypes;
 // Pooling: Using different connections for different threads and
 // Using the same connection with multiple threads simultaneously
 
-namespace SQLiteTest
+namespace MultiSQLite
 {
 
     public partial class frmMain : Form
@@ -329,6 +329,7 @@ namespace SQLiteTest
                 List<TreeNode> activeNodes = new List<TreeNode>();
                 TreeNode nodeAppActiveHeadline = NodeDefinition.Add(NodeDefinition.NodeType.ntAppActiveHeadline, "Active Apps", true, node.Nodes, ref activeNodes, Color.Green);                
                 TreeNode nodeAppInactiveHeadline = NodeDefinition.Add(NodeDefinition.NodeType.ntAppInactiveHeadline, "Inactive Apps", true, node.Nodes, ref activeNodes, Color.Red);
+                updateNode(nodeAppActiveHeadline, NodeDefinition.NodeAction.Update);                    
                 nodeAppActiveHeadline.Expand();
             }
             if ( (nd.nodeType == NodeDefinition.NodeType.ntAppActiveHeadline) || ((nd.nodeType == NodeDefinition.NodeType.ntAppInactiveHeadline)) )
