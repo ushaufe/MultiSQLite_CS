@@ -32,9 +32,143 @@ namespace MultiSQLite
         static System.Timers.Timer tiAppUpdate = new System.Timers.Timer();
         static PromptCommands prompt;
         static int drawPointInterval = 10;        
+
+        const String strDownloadPath_CS = "https://github.com/ushaufe/Sqlite4CS/raw/master/MultiSQLite/bin/";
+        const String strDownloadPath_CPP = "https://github.com/ushaufe/SQlite4CPP/raw/master/";
+                                           
+
+        static public bool UpdateCpp(PromptCommands prompt, String strAppDir, String strUpdatePath, bool bPrompt = true)
+        {
+            String strDownloadPath = strDownloadPath_CPP;
+            FileVersionInfo versionInfo;
+            String strVersion = "";
+            try
+            {
+                File.Delete(strUpdatePath + "VersionTesterRelease.ne");
+                File.Delete(strUpdatePath + "VersionTesterDebug.ne");
+            }
+            catch (Exception ex) { }
+            try
+            {
+                versionInfo = FileVersionInfo.GetVersionInfo(strAppDir + "MultiSQLite_CPP.exe");
+                strVersion = versionInfo.FileVersion;
+            } catch (Exception ex) { }
+            
+            prompt.Out("", colorUpdate);
+            prompt.Out("Cheking for new C++ versions...", colorUpdate);
+            prompt.Out("    Current version is " + (strVersion.Length>0 ? strVersion : " Not available"), colorUpdate);
+            prompt.Out("    Newest version is....", colorUpdate);
+
+            String strVersionDebug = "", strVersionRelease = "";
+            using (var client = new System.Net.WebClient())
+            {
+                try
+                {
+                    String strSourceDebug = "" + strDownloadPath_CPP + "Debug/" + "MultiSQLite_CPP.exe" + "";
+                    String strDestDebug = "" + strUpdatePath + "VersionTesterDebug.ne" + "";
+                    client.DownloadFile(strSourceDebug, strDestDebug);
+                    var versionInfoDebug = FileVersionInfo.GetVersionInfo(strDestDebug);
+                    strVersionDebug = versionInfoDebug.FileVersion;
+                }
+                catch (Exception ex)
+                {
+                }
+                try
+                {
+                    String strSourceRelease = "" + strDownloadPath_CPP + "Release/" + "MultiSQLite_CPP.exe" + "";
+                    String strDestRelease = "" + strUpdatePath + "VersionTesterRelease.ne" + "";
+                    client.DownloadFile(strSourceRelease, strDestRelease);
+                    var versionInfoRelease = FileVersionInfo.GetVersionInfo(strDestRelease);
+                    strVersionRelease = versionInfoRelease.FileVersion;
+                }
+                catch (Exception ex)
+                {
+                }
+                String strBranch = "";
+                String strNewVersion = "";
+                if (ConnectionClass.getDBVersionNumber(strVersionDebug) > ConnectionClass.getDBVersionNumber(strVersionRelease))
+                {
+                    strNewVersion = strVersionDebug;
+                    strBranch = "Debug";
+                }
+                else
+                {
+                    strBranch = "Release";
+                    strNewVersion = strVersionRelease;
+                }
+                if (ConnectionClass.getDBVersionNumber(strVersion) >= ConnectionClass.getDBVersionNumber(strNewVersion))
+                    if (ConnectionClass.getDBVersionNumber(strVersion) >= ConnectionClass.getDBVersionNumber(strNewVersion))
+                    {
+                        prompt.Out("", colorUpdate);
+                        prompt.Out("This is the newest version. No upate is currently available.", colorUpdate);
+                        prompt.Out("", colorUpdate);                        
+                        return false;
+                    }
+                prompt.Out("    Updating " + strVersion + " -> " + strNewVersion + "...", colorUpdate);
+                prompt.Out("", colorUpdate);
+                strDownloadPath += strBranch + "/";
+                
+                List<String> downloadFiles = new List<String>();
+                downloadFiles.Add( "MultiSQLite_CPP.exe" );
+
+                try
+                {
+                    foreach (String strDownloadFile in downloadFiles)
+                    {
+                        if (strDownloadFile.Contains(" "))
+                            continue;
+                        prompt.Out("    Downloading " + strDownloadFile, colorUpdate);
+                        String strSource = "" + strDownloadPath + strDownloadFile + "";
+                        String strDownFile = strDownloadFile;
+                        if (strDownFile.Contains("/"))
+                            strDownFile = strDownFile.Remove(0, strDownFile.IndexOf("/") + 1);
+                        String strDest = "" + strUpdatePath + strDownFile + "";
+
+                        client.DownloadFile(strSource, strDest);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    prompt.Out("", Color.Red);
+                    prompt.Out("Error During Update.", Color.Red);
+                    prompt.Out("Error Message: " + ex.Message, Color.Red);
+                    if (bPrompt)
+                        prompt.Prompt();
+                    return false;
+                }
+
+                prompt.Out("", colorUpdate);
+                prompt.Out("Download completed, updating files....", colorUpdate);
+
+                String[] strDir = Directory.GetFiles(strAppDir);
+                String[] strUpdateFiles = Directory.GetFiles(strUpdatePath);
+                foreach (String strFile in strUpdateFiles)
+                    try
+                    {
+                        String strOriginal = strAppDir + Path.GetFileName(strFile);
+                        if (File.Exists(strOriginal))
+                        {
+                            String strTempFile = strOriginal + "_temp_" + DateTime.Now.Ticks.ToString();
+                            File.Move(strOriginal, strTempFile);
+                        }
+                        prompt.Out("Updating file " + strFile, colorUpdate);
+                        File.Move(strFile, strOriginal);
+                    }
+                    catch (Exception ex)
+                    {
+                        prompt.Out("", Color.Red);
+                        prompt.Out("Error: Unknown error during update", Color.Red);
+                        if (bPrompt)
+                            prompt.Prompt();
+                        return false;
+                    }
+            }
+            return true;
+        }
         static public bool UpdateApp(PromptCommands prompt, bool bPrompt = true)
         {
             UpdateClass.prompt = prompt;
+            String strDownloadPath = strDownloadPath_CS;
             var versionInfo = FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
             String strVersion = versionInfo.FileVersion;
             
@@ -42,15 +176,16 @@ namespace MultiSQLite
             prompt.Out("Cheking for updates...", colorUpdate);
             prompt.Out("", colorUpdate);
 
+            
             //System.Diagnostics.Process.Start("https://raw.githubusercontent.com/ushaufe/Sqlite4CS/master/Doc/Haufe_MultiSQLite_CS_Manual.pdf");
             String strAppDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            String strAppFilePath = Path.GetDirectoryName(strAppDir);
-            String strDownloadPath = "https://github.com/ushaufe/Sqlite4CS/raw/master/MultiSQLite/bin/";
-            if (strAppFilePath.Length == 0)
+            strAppDir = Path.GetDirectoryName(strAppDir);
+            
+            if (strAppDir.Length == 0)
                 return false;
-            if (strAppFilePath[strAppFilePath.Length - 1] != '\\')
-                strAppFilePath += "\\";
-            String strUpdatePath = strAppFilePath + "Update";
+            if (strAppDir[strAppDir.Length - 1] != '\\')
+                strAppDir += "\\";
+            String strUpdatePath = strAppDir + "Update";
             try { System.IO.Directory.Delete(strUpdatePath, true); } catch (Exception ex) { }
 
             if (!System.IO.Directory.Exists(strUpdatePath))
@@ -60,15 +195,23 @@ namespace MultiSQLite
 
             try
             {
-                foreach (string fileDelete in Directory.GetFiles(strAppFilePath))
+                foreach (string fileDelete in Directory.GetFiles(strAppDir))
                     if (fileDelete.Contains("_temp_"))
                         File.Delete(fileDelete);
+            }
+            catch (Exception ex) { }            
+            try
+            {
+                File.Delete(strUpdatePath + "VersionTesterRelease.ne");
+                File.Delete(strUpdatePath + "VersionTesterDebug.ne");
             }
             catch (Exception ex) { }
 
             String strAppFile = Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
+            string platform = IntPtr.Size == 4 ? "x86" : "x64";
             List<String> downloadFiles = new List<String>();
+            
+            downloadFiles.Add(platform + "/SQLite.Interop.dll");            
             downloadFiles.Add("EnvDTE.dll");
             downloadFiles.Add("Microsoft.VisualStudio.OLE.Interop.dll");
             downloadFiles.Add("Microsoft.VisualStudio.Shell.Interop.dll");
@@ -128,13 +271,14 @@ namespace MultiSQLite
                     prompt.Out("", colorUpdate);
                     prompt.Out("This is the newest version. No upate is currently available.", colorUpdate);
                     prompt.Out("", colorUpdate);
+                    UpdateCpp(prompt, strAppDir, strUpdatePath, bPrompt);
                     if (bPrompt)
                         prompt.Prompt();
                     return false;
                 }
                 prompt.Out("    Updating " + strVersion + " -> " + strNewVersion + "...", colorUpdate);
                 prompt.Out("", colorUpdate);
-                strDownloadPath += strBranch + "/";
+                strDownloadPath+= strBranch + "/";
                 try
                 {
                     foreach (String strDownloadFile in downloadFiles)
@@ -143,7 +287,11 @@ namespace MultiSQLite
                             continue;
                         prompt.Out("    Downloading " + strDownloadFile, colorUpdate);
                         String strSource = "" + strDownloadPath + strDownloadFile + "";
-                        String strDest = "" + strUpdatePath + strDownloadFile + "";
+                        String strDownFile = strDownloadFile;
+                        if (strDownFile.Contains("/"))
+                            strDownFile = strDownFile.Remove(0, strDownFile.IndexOf("/") + 1);
+                        String strDest = "" + strUpdatePath + strDownFile + "";                           
+                        
                         client.DownloadFile(strSource, strDest);
                     }
                 }
@@ -160,12 +308,12 @@ namespace MultiSQLite
                 prompt.Out("", colorUpdate);
                 prompt.Out("Download completed, updating files....", colorUpdate);
 
-                String[] strDir = Directory.GetFiles(strAppFilePath);
+                String[] strDir = Directory.GetFiles(strAppDir);
                 String[] strUpdateFiles = Directory.GetFiles(strUpdatePath);
                 foreach (String strFile in strUpdateFiles)
                     try
                     {
-                        String strOriginal = strAppFilePath + Path.GetFileName(strFile);
+                        String strOriginal = strAppDir + Path.GetFileName(strFile);
                         if (File.Exists(strOriginal))
                         {
                             String strTempFile = strOriginal + "_temp_" + DateTime.Now.Ticks.ToString();
@@ -193,6 +341,7 @@ namespace MultiSQLite
             tiAppUpdate.Enabled = true;
             if (bPrompt)
                 prompt.Prompt();
+            UpdateCpp(prompt, strAppDir, strUpdatePath, bPrompt);
             return true;
         }
 
