@@ -19,3 +19,4 @@ C:\Projects\Sqlite4CS\SQLiteTest\bin\Release\Microsoft.VisualStudio.TextManager.
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\MultiSQLite.Properties.Resources.resources
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\MultiSQLite.FormAbout.resources
 C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\MultiSQLite.frmMain.resources
+C:\Projects\Sqlite4CS\SQLiteTest\obj\Release\SQLiteTest.csproj.AssemblyReference.cache
