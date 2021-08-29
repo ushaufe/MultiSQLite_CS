@@ -271,7 +271,7 @@ namespace MultiSQLite
                     prompt.Out("", colorUpdate);
                     prompt.Out("This is the newest version. No upate is currently available.", colorUpdate);
                     prompt.Out("", colorUpdate);
-                    UpdateCpp(prompt, strAppDir, strUpdatePath, bPrompt);
+                    //UpdateCpp(prompt, strAppDir, strUpdatePath, bPrompt);
                     if (bPrompt)
                         prompt.Prompt();
                     return false;
@@ -341,7 +341,7 @@ namespace MultiSQLite
             tiAppUpdate.Enabled = true;
             if (bPrompt)
                 prompt.Prompt();
-            UpdateCpp(prompt, strAppDir, strUpdatePath, bPrompt);
+            //UpdateCpp(prompt, strAppDir, strUpdatePath, bPrompt);
             return true;
         }
 

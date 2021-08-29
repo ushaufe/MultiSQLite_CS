@@ -1112,7 +1112,19 @@ namespace MultiSQLite
 
         private void mnuActions_DropDownOpening(object sender, EventArgs e)
         {
-            mnuStartMultiSQLiteCpp.Enabled = File.Exists(strAppDir + APPNAME_MULTISQLITE_CPP);
+            mnuStartMultiSQLiteCpp.Enabled = false;
+
+            try
+            {
+                var versionInfoCPP = FileVersionInfo.GetVersionInfo(strAppDir + APPNAME_MULTISQLITE_CPP);
+                String strVersionCPP = versionInfoCPP.FileVersion;
+                if (ConnectionClass.getDBVersionNumber(strVersionCPP) > 0)
+                    mnuStartMultiSQLiteCpp.Enabled = true;
+            }
+            catch(Exception ex)
+            {
+
+            }            
         }
     }
 }
