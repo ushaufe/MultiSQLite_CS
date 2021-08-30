@@ -696,9 +696,6 @@ namespace MultiSQLite_CS
             String strManual = (isInIDE()?strAppData:strAppDir) + "Haufe_MultiSQLite_CS_Manual.pdf";
             String strViewer = (isInIDE() ? strAppData : strAppDir) + "Viewer.exe";
 
-            prompt.Out("Debug: Downloading manual to: " + strManual);
-            prompt.Out("Debug: Downloading Viewer to: " + strViewer);
-            
 
             if (File.Exists(strManualNew))
                 File.Delete(strManualNew);
@@ -711,7 +708,6 @@ namespace MultiSQLite_CS
                 }
                 catch (Exception ex)
                 {
-                    prompt.Out("Debug: Ex 1: " + ex.Message);
                     return;
                 }
                 try 
@@ -721,7 +717,6 @@ namespace MultiSQLite_CS
                 }
                 catch(Exception ex)
                 {
-                    prompt.Out("Debug: Ex 2: " + ex.Message);
                     return;
                 }
             }
@@ -733,7 +728,6 @@ namespace MultiSQLite_CS
                 }
                 catch(Exception ex)
                 {
-                    prompt.Out("Debug: Ex 3: " + ex.Message);
                     return;
                 }
                 File.Move(strManualNew, strManual);
@@ -748,7 +742,6 @@ namespace MultiSQLite_CS
             }
             catch(Exception ex)
             {
-                prompt.Out("Debug: Ex 4: " + ex.Message);
                 return;
             }
         }
@@ -1153,8 +1146,11 @@ namespace MultiSQLite_CS
 
         private void mnuStartMultiSQLiteCpp_Click(object sender, EventArgs e)
         {
-            prompt.Out("Debug: Starting: " + strAppDir + APPNAME_MULTISQLITE_CPP);
+            prompt.Out("", UpdateClass.colorUpdate);
+            prompt.Out("Starting: MultiSQLite C++...", UpdateClass.colorUpdate);
+            prompt.Out("", UpdateClass.colorUpdate);          
             System.Diagnostics.Process.Start(strAppDir + APPNAME_MULTISQLITE_CPP );
+            prompt.Prompt();
         }
 
         private void mnuActions_DropDownOpening(object sender, EventArgs e)
@@ -1163,6 +1159,7 @@ namespace MultiSQLite_CS
 
             try
             {
+                prompt.Out("Debug: " + strAppDir + APPNAME_MULTISQLITE_CPP, Color.Red);
                 var versionInfoCPP = FileVersionInfo.GetVersionInfo(strAppDir + APPNAME_MULTISQLITE_CPP);
                 String strVersionCPP = versionInfoCPP.FileVersion;
                 if (ConnectionClass.getDBVersionNumber(strVersionCPP) > 0)

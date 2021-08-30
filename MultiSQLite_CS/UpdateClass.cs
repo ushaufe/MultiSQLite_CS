@@ -28,7 +28,7 @@ namespace MultiSQLite_CS
     static class UpdateClass
     {
         static private int countUpdateAppTicks = 0;
-        static Color colorUpdate = Color.LightBlue;
+        public static Color colorUpdate = Color.LightBlue;
         static System.Timers.Timer tiAppUpdate = new System.Timers.Timer();
         static PromptCommands prompt;
         static int drawPointInterval = 10;        
