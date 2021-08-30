@@ -19,3 +19,4 @@ C:\Projects\MultiSQLite_CS\MultiSQLite_CS\bin\Debug\System.Data.SQLite.xml
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.FormAbout.resources
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.frmMain.resources
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.CopyComplete
+C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.AssemblyReference.cache

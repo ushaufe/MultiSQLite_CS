@@ -692,9 +692,12 @@ namespace MultiSQLite_CS
 
         private void btnShowManual_Click(object sender, EventArgs e)
         {            
-            String strManualNew = isInIDE() ? strAppData : strAppDir + "Haufe_MultiSQLite_CS_Manual.pdf";
+            String strManualNew = (isInIDE() ? strAppData : strAppDir) + "Haufe_MultiSQLite_CS_Manual.new";
             String strManual = (isInIDE()?strAppData:strAppDir) + "Haufe_MultiSQLite_CS_Manual.pdf";
             String strViewer = (isInIDE() ? strAppData : strAppDir) + "Viewer.exe";
+
+            prompt.Out("Debug: Downloading manual to: " + strManual);
+            prompt.Out("Debug: Downloading Viewer to: " + strViewer);
             
 
             if (File.Exists(strManualNew))
@@ -708,16 +711,18 @@ namespace MultiSQLite_CS
                 }
                 catch (Exception ex)
                 {
-
+                    prompt.Out("Debug: Ex 1: " + ex.Message);
+                    return;
                 }
                 try 
                 {
                     if (!File.Exists(strViewer))
-                        client.DownloadFile("https://raw.githubusercontent.com/ushaufe/MultiSQLite_CS/master/Tools/Viewer.pdf", strManualNew);
+                        client.DownloadFile("https://raw.githubusercontent.com/ushaufe/MultiSQLite_CS/master/Tools/Viewer.exe", strViewer);
                 }
                 catch(Exception ex)
                 {
-                    
+                    prompt.Out("Debug: Ex 2: " + ex.Message);
+                    return;
                 }
             }
             if (File.Exists(strManualNew))
@@ -728,7 +733,8 @@ namespace MultiSQLite_CS
                 }
                 catch(Exception ex)
                 {
-                    
+                    prompt.Out("Debug: Ex 3: " + ex.Message);
+                    return;
                 }
                 File.Move(strManualNew, strManual);
             }
@@ -742,7 +748,8 @@ namespace MultiSQLite_CS
             }
             catch(Exception ex)
             {
-
+                prompt.Out("Debug: Ex 4: " + ex.Message);
+                return;
             }
         }
 
@@ -1145,7 +1152,8 @@ namespace MultiSQLite_CS
         }
 
         private void mnuStartMultiSQLiteCpp_Click(object sender, EventArgs e)
-        {   
+        {
+            prompt.Out("Debug: Starting: " + strAppDir + APPNAME_MULTISQLITE_CPP);
             System.Diagnostics.Process.Start(strAppDir + APPNAME_MULTISQLITE_CPP );
         }
 
