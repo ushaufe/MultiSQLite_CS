@@ -1159,7 +1159,7 @@ namespace MultiSQLite_CS
 
             try
             {
-                prompt.Out("Debug: " + strAppDir + APPNAME_MULTISQLITE_CPP, Color.Red);
+                //prompt.Out("Debug: " + strAppDir + APPNAME_MULTISQLITE_CPP, Color.Red);
                 var versionInfoCPP = FileVersionInfo.GetVersionInfo(strAppDir + APPNAME_MULTISQLITE_CPP);
                 String strVersionCPP = versionInfoCPP.FileVersion;
                 if (ConnectionClass.getDBVersionNumber(strVersionCPP) > 0)
