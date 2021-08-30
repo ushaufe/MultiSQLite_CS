@@ -1,8 +1,3 @@
-C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.Properties.Resources.resources
-C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.GenerateResource.cache
-C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.CoreCompileInputs.cache
-C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.exe
-C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.pdb
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\bin\Debug\MultiSQLite_CS.exe.config
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\bin\Debug\MultiSQLite_CS.exe
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\bin\Debug\MultiSQLite_CS.pdb
@@ -18,5 +13,9 @@ C:\Projects\MultiSQLite_CS\MultiSQLite_CS\bin\Debug\SQLite.Designer.xml
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\bin\Debug\System.Data.SQLite.xml
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.FormAbout.resources
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.frmMain.resources
+C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.Properties.Resources.resources
+C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.GenerateResource.cache
+C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.CoreCompileInputs.cache
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.CopyComplete
-C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.AssemblyReference.cache
+C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.exe
+C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.pdb

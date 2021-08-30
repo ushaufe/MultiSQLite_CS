@@ -694,8 +694,7 @@ namespace MultiSQLite_CS
         {            
             String strManualNew = (isInIDE() ? strAppData : strAppDir) + "Haufe_MultiSQLite_CS_Manual.new";
             String strManual = (isInIDE()?strAppData:strAppDir) + "Haufe_MultiSQLite_CS_Manual.pdf";
-            String strViewer = (isInIDE() ? strAppData : strAppDir) + "Viewer.exe";
-
+            String strViewer = (isInIDE() ? strAppData : strAppDir) + "Viewer.exe" ;
 
             if (File.Exists(strManualNew))
                 File.Delete(strManualNew);
@@ -707,8 +706,7 @@ namespace MultiSQLite_CS
                     client.DownloadFile("https://raw.githubusercontent.com/ushaufe/MultiSQLite_CS/master/Doc/Haufe_MultiSQLite_CS_Manual.pdf", strManualNew );
                 }
                 catch (Exception ex)
-                {
-                    return;
+                {                   
                 }
                 try 
                 {
@@ -716,33 +714,34 @@ namespace MultiSQLite_CS
                         client.DownloadFile("https://raw.githubusercontent.com/ushaufe/MultiSQLite_CS/master/Tools/Viewer.exe", strViewer);
                 }
                 catch(Exception ex)
-                {
-                    return;
+                {                   
                 }
             }
             if (File.Exists(strManualNew))
             {
                 try
-                {
+                {                    
                     File.Delete(strManual);
                 }
                 catch(Exception ex)
                 {
-                    return;
                 }
-                File.Move(strManualNew, strManual);
+                try
+                {
+                    File.Move(strManualNew, strManual);
+                }
+                catch(Exception ex)
+                {
+
+                }
             }
 
             try
-            {
-                System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                proc.StartInfo.FileName = strViewer;
-                proc.StartInfo.Arguments = strManual;
-                proc.Start();
+            {                
+                Process.Start("\"" + strViewer + "\"", "\"" + strManual + "\"");
             }
             catch(Exception ex)
-            {
-                return;
+            {               
             }
         }
 
