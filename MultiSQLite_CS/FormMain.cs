@@ -105,7 +105,7 @@ namespace MultiSQLite_CS
         {
             InitializeComponent();
 
-            String strAppDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            strAppDir = System.Reflection.Assembly.GetExecutingAssembly().Location;
             strAppDir = Path.GetDirectoryName(strAppDir);
             if (strAppDir.Length == 0)
                 return;
