@@ -1155,6 +1155,7 @@ namespace MultiSQLite_CS
         private void mnuActions_DropDownOpening(object sender, EventArgs e)
         {
             mnuStartMultiSQLiteCpp.Enabled = false;
+            mnuStartMultiSQLiteCS.Enabled = false;
 
             try
             {
@@ -1168,11 +1169,32 @@ namespace MultiSQLite_CS
             {
 
             }            
+            try
+            {
+
+                var versionInfoCS = FileVersionInfo.GetVersionInfo(strAppDir + APPNAME_MULTISQLITE_CS);
+                String strVersionCS = versionInfoCS.FileVersion;
+                if (ConnectionClass.getDBVersionNumber(strVersionCS) > 0)
+                    mnuStartMultiSQLiteCS.Enabled = true;
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void startNewInstanceOfMultiSQLiteForCToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            prompt.Out("", UpdateClass.colorUpdate);
+            prompt.Out("Starting: MultiSQLite C++...", UpdateClass.colorUpdate);
+            prompt.Out("", UpdateClass.colorUpdate);
+            System.Diagnostics.Process.Start(strAppDir + APPNAME_MULTISQLITE_CS);
+            prompt.Prompt();
         }
     }
 }

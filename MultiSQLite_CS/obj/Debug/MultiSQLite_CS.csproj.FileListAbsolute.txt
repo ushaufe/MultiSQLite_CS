@@ -19,3 +19,4 @@ C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.CoreCo
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.CopyComplete
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.exe
 C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.pdb
+C:\Projects\MultiSQLite_CS\MultiSQLite_CS\obj\Debug\MultiSQLite_CS.csproj.AssemblyReference.cache

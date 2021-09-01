@@ -64,6 +64,7 @@
             this.menuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuActions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuStartMultiSQLiteCpp = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuStartMultiSQLiteCS = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuStartThread = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuStopThread = new System.Windows.Forms.ToolStripMenuItem();
@@ -432,6 +433,7 @@
             // 
             this.mnuActions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuStartMultiSQLiteCpp,
+            this.mnuStartMultiSQLiteCS,
             this.toolStripMenuItem7,
             this.mnuStartThread,
             this.mnuStopThread,
@@ -447,20 +449,28 @@
             // 
             this.mnuStartMultiSQLiteCpp.Image = global::MultiSQLite_CS.Properties.Resources.Cpp;
             this.mnuStartMultiSQLiteCpp.Name = "mnuStartMultiSQLiteCpp";
-            this.mnuStartMultiSQLiteCpp.Size = new System.Drawing.Size(283, 26);
-            this.mnuStartMultiSQLiteCpp.Text = "Start MultiSQLite_CS for C++";
+            this.mnuStartMultiSQLiteCpp.Size = new System.Drawing.Size(359, 26);
+            this.mnuStartMultiSQLiteCpp.Text = "Start MultiSQLite for C++";
             this.mnuStartMultiSQLiteCpp.Click += new System.EventHandler(this.mnuStartMultiSQLiteCpp_Click);
+            // 
+            // mnuStartMultiSQLiteCS
+            // 
+            this.mnuStartMultiSQLiteCS.Image = global::MultiSQLite_CS.Properties.Resources.Connections11;
+            this.mnuStartMultiSQLiteCS.Name = "mnuStartMultiSQLiteCS";
+            this.mnuStartMultiSQLiteCS.Size = new System.Drawing.Size(359, 26);
+            this.mnuStartMultiSQLiteCS.Text = "Start New Instance of MultiSQLite for C#";
+            this.mnuStartMultiSQLiteCS.Click += new System.EventHandler(this.startNewInstanceOfMultiSQLiteForCToolStripMenuItem_Click);
             // 
             // toolStripMenuItem7
             // 
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(280, 6);
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(356, 6);
             // 
             // mnuStartThread
             // 
             this.mnuStartThread.Image = global::MultiSQLite_CS.Properties.Resources.Start_Process_321;
             this.mnuStartThread.Name = "mnuStartThread";
-            this.mnuStartThread.Size = new System.Drawing.Size(283, 26);
+            this.mnuStartThread.Size = new System.Drawing.Size(359, 26);
             this.mnuStartThread.Text = "Start Threads";
             this.mnuStartThread.Click += new System.EventHandler(this.mnuStartThread_Click);
             // 
@@ -469,20 +479,20 @@
             this.mnuStopThread.Enabled = false;
             this.mnuStopThread.Image = global::MultiSQLite_CS.Properties.Resources.stop_process_2_322;
             this.mnuStopThread.Name = "mnuStopThread";
-            this.mnuStopThread.Size = new System.Drawing.Size(283, 26);
+            this.mnuStopThread.Size = new System.Drawing.Size(359, 26);
             this.mnuStopThread.Text = "Stop Threads";
             this.mnuStopThread.Click += new System.EventHandler(this.mnuStopThread_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(280, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(356, 6);
             // 
             // mnuLiveUpdate
             // 
             this.mnuLiveUpdate.Image = global::MultiSQLite_CS.Properties.Resources.LiveUpdate_32_blau1;
             this.mnuLiveUpdate.Name = "mnuLiveUpdate";
-            this.mnuLiveUpdate.Size = new System.Drawing.Size(283, 26);
+            this.mnuLiveUpdate.Size = new System.Drawing.Size(359, 26);
             this.mnuLiveUpdate.Text = "Live Update";
             this.mnuLiveUpdate.Click += new System.EventHandler(this.mnuLiveUpdate_Click);
             // 
@@ -721,6 +731,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem mnuStartMultiSQLiteCpp;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
+        private System.Windows.Forms.ToolStripMenuItem mnuStartMultiSQLiteCS;
     }
 }
 

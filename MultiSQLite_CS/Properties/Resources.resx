@@ -133,6 +133,9 @@
   <data name="Haufe" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Haufe.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Cpp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Cpp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="APP_TITLE" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\APP_TITLE.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -168,6 +171,9 @@
   </data>
   <data name="LiveUpdate_32_blau" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LiveUpdate_32_blau.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OpenFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OpenFile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Connection2_Light1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Connection2_Light1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -205,20 +211,14 @@
   <data name="CS_Transparent" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CS_Transparent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="About_161" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\About_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Update.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="LiveUpdate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\LiveUpdate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Close_162" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Close_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Connections2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Connections2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Connection2_Light2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Connection2_Light2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SourceCode1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SourceCode1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -226,29 +226,32 @@
   <data name="LiveUpdate_64" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LiveUpdate_64.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SourceCode" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SourceCode.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Connected1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Connected1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Connections2_Light2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Connections2_Light2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="LiveUpdate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LiveUpdate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Haufe1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Haufe1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="LiveUpdate_322" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\LiveUpdate_322.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="OpenFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\OpenFile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="About_161" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\About_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Connections2_Light" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Connections2_Light.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Connected1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Connected1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Connection2_Light2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Connection2_Light2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="user-manual_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\user-manual_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Haufe1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Haufe1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SourceCode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SourceCode.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Start_Process_321" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Start_Process_321.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -256,8 +259,8 @@
   <data name="Connections2_Light1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Connections2_Light1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Close_162" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Close_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Connections2_Light2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Connections2_Light2.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="stop_process_2_322" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\stop_process_2_322.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -265,7 +268,7 @@
   <data name="Start_Process_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Start_Process_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Cpp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Cpp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Connections11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Connections1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
